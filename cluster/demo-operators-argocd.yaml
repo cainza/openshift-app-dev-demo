@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demo-operators
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: default
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    directory:
+      jsonnet: {}
+      recurse: true
+    path: cluster/openshift-operators
+    repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
+    targetRevision: development
+  syncPolicy: {}

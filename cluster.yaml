@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: demo-operators
+  name: demo-cluster-configs
   namespace: openshift-gitops
 spec:
   destination:
@@ -12,7 +12,7 @@ spec:
     directory:
       jsonnet: {}
       recurse: true
-    path: cluster/openshift-operators
+    path: cluster
     repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
     targetRevision: development
   syncPolicy: {}

@@ -44,43 +44,43 @@ spec:
   selector:
     app: details
 ---
-#apiVersion: v1
-#kind: ServiceAccount
-#metadata:
-#  name: bookinfo-details
-#  namespace: bookinfo
-#  labels:
-#    account: details
-#---
-#apiVersion: apps/v1
-#kind: Deployment
-#metadata:
-#  name: details-v1
-#  namespace: bookinfo
-#  labels:
-#    app: details
-#    version: v1
-#spec:
-#  replicas: 1
-#  selector:
-#    matchLabels:
-#      app: details
-#      version: v1
-#  template:
-#    metadata:
-#      annotations:
-#        sidecar.istio.io/inject: "true"
-#      labels:
-#        app: details
-#        version: v1
-#    spec:
-#      serviceAccountName: bookinfo-details
-#      containers:
-#      - name: details
-#        image: quay.io/maistra/examples-bookinfo-details-v1:2.1.0
-#        imagePullPolicy: IfNotPresent
-#        ports:
-#        - containerPort: 9080
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bookinfo-details
+  namespace: bookinfo
+  labels:
+    account: details
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: details-v1
+  namespace: bookinfo
+  labels:
+    app: details
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: details
+      version: v1
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: details
+        version: v1
+    spec:
+      serviceAccountName: bookinfo-details
+      containers:
+      - name: details
+        image: quay.io/maistra/examples-bookinfo-details-v1:2.1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9080
 #---
 ###################################################################################################
 ## Ratings service

@@ -58,5 +58,5 @@ roleRef:
   name: system:image-puller
 subjects:
 - apiGroup: rbac.authorization.k8s.io
-  kind: Groupq
+  kind: Group
   name: system:serviceaccounts:openshift-operators-redhat

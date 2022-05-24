@@ -1,11 +1,10 @@
-apiVersion: project.openshift.io/v1
-kind: Project
+apiVersion: v1
+kind: Namespace
 metadata:
-  annotations:
-    openshift.io/description: openshift-serverless
-    openshift.io/display-name: openshift-serverless
-  creationTimestamp: null
   name: openshift-serverless
+spec:
+  finalizers:
+  - kubernetes
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

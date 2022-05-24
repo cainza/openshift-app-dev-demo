@@ -15,4 +15,5 @@ spec:
     path: service-mesh
     repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
     targetRevision: development
-  syncPolicy: {}
+  syncPolicy:
+    automated: {}

@@ -1,8 +1,8 @@
-#apiVersion: maistra.io/v1
-#kind: ServiceMeshMemberRoll
-#metadata:
-#  name: default
-#  namespace: istio-system
-#spec:
-#  members:
-#  - bookinfo
+apiVersion: maistra.io/v1
+kind: ServiceMeshMemberRoll
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  members:
+  - bookinfo

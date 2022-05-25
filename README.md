@@ -14,6 +14,12 @@ What we want to achieve:
 
 NOTES:
 ---------------
+
+ crc config set cpus 16
+ crc config set memory 16384
+ crc config set disk-size 80000
+
+
 oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller 
 
 https://access.redhat.com/documentation/en-us/openshift_container_platform/4.10/html/service_mesh/service-mesh-2-x#ossm-tutorial-bookinfo-overview_ossm-create-mesh
@@ -24,3 +30,8 @@ http://istio-ingressgateway-istio-system.apps-crc.testing/productpage
 
 
 kiali-istio-system.apps-crc.testing
+
+
+https://developers.redhat.com/blog/2020/10/01/building-modern-ci-cd-workflows-for-serverless-applications-with-red-hat-openshift-pipelines-and-argo-cd-part-1
+
+https://developers.redhat.com/blog/2020/10/14/building-modern-ci-cd-workflows-for-serverless-applications-with-red-hat-openshift-pipelines-and-argo-cd-part-2

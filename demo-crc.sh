@@ -39,3 +39,10 @@ export alias crcssh='ssh -p 22 -i ~/.crc/machines/crc/id_ecdsa core@"$(crc ip)"'
 
 # SSH Into CRC and Show uptime
 crcssh uptime
+
+# Loging to CRC
+alias crclogin=$(crc console --credentials | awk -F"'" '$0=$2' | grep kubeadmin)
+crclogin
+
+# Give ARGOCD cluster admin to CRC for demo purposes
+oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller

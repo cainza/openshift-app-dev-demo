@@ -30,14 +30,14 @@ setCRCConfigs (){
 createCRCPersistantStorage(){
     # Attach secondary disk for persistant storage - Thin provisioned
     # Create Disk
-    sudo -S qemu-img create -f raw ~/.crc/vdb 100G
+    qemu-img create -f raw ~/.crc/vdb 100G
     # Attach Disk
     sudo virsh attach-disk crc ~/.crc/vdb vdb --cache none
 }
 
 crcLogin(){
     # Loging to CRC
-    echo "Logging in:"
+    echo "Logging in..."
     $(crc console --credentials | awk -F"'" '$0=$2' | grep kubeadmin)
 }
 
@@ -46,11 +46,30 @@ setupArgoCDPermissions(){
     oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller
 }
 
+crcStart(){
+    crc start
+}
+
+crcStop(){
+    crc stop
+}
+
+crcClean(){
+    crc stop
+    crc delete
+    #rm ~/.crc/vdb
+    #rm ~/.crc/crc.log*
+    #rm ~/.crc/machines/crc/* 
+}
+
 startupOptions(){
     echo "No startup options specified. Valid options:"
     echo "============================================"
     echo "* Set Up demo CRC: $0 setup"
-    echo "* Log into CRC with kubeadmin: $0 login"
+    echo "* Start CRC: $0 start"
+    echo "* Stop CRC: $0 stop"
+    echo "* Log into CRC with kubeadmin: $0 stop"
+    echo "* Clean up CRC Environment: $0 clean"
     echo -e "\n"
     exit 1
 }
@@ -80,7 +99,10 @@ setupCRC(){
 # Startup
 case "${1}" in
     setup)      setupCRC ;;
+    start)      crcStop ;;
+    stop)       crcStop ;;
     login)      crcLogin ;;
+    clean)      crcClean ;;
     "")         startupOptions ;;
     *)          startupOptions ;;
 esac

@@ -155,3 +155,10 @@ case "${1}" in
     "")         startupOptions ;;
     *)          startupOptions ;;
 esac
+
+
+# demo-cluster-configs works
+# openshift-operators works
+# openshift-operators-redhat doesn't work
+# openshift-storage doesn't work
+# openshift-serverless

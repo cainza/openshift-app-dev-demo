@@ -1,3 +1,10 @@
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  generation: 1
+  name: openshift-distributed-tracing-xmp24
+  namespace: openshift-distributed-tracing
+---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:

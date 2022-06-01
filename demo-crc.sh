@@ -27,6 +27,22 @@ setCRCConfigs (){
     crc setup
 }
 
+verifyGitOpsOperator(){
+    
+    #oc get deployments -n openshift-gitops --no-headers
+    echo "Verify Gitops is running"
+
+    while [ $(oc get deployments -n openshift-gitops --no-headers | grep -v "1/1"  | wc -l) -ne 1 ]; do 
+        echo "Waiting for Openshift GitOps containers to be ready in openshift-gitops namespace";
+    done
+}
+
+deployGitOpsOperator(){
+    
+    # Create Operator Subscription
+    oc create -f openshift-gitops-operator.yaml
+}
+
 createCRCPersistantStorage(){
     # Attach secondary disk for persistant storage - Thin provisioned
     # Create Disk
@@ -47,7 +63,12 @@ setupArgoCDPermissions(){
 }
 
 crcStart(){
+    
+    # Start CRC
     crc start
+
+    # Log into CRC
+    crcLogin
 }
 
 crcStop(){
@@ -76,14 +97,20 @@ startupOptions(){
 
 setupCRC(){
 
+    # Check if Setup has happened before
+    if [ $(crc status 2>&1 | grep "^Machine does not exist" | wc -l) -ne 1 ]; then
+        echo "CRC already setup, please clean environment first before setting up"
+        exit 1
+    fi
+
     # Set CRC Configs
     setCRCConfigs
 
-    # Create & Attach Storage
-    createCRCPersistantStorage
-
     # Start CRC
     crc start
+
+    # Create & Attach Storage
+    createCRCPersistantStorage
 
     # Command to SSH to VM If needed
     alias crcssh='ssh -p 22 -i ~/.crc/machines/crc/id_ecdsa core@"$(crc ip)"'
@@ -94,15 +121,34 @@ setupCRC(){
     # Log Into CRC
     crcLogin
 
+    # Install Gitops Operator
+    #deployGitOpsOperator
+
+}
+
+crcDebug(){
+
+    # Echo Remove this debug stage. This is for testing new features at this point
+
+    # Deploy Gitops Operator
+    deployGitOpsOperator
+
+    # Verify that GitOps is running
+    verifyGitOpsOperator
+
+    # Set Up ArgoCD Permissions
+    setupArgoCDPermissions
+
 }
 
 # Startup
 case "${1}" in
     setup)      setupCRC ;;
-    start)      crcStop ;;
+    start)      crcStart ;;
     stop)       crcStop ;;
     login)      crcLogin ;;
     clean)      crcClean ;;
+    debug)      crcDebug ;;
     "")         startupOptions ;;
     *)          startupOptions ;;
 esac

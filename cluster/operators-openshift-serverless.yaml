@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: openshift-serverless
-  namespace: openshift-serverless
+  namespace: openshift-gitops
 spec:
   destination:
     namespace: default

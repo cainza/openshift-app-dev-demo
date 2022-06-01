@@ -5,9 +5,8 @@ metadata:
   namespace: openshift-gitops
 spec:
   destination:
-    namespace: default
-    server: 'https://kubernetes.default.svc'
     namespace: openshift-distributed-tracing
+    server: 'https://kubernetes.default.svc'
   project: default
   source:
     directory:
@@ -18,5 +17,11 @@ spec:
     targetRevision: development
   syncPolicy:
     automated: {}
+    retry:
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m0s
+      limit: 2
     syncOptions:
       - CreateNamespace=true

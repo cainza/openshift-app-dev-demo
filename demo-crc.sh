@@ -170,6 +170,7 @@ esac
 
 # demo-cluster-configs works
 # openshift-operators works
-# openshift-operators-redhat doesn't work
+# openshift-operators-redhat works
 # openshift-storage doesn't work
-# openshift-serverless doesn't work
+# openshift-serverless works
+# openshift-distributed-tracing works

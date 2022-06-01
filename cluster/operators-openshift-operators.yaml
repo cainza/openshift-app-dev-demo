@@ -16,8 +16,6 @@ spec:
     path: operators/openshift-operators
     repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
     targetRevision: development
-    syncOptions:
-      - CreateNamespace=true
   syncPolicy:
     automated: {}
     retry:

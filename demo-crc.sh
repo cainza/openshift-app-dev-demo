@@ -32,7 +32,7 @@ verifyGitOpsOperator(){
     echo "Verify GitOps Operator is running"
     
 
-    while [ $(oc get po -n openshift-operators | grep gitops-operator-controller-manager-5b78f864fb-bqpnd | grep "1/1" | wc -l) -ne 1 ]; do 
+    while [ $(oc get po -n openshift-operators | grep gitops-operator-controller-manager | grep "1/1" | wc -l) -ne 1 ]; do 
         echo "Waiting for Openshift GitOps Operator to be ready in openshift-gitops namespace";
 
         sleep 2

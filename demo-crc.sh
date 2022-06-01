@@ -168,9 +168,4 @@ case "${1}" in
 esac
 
 
-# demo-cluster-configs works
-# openshift-operators works
-# openshift-operators-redhat works
-# openshift-storage doesn't work
 # openshift-serverless works
-# openshift-distributed-tracing works

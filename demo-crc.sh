@@ -31,7 +31,7 @@ verifyGitOpsOperator(){
     
     echo "Verify Gitops is running"
 
-    while [ $(oc get deployments -n openshift-gitops --no-headers | grep -v "1/1"  | wc -l) -ne 1 ]; do 
+    while [ $(oc get deployments -n openshift-gitops --no-headers | grep -v "1/1"  | wc -l) -ne 0 ]; do 
         echo "Waiting for Openshift GitOps containers to be ready in openshift-gitops namespace";
 
         sleep 2

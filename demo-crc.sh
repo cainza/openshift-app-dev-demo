@@ -52,6 +52,9 @@ deployGitOpsOperator(){
     # Set Up ArgoCD Permissions
     setupArgoCDPermissions
 
+    # Create Initial Cluster GitOps Application
+    oc create -f cluster.yaml -n openshift-gitops
+
 }
 
 createCRCPersistantStorage(){
@@ -130,16 +133,14 @@ setupCRC(){
     crcLogin
 
     # Install Gitops Operator
-    #deployGitOpsOperator
+    deployGitOpsOperator
 
 }
 
 crcDebug(){
 
     # Echo Remove this debug stage. This is for testing new features at this point
-
-    # Create Initial Cluster GitOps Application
-    oc create -f cluster.yaml -n openshift-gitops
+    deployGitOpsOperator
 
 }
 

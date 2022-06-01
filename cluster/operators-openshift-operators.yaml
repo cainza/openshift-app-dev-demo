@@ -18,4 +18,5 @@ spec:
     targetRevision: development
     syncOptions:
       - CreateNamespace=true
+  syncPolicy:
     automated: {}

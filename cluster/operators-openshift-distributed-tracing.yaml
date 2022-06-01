@@ -17,6 +17,6 @@ spec:
     repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
     targetRevision: development
   syncPolicy:
+    automated: {}
     syncOptions:
       - CreateNamespace=true
-    automated: {}

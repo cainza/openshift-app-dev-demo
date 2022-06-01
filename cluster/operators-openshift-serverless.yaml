@@ -16,5 +16,4 @@ spec:
     path: operators/openshift-serverless
     repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
     targetRevision: development
-  syncPolicy:
-    automated: {}
+  syncPolicy: {}

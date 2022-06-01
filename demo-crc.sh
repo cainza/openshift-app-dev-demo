@@ -29,18 +29,29 @@ setCRCConfigs (){
 
 verifyGitOpsOperator(){
     
-    #oc get deployments -n openshift-gitops --no-headers
     echo "Verify Gitops is running"
 
     while [ $(oc get deployments -n openshift-gitops --no-headers | grep -v "1/1"  | wc -l) -ne 1 ]; do 
         echo "Waiting for Openshift GitOps containers to be ready in openshift-gitops namespace";
+
+        sleep 2
     done
+
+    # Completed GitOps install
+    echo "GitOps install Completed"
 }
 
 deployGitOpsOperator(){
     
     # Create Operator Subscription
     oc create -f openshift-gitops-operator.yaml
+
+    # Verify that GitOps is running
+    verifyGitOpsOperator
+
+    # Set Up ArgoCD Permissions
+    setupArgoCDPermissions
+
 }
 
 createCRCPersistantStorage(){
@@ -112,11 +123,8 @@ setupCRC(){
     # Create & Attach Storage
     createCRCPersistantStorage
 
-    # Command to SSH to VM If needed
-    alias crcssh='ssh -p 22 -i ~/.crc/machines/crc/id_ecdsa core@"$(crc ip)"'
-
-    # SSH Into CRC and Show uptime
-    crcssh uptime
+    # Check Uptime
+    ssh -p 22 -i ~/.crc/machines/crc/id_ecdsa core@"$(crc ip)" uptime
 
     # Log Into CRC
     crcLogin
@@ -130,14 +138,8 @@ crcDebug(){
 
     # Echo Remove this debug stage. This is for testing new features at this point
 
-    # Deploy Gitops Operator
-    deployGitOpsOperator
-
-    # Verify that GitOps is running
-    verifyGitOpsOperator
-
-    # Set Up ArgoCD Permissions
-    setupArgoCDPermissions
+    # Create Initial Cluster GitOps Application
+    oc create -f cluster.yaml -n openshift-gitops
 
 }
 

@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: openshift-operators-redhat
-  namespace: openshift-gitops
+  namespace: openshift-operators-redhat
 spec:
   destination:
     namespace: default

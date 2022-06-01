@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: openshift-distributed-tracing
-  namespace: openshift-gitops
+  namespace: openshift-distributed-tracing
 spec:
   destination:
     namespace: default

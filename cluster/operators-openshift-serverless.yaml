@@ -7,7 +7,7 @@ spec:
   destination:
     namespace: default
     server: 'https://kubernetes.default.svc'
-    namespace: openshift-storage
+    namespace: openshift-serverless
   project: default
   source:
     directory:

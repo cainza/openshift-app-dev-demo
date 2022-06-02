@@ -105,6 +105,7 @@ crcClean(){
     crc delete
     rm ~/.crc/vdb
     rm ~/.crc/crc.log*
+    rm ~/.crc/crc.json
 }
 
 startupOptions(){

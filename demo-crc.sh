@@ -37,16 +37,21 @@ verifyGitOpsOperator(){
 
         sleep 2
     done
+
+    echo -e "Waiting for GitOps Deployments to be available"
+    while [ $(oc get deployments -n openshift-gitops --no-headers | wc -l) -lt 7 ]; do
+        echo -e "."
+        sleep 2
+    done
     
     echo "Verify Gitops is running"
+    while [ $(oc get deployments -n openshift-gitops --no-headers | grep -v "1/1"  | wc -l) -ne 0 ]; do 
+        echo "Waiting for Openshift GitOps containers to be ready in openshift-gitops namespace";
 
-    #while [ $(oc get deployments -n openshift-gitops --no-headers | grep -v "1/1"  | wc -l) -eq 0 ]; do 
-    #    echo "Waiting for Openshift GitOps containers to be ready in openshift-gitops namespace";
+        oc get deployments -n openshift-gitops --no-headers
 
-    #    oc get deployments -n openshift-gitops --no-headers
-
-    #    sleep 2
-    #done
+        sleep 2
+    done
 
     # Completed GitOps install
     echo "GitOps install Completed"
@@ -168,4 +173,5 @@ case "${1}" in
 esac
 
 
-# openshift-serverless works
+# ODF LVM Doesn't work yet
+# ARGOCD ODF LVM Storage Group Doesn't work yet

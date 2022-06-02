@@ -103,9 +103,8 @@ crcStop(){
 crcClean(){
     crc stop
     crc delete
-    #rm ~/.crc/vdb
-    #rm ~/.crc/crc.log*
-    #rm ~/.crc/machines/crc/* 
+    rm ~/.crc/vdb
+    rm ~/.crc/crc.log*
 }
 
 startupOptions(){

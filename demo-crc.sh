@@ -6,13 +6,13 @@ setCRCConfigs (){
 
     # Enable / Disable Cluster Monitoring 
     # Enable only if you have enough memory, needs ~4G extra
-    crc config set enable-cluster-monitoring false
+    crc config set enable-cluster-monitoring true
 
     # Set CRC CPU's
     crc config set cpus 16
 
     # Set CRC Memory
-    crc config set memory 24576
+    crc config set memory 20480
 
     # Set Disk Size, Thin Provisioned
     crc config set disk-size 250
@@ -93,9 +93,16 @@ setupArgoCDPermissions(){
 }
 
 crcStart(){
+
+    # Ensure configs are correct
+    setCRCConfigs
     
     # Start CRC
     crc start
+
+    # Wait 30 seconds
+    echo "Waiting 30 seconds for cluster to become stable"
+    sleep 30
 
     # Log into CRC
     crcLogin
@@ -164,7 +171,6 @@ crcCreds(){
     crc console --credentials
 
     echo "ArgoCD Admin user password: $(oc get secret/openshift-gitops-cluster -n openshift-gitops -o yaml | grep "admin.password" | head -n1 | awk '{ print $2 }' | base64 --decode)"
-    #oc get secret/openshift-gitops-cluster -n openshift-gitops -o yaml | grep "admin.password" | head -n1 | awk '{ print $2 }' | base64 --decode
 }
 
 # Startup

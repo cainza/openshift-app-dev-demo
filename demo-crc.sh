@@ -175,3 +175,5 @@ esac
 
 # ODF LVM Doesn't work yet
 # ARGOCD ODF LVM Storage Group Doesn't work yet
+# Maybe use built in PVC's? 
+# i.e. pv0030

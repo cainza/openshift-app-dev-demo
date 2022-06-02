@@ -160,6 +160,12 @@ crcDebug(){
 
 }
 
+crcCreds(){
+    crc console --credentials
+
+    echo "ArgoCD Admin user password: $(oc get secret/openshift-gitops-cluster -n openshift-gitops -o yaml | grep "admin.password" | head -n1 | awk '{ print $2 }' | base64 --decode)"
+}
+
 # Startup
 case "${1}" in
     setup)      setupCRC ;;
@@ -167,6 +173,7 @@ case "${1}" in
     stop)       crcStop ;;
     login)      crcLogin ;;
     clean)      crcClean ;;
+    creds)      crcCreds ;;
     debug)      crcDebug ;;
     "")         startupOptions ;;
     *)          startupOptions ;;
@@ -177,3 +184,12 @@ esac
 # ARGOCD ODF LVM Storage Group Doesn't work yet
 # Maybe use built in PVC's? 
 # i.e. pv0030
+
+"""
+
+Unable to deploy revision: permission denied: applications, sync, default/1-istio-controlplane, sub: CiQ4ZTY0YjZkZi02NjhlLTRhZjEtOTg0MS1kNjdmM2JlNDg5M2ISCW9wZW5zaGlmdA, iat: 2022-06-02T09:18:15Z
+
+time="2022-06-02T09:21:01Z" level=info msg="received unary call /application.ApplicationService/Sync" grpc.method=Sync grpc.request.claims="{\"at_hash\":\"8lfi8R3aDY8rU_a5lgKItA\",\"aud\":\"argo-cd\",\"c_hash\":\"K48ukeRAErhelzCGTyLmBg\",\"email\":\"kubeadmin\",\"email_verified\":false,\"exp\":1654247895,\"groups\":[\"system:authenticated\",\"system:authenticated:oauth\"],\"iat\":1654161495,\"iss\":\"https://openshift-gitops-server-openshift-gitops.apps-crc.testing/api/dex\",\"name\":\"kubeadmin\",\"preferred_username\":\"kubeadmin\",\"sub\":\"CiQ4ZTY0YjZkZi02NjhlLTRhZjEtOTg0MS1kNjdmM2JlNDg5M2ISCW9wZW5zaGlmdA\"}" grpc.request.content="name:\"1-istio-controlplane\" revision:\"development\" dryRun:false prune:false strategy:<hook:<syncStrategyApply:<force:false > > > retryStrategy:<limit:2 backoff:<duration:\"5s\" factor:2 maxDuration:\"3m0s\" > > syncOptions:<items:\"CreateNamespace=true\" > " grpc.service=application.ApplicationService grpc.start_time="2022-06-02T09:21:01Z" span.kind=server system=grpc
+time="2022-06-02T09:21:01Z" level=warning msg="finished unary call with code PermissionDenied" error="rpc error: code = PermissionDenied desc = permission denied: applications, sync, default/1-istio-controlplane, sub: CiQ4ZTY0YjZkZi02NjhlLTRhZjEtOTg0MS1kNjdmM2JlNDg5M2ISCW9wZW5zaGlmdA, iat: 2022-06-02T09:18:15Z" grpc.code=PermissionDenied grpc.method=Sync grpc.service=application.ApplicationService grpc.start_time="2022-06-02T09:21:01Z" grpc.time_ms=4.7 span.kind=server system=grpc
+
+""""

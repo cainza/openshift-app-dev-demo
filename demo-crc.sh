@@ -170,7 +170,9 @@ crcDebug(){
 crcCreds(){
     crc console --credentials
 
+    echo "ArgoCD Login URL: https://$(oc get route -n openshift-gitops | grep openshift-gitops-server | awk '{ print $2 }')"
     echo "ArgoCD Admin user password: $(oc get secret/openshift-gitops-cluster -n openshift-gitops -o yaml | grep "admin.password" | head -n1 | awk '{ print $2 }' | base64 --decode)"
+
 }
 
 # Startup

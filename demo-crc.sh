@@ -6,7 +6,7 @@ setCRCConfigs (){
 
     # Enable / Disable Cluster Monitoring 
     # Enable only if you have enough memory, needs ~4G extra
-    crc config set enable-cluster-monitoring true
+    crc config set enable-cluster-monitoring false
 
     # Set CRC CPU's
     crc config set cpus 16

@@ -147,7 +147,7 @@ setupCRC(){
     crc start
 
     # Create & Attach Storage
-    createCRCPersistantStorage
+    #createCRCPersistantStorage
 
     # Check Uptime
     ssh -p 22 -i ~/.crc/machines/crc/id_ecdsa core@"$(crc ip)" uptime

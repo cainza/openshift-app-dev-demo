@@ -1,0 +1,15 @@
+apiVersion: camel.apache.org/v1
+kind: Integration
+metadata:
+  name: hello
+  namespace: camel-k
+spec:
+  flows:
+    - from:
+        parameters:
+          period: '1000'
+        steps:
+          - set-body:
+              constant: Hello Camel K from yaml
+          - to: 'log:info'
+        uri: 'timer:yaml'

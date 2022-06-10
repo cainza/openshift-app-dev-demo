@@ -25,6 +25,7 @@ setCRCConfigs (){
 
     # Set up CRC if needed
     crc setup
+
 }
 
 verifyGitOpsOperator(){
@@ -106,6 +107,9 @@ crcStart(){
 
     # Log into CRC
     crcLogin
+
+    # Show login Creds
+    crcCreds
 }
 
 crcStop(){
@@ -157,6 +161,9 @@ setupCRC(){
 
     # Install Gitops Operator
     deployGitOpsOperator
+
+    # Show login Creds
+    crcCreds
 
 }
 

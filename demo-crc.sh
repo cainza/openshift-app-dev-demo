@@ -115,7 +115,7 @@ crcStop(){
 crcClean(){
     crc stop
     crc delete
-    rm ~/.crc/vdb
+    #rm ~/.crc/vdb
     rm ~/.crc/crc.log*
     rm ~/.crc/crc.json
 }
@@ -168,6 +168,9 @@ crcDebug(){
 }
 
 crcCreds(){
+
+    echo "CRC Console URL: $(oc get route -n openshift-console | grep ^console | awk '{ print $2 }')"
+
     crc console --credentials
 
     echo "ArgoCD Login URL: https://$(oc get route -n openshift-gitops | grep openshift-gitops-server | awk '{ print $2 }')"

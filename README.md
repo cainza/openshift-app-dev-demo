@@ -35,3 +35,7 @@ kiali-istio-system.apps-crc.testing
 https://developers.redhat.com/blog/2020/10/01/building-modern-ci-cd-workflows-for-serverless-applications-with-red-hat-openshift-pipelines-and-argo-cd-part-1
 
 https://developers.redhat.com/blog/2020/10/14/building-modern-ci-cd-workflows-for-serverless-applications-with-red-hat-openshift-pipelines-and-argo-cd-part-2
+
+
+
+https://docs.openshift.com/container-platform/4.10/serverless/admin_guide/serverless-ossm-setup.html

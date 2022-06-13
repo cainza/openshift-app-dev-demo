@@ -20,12 +20,14 @@ spec:
         - image: 'quay.io/maistra/examples-bookinfo-details-v1:2.1.0'
           name: user-container
           ports:
-            - containerPort: 9080
+            - containerPort: 8080
               protocol: TCP
           readinessProbe:
             successThreshold: 1
-            httpGet:
-              path: /health
+            tcpSocket:
+              port: 0
+          command: ["ruby"]
+          args: ["details.rb", "8080"]
           resources: {}
       enableServiceLinks: false
       timeoutSeconds: 300

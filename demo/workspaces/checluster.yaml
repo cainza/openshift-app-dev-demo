@@ -1,0 +1,75 @@
+apiVersion: org.eclipse.che/v1
+kind: CheCluster
+metadata:
+  finalizers:
+    - openshift-oauth-user.finalizers.che.eclipse.org
+    - cheWorkspaces.clusterpermissions.finalizers.che.eclipse.org
+    - namespaces-editor.permissions.finalizers.che.eclipse.org
+    - devWorkspace.permissions.finalizers.che.eclipse.org
+    - dashboard.clusterpermissions.finalizers.che.eclipse.org
+    - consolelink.finalizers.che.eclipse.org
+  name: codeready-workspaces
+  namespace: openshift-workspaces
+spec:
+  devWorkspace:
+    enable: false
+  metrics:
+    enable: true
+  server:
+    cheLogLevel: INFO
+    dashboardIngress: {}
+    externalDevfileRegistry: false
+    pluginRegistryIngress: {}
+    cheServerRoute: {}
+    devfileRegistryIngress: {}
+    cheHost: codeready-openshift-workspaces.apps-crc.testing
+    selfSignedCert: false
+    cheServerIngress: {}
+    cheDebug: 'false'
+    tlsSupport: true
+    dashboardRoute: {}
+    allowUserDefinedWorkspaceNamespaces: false
+    pluginRegistryRoute: {}
+    devfileRegistryRoute: {}
+    externalPluginRegistry: false
+    workspaceNamespaceDefault: <username>-codeready
+    serverExposureStrategy: multi-host
+    gitSelfSignedCert: false
+    useInternalClusterSVCNames: false
+    cheFlavor: codeready
+  k8s: {}
+  auth:
+    identityProviderURL: 'https://keycloak-openshift-workspaces.apps-crc.testing/auth'
+    identityProviderRealm: codeready
+    updateAdminPassword: false
+    identityProviderIngress: {}
+    oAuthSecret: mE7WV4A0onyv
+    oAuthClientName: codeready-workspaces-openshift-identity-provider-es3ya4
+    initialOpenShiftOAuthUser: true
+    identityProviderContainerResources:
+      limits: {}
+      request: {}
+    identityProviderClientId: codeready-public
+    identityProviderPostgresSecret: che-identity-postgres-secret
+    identityProviderRoute: {}
+    externalIdentityProvider: false
+    identityProviderSecret: che-identity-secret
+    openShiftoAuth: true
+  imagePuller:
+    enable: false
+    spec: {}
+  dashboard: {}
+  database:
+    chePostgresContainerResources:
+      limits: {}
+      request: {}
+    chePostgresDb: dbche
+    chePostgresHostName: postgres
+    chePostgresPort: '5432'
+    chePostgresSecret: che-postgres-secret
+    externalDb: false
+    postgresVersion: '13.5'
+  storage:
+    preCreateSubPaths: true
+    pvcClaimSize: 10Gi
+    pvcStrategy: common

@@ -49,7 +49,7 @@ verifyGitOpsOperator(){
     while [ $(oc get deployments -n openshift-gitops --no-headers | grep -v "1/1"  | wc -l) -ne 0 ]; do 
         echo "Waiting for Openshift GitOps containers to be ready in openshift-gitops namespace";
 
-        oc get deployments -n openshift-gitops --no-headers
+        oc get deployments -n openshift-gitops --no-headers | grep -v "1/1"
 
         sleep 2
     done

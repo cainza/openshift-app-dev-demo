@@ -29,7 +29,7 @@ server = WEBrick::HTTPServer.new :BindAddress => '0.0.0.0', :Port => port
 
 trap 'INT' do server.shutdown end
 
-server.mount_proc '/health' do |req, res|
+server.mount_proc '/healthz' do |req, res|
     res.status = 200
     res.body = {'status' => 'Details is healthy'}.to_json
     res['Content-Type'] = 'application/json'

@@ -21,4 +21,3 @@
 #  name: odf-lvm-operator
 #  source: redhat-operators
 #  sourceNamespace: openshift-marketplace
-#  startingCSV: odf-lvm-operator.v4.10.2

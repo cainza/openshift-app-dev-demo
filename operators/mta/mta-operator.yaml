@@ -18,4 +18,3 @@ spec:
   name: mta-operator
   source: community-operators
   sourceNamespace: openshift-marketplace
-#  startingCSV: windup-operator.0.0.10

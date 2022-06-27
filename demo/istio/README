@@ -1,0 +1,23 @@
+CERTS FOR ISTIO KNATIVE
+
+https://docs.openshift.com/container-platform/4.10/serverless/admin_guide/serverless-ossm-setup.html
+
+openssl req -x509 -sha256 -nodes -days 3650 -newkey rsa:2048 \
+    -subj '/O=CRC./CN=Testing' \
+    -keyout root.key \
+    -out root.crt
+
+openssl req -nodes -newkey rsa:2048 \
+    -subj "/CN=*.apps-crc.testing/O=Example Inc." \
+    -keyout wildcard.key \
+    -out wildcard.csr
+
+openssl x509 -req -days 3650 -set_serial 0 \
+    -CA root.crt \
+    -CAkey root.key \
+    -in wildcard.csr \
+    -out wildcard.crt
+
+oc create -n istio-system secret tls wildcard-certs \
+    --key=wildcard.key \
+    --cert=wildcard.crt

@@ -7,3 +7,4 @@ spec:
   members:
   - bookinfo
   - bookinfo-serverless
+  - knative-serving

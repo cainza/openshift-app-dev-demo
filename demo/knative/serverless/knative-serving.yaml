@@ -11,8 +11,12 @@ spec:
   knative-ingress-gateway: {}
   registry: {}
 #  ingress:
+#    contour:
+#      enabled: false
 #    istio:
-#      enabled: true 
+#      enabled: true
+#    kourier:
+#      enabled: false
 #  deployments: 
 #  - name: activator
 #    annotations:

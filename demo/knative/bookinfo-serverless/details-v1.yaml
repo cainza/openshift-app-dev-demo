@@ -2,9 +2,9 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: details-v1
-  namespace: bookinfo-serverless
-  annotations:
-    serving.knative.openshift.io/enablePassthrough: "true"
+#  namespace: bookinfo-serverless
+#  annotations:
+#    serving.knative.openshift.io/enablePassthrough: "true"
 spec:
   template:
     metadata:
@@ -17,7 +17,7 @@ spec:
     spec:
       containerConcurrency: 0
       containers:
-        - image: 'quay.io/maistra/examples-bookinfo-details-v1:2.1.0'
+        - image: 'quay.io/maistra/examples-bookinfo-details-v1:2.2.0'
           name: user-container
           ports:
             - containerPort: 8080

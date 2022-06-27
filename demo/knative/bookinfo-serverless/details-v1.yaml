@@ -3,14 +3,14 @@ kind: Service
 metadata:
   name: details-v1
   namespace: bookinfo-serverless
-#  annotations:
-#    serving.knative.openshift.io/enablePassthrough: "true"
+  annotations:
+    serving.knative.openshift.io/enablePassthrough: "true"
 spec:
   template:
     metadata:
-#      annotations:
-#        sidecar.istio.io/inject: "true" 
-#        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      annotations:
+        sidecar.istio.io/inject: "true" 
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
       labels:
         app: details
         version: v1

@@ -10,20 +10,20 @@ spec:
     type: ''
   knative-ingress-gateway: {}
   registry: {}
-#  ingress:
-#    contour:
-#      enabled: false
-#    istio:
-#      enabled: true
-#    kourier:
-#      enabled: false
-#  deployments: 
-#  - name: activator
-#    annotations:
-#      "sidecar.istio.io/inject": "true"
-#      "sidecar.istio.io/rewriteAppHTTPProbers": "true"
-#  - name: autoscaler
-#    annotations:
-#      "sidecar.istio.io/inject": "true"
-#      "sidecar.istio.io/rewriteAppHTTPProbers": "true"
+  ingress:
+    contour:
+      enabled: false
+    istio:
+      enabled: true
+    kourier:
+      enabled: false
+  deployments: 
+  - name: activator
+    annotations:
+      "sidecar.istio.io/inject": "true"
+      "sidecar.istio.io/rewriteAppHTTPProbers": "true"
+  - name: autoscaler
+    annotations:
+      "sidecar.istio.io/inject": "true"
+      "sidecar.istio.io/rewriteAppHTTPProbers": "true"
       

@@ -1,31 +1,80 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: event-statistics
-  namespace: super-heroes-serverless
   annotations:
-    serving.knative.openshift.io/enablePassthrough: "true"
+    app.openshift.io/connects-to: "fights-kafka,apicurio"
+    app.openshift.io/vcs-ref: main
+    app.openshift.io/vcs-url: https://github.com/quarkusio/quarkus-super-heroes
+    app.quarkus.io/build-timestamp: 2022-06-24 - 20:21:37 +0000
+    prometheus.io/scrape: "true"
+    prometheus.io/path: /q/metrics
+    prometheus.io/port: "8085"
+    prometheus.io/scheme: http
+  labels:
+    app: event-statistics
+    app.openshift.io/runtime: quarkus
+    application: event-stats
+    system: quarkus-super-heroes
+    app.kubernetes.io/name: event-statistics
+    app.kubernetes.io/part-of: event-stats
+    app.kubernetes.io/version: native-java17-latest
+  name: event-statistics
 spec:
   template:
     metadata:
       annotations:
-        sidecar.istio.io/inject: "true" 
-        sidecar.istio.io/rewriteAppHTTPProbers: "true"
-#      labels:
-#        app: event-statistics
-#        version: v1
+        app.openshift.io/connects-to: "fights-kafka,apicurio"
+        app.openshift.io/vcs-ref: main
+        app.openshift.io/vcs-url: https://github.com/quarkusio/quarkus-super-heroes
+        app.quarkus.io/build-timestamp: 2022-06-24 - 20:21:37 +0000
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /q/metrics
+        prometheus.io/port: "8085"
+        prometheus.io/scheme: http
+      labels:
+        app: event-statistics
+        app.openshift.io/runtime: quarkus
+        application: event-stats
+        system: quarkus-super-heroes
+        app.kubernetes.io/name: event-statistics
+        app.kubernetes.io/part-of: event-stats
+        app.kubernetes.io/version: native-java17-latest
     spec:
       containerConcurrency: 0
       containers:
-        - image: 'quay.io/quarkus-super-heroes/event-statistics:native-java17-latest'
-          name: user-container
+        - envFrom:
+            - configMapRef:
+                name: event-statistics-config
+            - secretRef:
+                name: event-statistics-config-creds
+          image: quay.io/quarkus-super-heroes/event-statistics:native-java17-latest
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /q/health/live
+              port: null
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: event-statistics
           ports:
-            - containerPort: 8080
+            - containerPort: 8085
+              name: http1
               protocol: TCP
           readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /q/health/ready
+              port: null
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 30
             successThreshold: 1
-            tcpSocket:
-              port: 0
-          resources: {}
-      enableServiceLinks: false
-      timeoutSeconds: 300
+            timeoutSeconds: 10
+          resources:
+            limits:
+              memory: 128Mi
+            requests:
+              memory: 32Mi

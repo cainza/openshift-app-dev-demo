@@ -20,7 +20,7 @@ spec:
         - image: 'quay.io/quarkus-super-heroes/rest-heroes:native-java17-latest'
           name: user-container
           ports:
-            - containerPort: 8080
+            - containerPort: 8083
               protocol: TCP
           readinessProbe:
             successThreshold: 1

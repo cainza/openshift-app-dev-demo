@@ -36,6 +36,7 @@ metadata:
     prometheus.io/path: /q/metrics
     prometheus.io/port: "8084"
     prometheus.io/scheme: http
+    serving.knative.openshift.io/enablePassthrough: "true"
   labels:
     app: rest-villains
     app.openshift.io/runtime: quarkus
@@ -58,6 +59,8 @@ spec:
         app.openshift.io/connects-to: villains-db
         app.openshift.io/vcs-ref: main
         app.openshift.io/vcs-url: https://github.com/quarkusio/quarkus-super-heroes
+        sidecar.istio.io/inject: "true" 
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
       labels:
         app: rest-villains
         app.openshift.io/runtime: quarkus

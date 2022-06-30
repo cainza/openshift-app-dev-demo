@@ -5,6 +5,7 @@ metadata:
   namespace: istio-system
 spec:
   members:
-  - bookinfo
-  - bookinfo-serverless
-  - knative-serving
+  - knative-serving # Must always be there to work - DO NOT DELETE
+  - quarkus-superheroes-serverless
+#  - bookinfo
+#  - bookinfo-serverless

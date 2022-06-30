@@ -7,6 +7,7 @@ metadata:
     prometheus.io/path: /
     prometheus.io/port: "8080"
     prometheus.io/scheme: http
+    serving.knative.openshift.io/enablePassthrough: "true"
   labels:
     app: ui-super-heroes
     application: super-heroes
@@ -24,6 +25,8 @@ spec:
         prometheus.io/path: /metrics
         prometheus.io/port: "8080"
         prometheus.io/scheme: http
+        sidecar.istio.io/inject: "true" 
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
       labels:
         app: ui-super-heroes
         application: super-heroes

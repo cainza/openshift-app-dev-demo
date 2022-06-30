@@ -23,6 +23,7 @@ metadata:
     prometheus.io/path: /q/metrics
     prometheus.io/port: "8083"
     prometheus.io/scheme: http
+    serving.knative.openshift.io/enablePassthrough: "true"
   labels:
     app: rest-heroes
     app.openshift.io/runtime: quarkus
@@ -45,6 +46,8 @@ spec:
         prometheus.io/path: /q/metrics
         prometheus.io/port: "8083"
         prometheus.io/scheme: http
+        sidecar.istio.io/inject: "true" 
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
       labels:
         app: rest-heroes
         app.openshift.io/runtime: quarkus

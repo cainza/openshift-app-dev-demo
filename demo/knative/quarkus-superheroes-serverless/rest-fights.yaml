@@ -44,6 +44,7 @@ metadata:
     app.kubernetes.io/part-of: fights-service
     app.kubernetes.io/version: native-java17-latest
     app.kubernetes.io/name: rest-fights
+    networking.knative.dev/visibility: cluster-local
   name: rest-fights
 spec:
   template:

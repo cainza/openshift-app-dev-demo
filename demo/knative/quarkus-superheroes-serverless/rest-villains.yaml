@@ -78,6 +78,8 @@ spec:
             - configMapRef:
                 name: rest-villains-config
           image: quay.io/quarkus-super-heroes/rest-villains:native-java17-latest
+          #imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
             httpGet:

@@ -65,6 +65,8 @@ spec:
             - secretRef:
                 name: rest-heroes-config-creds
           image: quay.io/quarkus-super-heroes/rest-heroes:native-java17-latest
+          #imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
             httpGet:

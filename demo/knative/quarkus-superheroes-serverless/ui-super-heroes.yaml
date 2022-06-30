@@ -41,7 +41,8 @@ spec:
             - name: API_BASE_URL
               value: http://rest-fights.quarkus-superheroes-serverless.svc.cluster.local
           name: ui-super-heroes
-          imagePullPolicy: Always
+          #imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
             httpGet:

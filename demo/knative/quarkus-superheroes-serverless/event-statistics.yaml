@@ -71,6 +71,8 @@ spec:
             - secretRef:
                 name: event-statistics-config-creds
           image: quay.io/quarkus-super-heroes/event-statistics:native-java17-latest
+          #imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
             httpGet:

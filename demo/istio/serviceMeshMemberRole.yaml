@@ -7,5 +7,3 @@ spec:
   members:
   - knative-serving # Must always be there to work - DO NOT DELETE
   - quarkus-superheroes-serverless
-#  - bookinfo
-#  - bookinfo-serverless

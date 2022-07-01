@@ -27,6 +27,7 @@ spec:
         prometheus.io/scheme: http
         sidecar.istio.io/inject: "true" 
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
+        autoscaling.knative.dev/min-scale: "1"
       labels:
         app: ui-super-heroes
         application: super-heroes

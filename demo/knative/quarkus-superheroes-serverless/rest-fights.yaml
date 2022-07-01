@@ -60,6 +60,7 @@ spec:
         app.openshift.io/vcs-url: https://github.com/quarkusio/quarkus-super-heroes
         sidecar.istio.io/inject: "true" 
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
+        autoscaling.knative.dev/min-scale: "1"
       labels:
         app: rest-fights
         app.openshift.io/runtime: quarkus

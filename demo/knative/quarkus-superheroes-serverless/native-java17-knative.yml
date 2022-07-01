@@ -524,7 +524,7 @@ spec:
             failureThreshold: 3
             httpGet:
               path: /health/live
-              port: null
+              port: 8080
               scheme: HTTP
             initialDelaySeconds: 0
             periodSeconds: 30
@@ -539,7 +539,7 @@ spec:
             failureThreshold: 3
             httpGet:
               path: /health/ready
-              port: null
+              port: 8080
               scheme: HTTP
             initialDelaySeconds: 0
             periodSeconds: 30

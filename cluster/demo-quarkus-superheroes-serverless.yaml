@@ -1,18 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: 3-demo-service-mesh-bookinfo
+  name: 2-demo-quarkus-superheroes-serverless
   namespace: openshift-gitops
 spec:
   destination:
-    namespace: bookinfo-serverless
+    namespace: quarkus-superheroes-serverless
     server: 'https://kubernetes.default.svc'
   project: default
   source:
     directory:
       jsonnet: {}
       recurse: true
-    path: demo/knative/bookinfo-serverless
+    path: demo/knative/quarkus-superheroes-serverless
     repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
     targetRevision: development
   syncPolicy:

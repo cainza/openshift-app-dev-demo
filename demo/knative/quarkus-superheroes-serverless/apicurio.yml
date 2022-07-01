@@ -1,10 +1,10 @@
 apiVersion: registry.apicur.io/v1
 kind: ApicurioRegistry
 metadata:
-  name: example-apicurioregistry-kafkasql
+  name: apicurio
   namespace: quarkus-superheroes-serverless
 spec:
   configuration:
     kafkasql:
-      bootstrapServers: fights-kafka-kafka-bootstrap:9092'
+      bootstrapServers: fights-kafka-kafka-bootstrap:9092
     persistence: kafkasql

@@ -21,7 +21,7 @@ data:
   #quarkus.stork.villain-service.service-discovery.application: rest-villains
   #quarkus.stork.villain-service.service-discovery.refresh-period: 1M
   kafka.bootstrap.servers: 'PLAINTEXT://fights-kafka-kafka-bootstrap:9092'
-  mp.messaging.connector.smallrye-kafka.apicurio.registry.url: http://apicurio:8080/apis/registry/v2
+  mp.messaging.connector.smallrye-kafka.apicurio.registry.url: http://apicurio-service:8080/apis/registry/v2
 ---
 apiVersion: serving.knative.dev/v1
 kind: Service
@@ -44,7 +44,7 @@ metadata:
     app.kubernetes.io/part-of: fights-service
     app.kubernetes.io/version: native-java17-latest
     app.kubernetes.io/name: rest-fights
-    networking.knative.dev/visibility: cluster-local
+    #networking.knative.dev/visibility: cluster-local
   name: rest-fights
 spec:
   template:

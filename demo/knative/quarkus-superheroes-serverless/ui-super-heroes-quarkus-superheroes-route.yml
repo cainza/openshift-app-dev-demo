@@ -4,8 +4,6 @@ metadata:
   annotations:	
     app.openshift.io/connects-to: rest-fights	
     haproxy.router.openshift.io/timeout: 600s	
-    networking.internal.knative.dev/rollout: >-	
-      {"configurations":[{"configurationName":"ui-super-heroes","percent":100,"revisions":[{"revisionName":"ui-super-heroes-00003","percent":100}],"stepParams":{}}]}	
     networking.knative.dev/ingress.class: istio.ingress.networking.knative.dev	
     prometheus.io/path: /	
     prometheus.io/port: '8080'	

@@ -34,7 +34,6 @@ metadata:
     prometheus.io/port: "8085"
     prometheus.io/scheme: http
     serving.knative.openshift.io/enablePassthrough: "true"
-    autoscaling.knative.dev/min-scale: "1"
   labels:
     app: event-statistics
     app.openshift.io/runtime: quarkus
@@ -58,6 +57,7 @@ spec:
         prometheus.io/scheme: http
         sidecar.istio.io/inject: "true" 
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
+        autoscaling.knative.dev/min-scale: "1"
       labels:
         app: event-statistics
         app.openshift.io/runtime: quarkus

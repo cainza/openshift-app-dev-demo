@@ -87,7 +87,7 @@ spec:
               path: /q/health/live
               port: 8084
               scheme: HTTP
-            initialDelaySeconds: 0
+            #initialDelaySeconds: 0
             periodSeconds: 30
             successThreshold: 1
             timeoutSeconds: 10
@@ -102,7 +102,7 @@ spec:
               path: /q/health/ready
               port: 8084
               scheme: HTTP
-            initialDelaySeconds: 0
+            #initialDelaySeconds: 0
             periodSeconds: 30
             successThreshold: 1
             timeoutSeconds: 10

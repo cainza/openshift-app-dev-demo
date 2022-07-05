@@ -1,0 +1,77 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  creationTimestamp: '2022-07-05T12:35:04Z'
+  generation: 4
+  managedFields:
+    - apiVersion: tekton.dev/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          .: {}
+          'f:finally': {}
+          'f:params': {}
+          'f:resources': {}
+          'f:tasks': {}
+          'f:workspaces': {}
+      manager: Mozilla
+      operation: Update
+      time: '2022-07-05T12:35:04Z'
+  name: quarkus-superheroes
+  namespace: quarkus-superheroes-serverless
+  resourceVersion: '203577'
+  uid: 3f56386e-f873-477a-b032-5d4c61a1564b
+spec:
+  tasks:
+    - name: clone-superheroes
+      params:
+        - name: url
+          value: 'https://github.com/quarkusio/quarkus-super-heroes.git'
+        - name: revision
+          value: main
+        - name: submodules
+          value: 'true'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: deleteExisting
+          value: 'true'
+        - name: verbose
+          value: 'true'
+        - name: gitInitImage
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:5b36e9d4ddffa4c253c47e444b7d3158bbbd2a3acf3c301389f6c50cbf5e8086
+        - name: userHome
+          value: /tekton/home
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+    - name: maven-build-event-statistics
+      params:
+        - name: MAVEN_IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
+        - name: GOALS
+          value:
+            - package
+        - name: PROXY_PROTOCOL
+          value: http
+        - name: CONTEXT_DIR
+          value: event-statistics
+      runAfter:
+        - clone-superheroes
+      taskRef:
+        kind: Task
+        name: maven-demo
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+        - name: maven-settings
+          workspace: maven-settings
+  workspaces:
+    - name: shared-workspace
+    - name: maven-settings

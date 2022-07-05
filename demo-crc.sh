@@ -66,8 +66,8 @@ deployGitOpsOperator(){
     # Verify that GitOps is running
     verifyGitOpsOperator
 
-    # Set Up ArgoCD Permissions
-    setupArgoCDPermissions
+    # Set Up ArgoCD Permissions - To be removed in future
+    #setupArgoCDPermissions
 
     # Create Initial Cluster GitOps Application
     oc create -f cluster.yaml -n openshift-gitops
@@ -88,10 +88,11 @@ crcLogin(){
     $(crc console --credentials | awk -F"'" '$0=$2' | grep kubeadmin)
 }
 
-setupArgoCDPermissions(){
-    # Give ARGOCD cluster admin to CRC for demo purposes
-    oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller
-}
+# Moved this to a argocd definition
+#setupArgoCDPermissions(){
+#    # Give ARGOCD cluster admin to CRC for demo purposes
+#    oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller
+#}
 
 crcStart(){
 

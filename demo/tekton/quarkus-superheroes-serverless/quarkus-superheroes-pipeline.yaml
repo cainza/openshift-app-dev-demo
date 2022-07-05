@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   creationTimestamp: '2022-07-05T12:35:04Z'
-  generation: 4
+  generation: 8
   managedFields:
     - apiVersion: tekton.dev/v1beta1
       fieldsType: FieldsV1
@@ -19,7 +19,7 @@ metadata:
       time: '2022-07-05T12:35:04Z'
   name: quarkus-superheroes
   namespace: quarkus-superheroes-serverless
-  resourceVersion: '203577'
+  resourceVersion: '250298'
   uid: 3f56386e-f873-477a-b032-5d4c61a1564b
 spec:
   tasks:
@@ -58,10 +58,80 @@ spec:
         - name: GOALS
           value:
             - package
+            - '-DskipTests=true'
         - name: PROXY_PROTOCOL
           value: http
         - name: CONTEXT_DIR
           value: event-statistics
+      runAfter:
+        - clone-superheroes
+      taskRef:
+        kind: Task
+        name: maven-demo
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+        - name: maven-settings
+          workspace: maven-settings
+    - name: maven-build-rest-heroes
+      params:
+        - name: MAVEN_IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
+        - name: GOALS
+          value:
+            - package
+            - '-DskipTests=true'
+        - name: PROXY_PROTOCOL
+          value: http
+        - name: CONTEXT_DIR
+          value: rest-heroes
+      runAfter:
+        - clone-superheroes
+      taskRef:
+        kind: Task
+        name: maven-demo
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+        - name: maven-settings
+          workspace: maven-settings
+    - name: maven-build-rest-villains
+      params:
+        - name: MAVEN_IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
+        - name: GOALS
+          value:
+            - package
+            - '-DskipTests=true'
+        - name: PROXY_PROTOCOL
+          value: http
+        - name: CONTEXT_DIR
+          value: rest-villains
+      runAfter:
+        - clone-superheroes
+      taskRef:
+        kind: Task
+        name: maven-demo
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+        - name: maven-settings
+          workspace: maven-settings
+    - name: maven-build-rest-fights
+      params:
+        - name: MAVEN_IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
+        - name: GOALS
+          value:
+            - package
+            - '-DskipTests=true'
+        - name: PROXY_PROTOCOL
+          value: http
+        - name: CONTEXT_DIR
+          value: .
       runAfter:
         - clone-superheroes
       taskRef:

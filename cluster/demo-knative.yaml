@@ -14,7 +14,7 @@ spec:
       recurse: true
     path: demo/knative/serverless
     repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
-    targetRevision: {{ .Values.service.GIT_OPS_BRANCH }}
+    targetRevision: development
     directory:
       recurse: true
   syncPolicy:

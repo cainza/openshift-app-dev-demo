@@ -1,7 +1,8 @@
+---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: quarkus-superheroes
+  name: 02-event-statistics
   namespace: quarkus-superheroes-serverless
 spec:
   tasks:
@@ -31,30 +32,7 @@ spec:
         name: git-clone
       workspaces:
         - name: output
-          workspace: shared-workspace
-    - name: maven-build-event-statistics
-      params:
-        - name: MAVEN_IMAGE
-          value: >-
-            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
-        - name: GOALS
-          value:
-            - package
-            - '-DskipTests=true'
-        - name: PROXY_PROTOCOL
-          value: http
-        - name: CONTEXT_DIR
-          value: event-statistics
-      runAfter:
-        - clone-superheroes
-      taskRef:
-        kind: Task
-        name: maven-demo
-      workspaces:
-        - name: source
-          workspace: shared-workspace
-        - name: maven-settings
-          workspace: maven-settings
+          workspace: shared-workspace-pvc
     - name: maven-build-rest-heroes
       params:
         - name: MAVEN_IMAGE
@@ -64,70 +42,29 @@ spec:
           value:
             - package
             - '-DskipTests=true'
+            - '-Dmaven.artifact.threads=30'
+            - '-Dmaven.repo.local=/media/.m2/'
         - name: PROXY_PROTOCOL
           value: http
         - name: CONTEXT_DIR
-          value: rest-heroes
+          value: event-statistics
       runAfter:
-        - clone-superheroes
+        - maven-download-dependencies
       taskRef:
         kind: Task
         name: maven-demo
       workspaces:
         - name: source
-          workspace: shared-workspace
+          workspace: shared-workspace-pvc
         - name: maven-settings
-          workspace: maven-settings
-    - name: maven-build-rest-villains
-      params:
-        - name: MAVEN_IMAGE
-          value: >-
-            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
-        - name: GOALS
-          value:
-            - package
-            - '-DskipTests=true'
-        - name: PROXY_PROTOCOL
-          value: http
-        - name: CONTEXT_DIR
-          value: rest-villains
-      runAfter:
-        - clone-superheroes
-      taskRef:
-        kind: Task
-        name: maven-demo
-      workspaces:
-        - name: source
-          workspace: shared-workspace
-        - name: maven-settings
-          workspace: maven-settings
-    - name: maven-build-rest-fights
-      params:
-        - name: MAVEN_IMAGE
-          value: >-
-            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
-        - name: GOALS
-          value:
-            - package
-            - '-DskipTests=true'
-        - name: PROXY_PROTOCOL
-          value: http
-        - name: CONTEXT_DIR
-          value: .
-      runAfter:
-        - clone-superheroes
-      taskRef:
-        kind: Task
-        name: maven-demo
-      workspaces:
-        - name: source
-          workspace: shared-workspace
-        - name: maven-settings
-          workspace: maven-settings
-    - name: build-rest-fights-image
+          workspace: maven-settings-cm
+        - name: mvn-cache
+          workspace: mvn-cache-pvc
+    - name: build-rest-heroes-image
       params:
         - name: IMAGE
-          value: 'rest-fights:latest'
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/rest-heroes:latest
         - name: BUILDER_IMAGE
           value: >-
             registry.redhat.io/rhel8/buildah@sha256:23fb7971ea6ac4aaaaa1139473a602df0df19222a3b5a76b551b2b9ddd92e927
@@ -142,42 +79,110 @@ spec:
         - name: FORMAT
           value: oci
       runAfter:
-        - maven-build-rest-fights
+        - maven-build-rest-heroes
       taskRef:
         kind: ClusterTask
         name: buildah
       workspaces:
         - name: source
-          workspace: shared-workspace
-    - name: build-rest-villains-image
+          workspace: shared-workspace-pvc
+    - name: maven-download-dependencies
       params:
-        - name: IMAGE
-          value: 'rest-villains:latest'
-        - name: BUILDER_IMAGE
+        - name: MAVEN_IMAGE
           value: >-
-            registry.redhat.io/rhel8/buildah@sha256:23fb7971ea6ac4aaaaa1139473a602df0df19222a3b5a76b551b2b9ddd92e927
-        - name: STORAGE_DRIVER
-          value: vfs
-        - name: DOCKERFILE
-          value: ./src/main/docker/Dockerfile.jvm17
-        - name: CONTEXT
-          value: rest-villains
-        - name: TLSVERIFY
-          value: 'true'
-        - name: FORMAT
-          value: oci
+            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
+        - name: GOALS
+          value:
+            - 'dependency:resolve'
+            - '-Dmaven.repo.local=/media/.m2/'
+            - '-Dmaven.artifact.threads=30'
+        - name: PROXY_PROTOCOL
+          value: http
+        - name: CONTEXT_DIR
+          value: event-statistics
       runAfter:
-        - maven-build-rest-villains
+        - clone-superheroes
       taskRef:
-        kind: ClusterTask
-        name: buildah
+        kind: Task
+        name: maven-demo
       workspaces:
         - name: source
-          workspace: shared-workspace
+          workspace: shared-workspace-pvc
+        - name: mvn-cache
+          workspace: mvn-cache-pvc
+        - name: maven-settings
+          workspace: maven-settings-cm
+  workspaces:
+    - name: shared-workspace-pvc
+    - name: maven-settings-cm
+    - name: mvn-cache-pvc
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 03-rest-heroes
+  namespace: quarkus-superheroes-serverless
+spec:
+  tasks:
+    - name: clone-superheroes
+      params:
+        - name: url
+          value: 'https://github.com/quarkusio/quarkus-super-heroes.git'
+        - name: revision
+          value: main
+        - name: submodules
+          value: 'true'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: deleteExisting
+          value: 'true'
+        - name: verbose
+          value: 'true'
+        - name: gitInitImage
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:5b36e9d4ddffa4c253c47e444b7d3158bbbd2a3acf3c301389f6c50cbf5e8086
+        - name: userHome
+          value: /tekton/home
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace-pvc
+    - name: maven-build-rest-heroes
+      params:
+        - name: MAVEN_IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
+        - name: GOALS
+          value:
+            - package
+            - '-DskipTests=true'
+            - '-Dmaven.artifact.threads=30'
+            - '-Dmaven.repo.local=/media/.m2/'
+        - name: PROXY_PROTOCOL
+          value: http
+        - name: CONTEXT_DIR
+          value: rest-heroes
+      runAfter:
+        - maven-download-dependencies
+      taskRef:
+        kind: Task
+        name: maven-demo
+      workspaces:
+        - name: source
+          workspace: shared-workspace-pvc
+        - name: maven-settings
+          workspace: maven-settings-cm
+        - name: mvn-cache
+          workspace: mvn-cache-pvc
     - name: build-rest-heroes-image
       params:
         - name: IMAGE
-          value: 'rest-heroes:latest'
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/rest-heroes:latest
         - name: BUILDER_IMAGE
           value: >-
             registry.redhat.io/rhel8/buildah@sha256:23fb7971ea6ac4aaaaa1139473a602df0df19222a3b5a76b551b2b9ddd92e927
@@ -198,11 +203,104 @@ spec:
         name: buildah
       workspaces:
         - name: source
-          workspace: shared-workspace
-    - name: build-event-statistics-image
+          workspace: shared-workspace-pvc
+    - name: maven-download-dependencies
+      params:
+        - name: MAVEN_IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
+        - name: GOALS
+          value:
+            - 'dependency:resolve'
+            - '-Dmaven.repo.local=/media/.m2/'
+            - '-Dmaven.artifact.threads=30'
+        - name: PROXY_PROTOCOL
+          value: http
+        - name: CONTEXT_DIR
+          value: rest-heroes
+      runAfter:
+        - clone-superheroes
+      taskRef:
+        kind: Task
+        name: maven-demo
+      workspaces:
+        - name: source
+          workspace: shared-workspace-pvc
+        - name: mvn-cache
+          workspace: mvn-cache-pvc
+        - name: maven-settings
+          workspace: maven-settings-cm
+  workspaces:
+    - name: shared-workspace-pvc
+    - name: maven-settings-cm
+    - name: mvn-cache-pvc
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 04-rest-villains
+  namespace: quarkus-superheroes-serverless
+spec:
+  tasks:
+    - name: clone-superheroes
+      params:
+        - name: url
+          value: 'https://github.com/quarkusio/quarkus-super-heroes.git'
+        - name: revision
+          value: main
+        - name: submodules
+          value: 'true'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: deleteExisting
+          value: 'true'
+        - name: verbose
+          value: 'true'
+        - name: gitInitImage
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:5b36e9d4ddffa4c253c47e444b7d3158bbbd2a3acf3c301389f6c50cbf5e8086
+        - name: userHome
+          value: /tekton/home
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace-pvc
+    - name: maven-build-rest-heroes
+      params:
+        - name: MAVEN_IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
+        - name: GOALS
+          value:
+            - package
+            - '-DskipTests=true'
+            - '-Dmaven.artifact.threads=30'
+            - '-Dmaven.repo.local=/media/.m2/'
+        - name: PROXY_PROTOCOL
+          value: http
+        - name: CONTEXT_DIR
+          value: rest-villains
+      runAfter:
+        - maven-download-dependencies
+      taskRef:
+        kind: Task
+        name: maven-demo
+      workspaces:
+        - name: source
+          workspace: shared-workspace-pvc
+        - name: maven-settings
+          workspace: maven-settings-cm
+        - name: mvn-cache
+          workspace: mvn-cache-pvc
+    - name: build-rest-heroes-image
       params:
         - name: IMAGE
-          value: 'event-statistics:latest'
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/rest-heroes:latest
         - name: BUILDER_IMAGE
           value: >-
             registry.redhat.io/rhel8/buildah@sha256:23fb7971ea6ac4aaaaa1139473a602df0df19222a3b5a76b551b2b9ddd92e927
@@ -211,52 +309,456 @@ spec:
         - name: DOCKERFILE
           value: ./src/main/docker/Dockerfile.jvm17
         - name: CONTEXT
-          value: event-statistics
+          value: rest-villains
         - name: TLSVERIFY
           value: 'true'
         - name: FORMAT
           value: oci
       runAfter:
-        - maven-build-event-statistics
+        - maven-build-rest-heroes
       taskRef:
         kind: ClusterTask
         name: buildah
       workspaces:
         - name: source
-          workspace: shared-workspace
-    - name: build-ui-super-heroes-image
+          workspace: shared-workspace-pvc
+    - name: maven-download-dependencies
       params:
+        - name: MAVEN_IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
+        - name: GOALS
+          value:
+            - 'dependency:resolve'
+            - '-Dmaven.repo.local=/media/.m2/'
+            - '-Dmaven.artifact.threads=30'
+        - name: PROXY_PROTOCOL
+          value: http
+        - name: CONTEXT_DIR
+          value: rest-villains
+      runAfter:
+        - clone-superheroes
+      taskRef:
+        kind: Task
+        name: maven-demo
+      workspaces:
+        - name: source
+          workspace: shared-workspace-pvc
+        - name: mvn-cache
+          workspace: mvn-cache-pvc
+        - name: maven-settings
+          workspace: maven-settings-cm
+  workspaces:
+    - name: shared-workspace-pvc
+    - name: maven-settings-cm
+    - name: mvn-cache-pvc
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 05-rest-fights
+  namespace: quarkus-superheroes-serverless
+spec:
+  tasks:
+    - name: clone-superheroes
+      params:
+        - name: url
+          value: 'https://github.com/quarkusio/quarkus-super-heroes.git'
+        - name: revision
+          value: main
+        - name: submodules
+          value: 'true'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: deleteExisting
+          value: 'true'
+        - name: verbose
+          value: 'true'
+        - name: gitInitImage
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:5b36e9d4ddffa4c253c47e444b7d3158bbbd2a3acf3c301389f6c50cbf5e8086
+        - name: userHome
+          value: /tekton/home
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace-pvc
+    - name: maven-build-rest-heroes
+      params:
+        - name: MAVEN_IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
+        - name: GOALS
+          value:
+            - package
+            - '-DskipTests=true'
+            - '-Dmaven.artifact.threads=30'
+            - '-Dmaven.repo.local=/media/.m2/'
+        - name: PROXY_PROTOCOL
+          value: http
+        - name: CONTEXT_DIR
+          value: rest-fights
+      runAfter:
+        - maven-download-dependencies
+      taskRef:
+        kind: Task
+        name: maven-demo
+      workspaces:
+        - name: source
+          workspace: shared-workspace-pvc
+        - name: maven-settings
+          workspace: maven-settings-cm
+        - name: mvn-cache
+          workspace: mvn-cache-pvc
+    - name: build-rest-heroes-image
+      params:
+        - name: IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/rest-heroes:latest
         - name: BUILDER_IMAGE
           value: >-
             registry.redhat.io/rhel8/buildah@sha256:23fb7971ea6ac4aaaaa1139473a602df0df19222a3b5a76b551b2b9ddd92e927
         - name: STORAGE_DRIVER
           value: vfs
         - name: DOCKERFILE
-          value: ./Dockerfile
+          value: ./src/main/docker/Dockerfile.jvm17
         - name: CONTEXT
-          value: .
+          value: rest-fights
         - name: TLSVERIFY
           value: 'true'
         - name: FORMAT
           value: oci
-        - name: IMAGE
-          value: 'ui-super-heroes:latest'
       runAfter:
-        - build-rest-fights-image
-        - build-rest-villains-image
-        - build-rest-heroes-image
-        - build-event-statistics-image
+        - maven-build-rest-heroes
       taskRef:
         kind: ClusterTask
         name: buildah
       workspaces:
         - name: source
-          workspace: shared-workspace
+          workspace: shared-workspace-pvc
+    - name: maven-download-dependencies
+      params:
+        - name: MAVEN_IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
+        - name: GOALS
+          value:
+            - 'dependency:resolve'
+            - '-Dmaven.repo.local=/media/.m2/'
+            - '-Dmaven.artifact.threads=30'
+        - name: PROXY_PROTOCOL
+          value: http
+        - name: CONTEXT_DIR
+          value: rest-fights
+      runAfter:
+        - clone-superheroes
+      taskRef:
+        kind: Task
+        name: maven-demo
+      workspaces:
+        - name: source
+          workspace: shared-workspace-pvc
+        - name: mvn-cache
+          workspace: mvn-cache-pvc
+        - name: maven-settings
+          workspace: maven-settings-cm
   workspaces:
-    - name: shared-workspace
-      optional: false
-    - name: maven-settings
-      optional: false
+    - name: shared-workspace-pvc
+    - name: maven-settings-cm
+    - name: mvn-cache-pvc
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 01-prepare-maven
+  namespace: quarkus-superheroes-serverless
+spec:
   params: []
   resources: []
+  workspaces:
+    - name: shared-workspace-pvc
+    - name: maven-settings-cm
+    - name: mvn-cache-pvc
+  tasks:
+    - name: clone-superheroes
+      params:
+        - name: url
+          value: 'https://github.com/quarkusio/quarkus-super-heroes.git'
+        - name: revision
+          value: main
+        - name: submodules
+          value: 'true'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: deleteExisting
+          value: 'true'
+        - name: verbose
+          value: 'true'
+        - name: gitInitImage
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:5b36e9d4ddffa4c253c47e444b7d3158bbbd2a3acf3c301389f6c50cbf5e8086
+        - name: userHome
+          value: /tekton/home
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace-pvc
+    - name: maven-download-dependencies
+      params:
+        - name: MAVEN_IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
+        - name: GOALS
+          value:
+            - 'dependency:resolve'
+            - '-Dmaven.repo.local=/media/.m2/'
+            - '-Dmaven.artifact.threads=30'
+        - name: PROXY_PROTOCOL
+          value: http
+        - name: CONTEXT_DIR
+          value: event-statistics
+      runAfter:
+        - clone-superheroes
+      taskRef:
+        kind: Task
+        name: maven-demo
+      workspaces:
+        - name: source
+          workspace: shared-workspace-pvc
+        - name: mvn-cache
+          workspace: mvn-cache-pvc
+        - name: maven-settings
+          workspace: maven-settings-cm
   finally: []
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: 06-ui-super-heroes
+  namespace: quarkus-superheroes-serverless
+spec:
+  tasks:
+    - name: clone-superheroes
+      params:
+        - name: url
+          value: 'https://github.com/quarkusio/quarkus-super-heroes.git'
+        - name: revision
+          value: main
+        - name: submodules
+          value: 'true'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: deleteExisting
+          value: 'true'
+        - name: verbose
+          value: 'true'
+        - name: gitInitImage
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:5b36e9d4ddffa4c253c47e444b7d3158bbbd2a3acf3c301389f6c50cbf5e8086
+        - name: userHome
+          value: /tekton/home
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace-pvc
+    - name: build-rest-heroes-image
+      params:
+        - name: IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/rest-heroes:latest
+        - name: BUILDER_IMAGE
+          value: >-
+            registry.redhat.io/rhel8/buildah@sha256:23fb7971ea6ac4aaaaa1139473a602df0df19222a3b5a76b551b2b9ddd92e927
+        - name: STORAGE_DRIVER
+          value: vfs
+        - name: DOCKERFILE
+          value: Dockerfile
+        - name: CONTEXT
+          value: ui-super-heroes
+        - name: TLSVERIFY
+          value: 'true'
+        - name: FORMAT
+          value: oci
+      runAfter:
+        - clone-superheroes
+      taskRef:
+        kind: ClusterTask
+        name: buildah
+      workspaces:
+        - name: source
+          workspace: shared-workspace-pvc
+  workspaces:
+    - name: shared-workspace-pvc
+    - name: maven-settings-cm
+    - name: mvn-cache-pvc
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  creationTimestamp: '2022-07-06T11:48:25Z'
+  generation: 1
+  managedFields:
+    - apiVersion: tekton.dev/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          .: {}
+          'f:tasks': {}
+      manager: kubectl-create
+      operation: Update
+      time: '2022-07-06T11:48:25Z'
+  name: 00-quarkus-superheroes
+  namespace: quarkus-superheroes-serverless
+  resourceVersion: '517659'
+  uid: 5fb6c1c2-1458-49a9-919f-0f1b22d10415
+spec:
+  tasks:
+    - name: build-event-statistics
+      params:
+        - name: TKN_IMAGE
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8@sha256:4c0e850cdcf91a94a726be5e1fc1893be9b00e4210214dbef19bfc9240c13fa4
+        - name: SCRIPT
+          value: tkn $@
+        - name: ARGS
+          value:
+            - >-
+              pipeline start 01-event-statistics --workspace
+              name=shared-workspace-pvc,claimName=shared-workspace --workspace
+              name=maven-settings-cm,config=settings-xml --workspace
+              name=mvn-cache-pvc,claimName=mvn-cache --showlog
+      taskRef:
+        kind: ClusterTask
+        name: tkn
+    - name: rest-heroes
+      params:
+        - name: TKN_IMAGE
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8@sha256:4c0e850cdcf91a94a726be5e1fc1893be9b00e4210214dbef19bfc9240c13fa4
+        - name: SCRIPT
+          value: tkn $@
+        - name: ARGS
+          value:
+            - >-
+              pipeline start 02-rest-heroes --workspace
+              name=shared-workspace-pvc,claimName=shared-workspace --workspace
+              name=maven-settings-cm,config=settings-xml --workspace
+              name=mvn-cache-pvc,claimName=mvn-cache --showlog
+      runAfter:
+        - prepare-maven
+      taskRef:
+        kind: ClusterTask
+        name: tkn
+    - name: rest-villains
+      params:
+        - name: TKN_IMAGE
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8@sha256:4c0e850cdcf91a94a726be5e1fc1893be9b00e4210214dbef19bfc9240c13fa4
+        - name: SCRIPT
+          value: tkn $@
+        - name: ARGS
+          value:
+            - >-
+              pipeline start 03-rest-villains --workspace
+              name=shared-workspace-pvc,claimName=shared-workspace --workspace
+              name=maven-settings-cm,config=settings-xml --workspace
+              name=mvn-cache-pvc,claimName=mvn-cache --showlog
+      runAfter:
+        - rest-heroes
+      taskRef:
+        kind: ClusterTask
+        name: tkn
+    - name: rest-fights
+      params:
+        - name: TKN_IMAGE
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8@sha256:4c0e850cdcf91a94a726be5e1fc1893be9b00e4210214dbef19bfc9240c13fa4
+        - name: SCRIPT
+          value: tkn $@
+        - name: ARGS
+          value:
+            - >-
+              pipeline start 04-rest-fights --workspace
+              name=shared-workspace-pvc,claimName=shared-workspace --workspace
+              name=maven-settings-cm,config=settings-xml --workspace
+              name=mvn-cache-pvc,claimName=mvn-cache --showlog
+      runAfter:
+        - rest-villains
+      taskRef:
+        kind: ClusterTask
+        name: tkn
+    - name: ui-super-heroes
+      params:
+        - name: TKN_IMAGE
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8@sha256:4c0e850cdcf91a94a726be5e1fc1893be9b00e4210214dbef19bfc9240c13fa4
+        - name: SCRIPT
+          value: tkn $@
+        - name: ARGS
+          value:
+            - >-
+              pipeline start 05-ui-super-heroes --workspace
+              name=shared-workspace-pvc,claimName=shared-workspace --workspace
+              name=maven-settings-cm,config=settings-xml --workspace
+              name=mvn-cache-pvc,claimName=mvn-cache --showlog
+      runAfter:
+        - rest-fights
+      taskRef:
+        kind: ClusterTask
+        name: tkn
+    - name: prepare-maven
+      runAfter:
+        - build-event-statistics
+      taskRef:
+        kind: ClusterTask
+        name: tkn
+      params:
+        - name: TKN_IMAGE
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8@sha256:4c0e850cdcf91a94a726be5e1fc1893be9b00e4210214dbef19bfc9240c13fa4
+        - name: SCRIPT
+          value: tkn $@
+        - name: ARGS
+          value:
+            - >-
+              pipeline start 01-prepare-maven --workspace
+              name=shared-workspace-pvc,claimName=shared-workspace --workspace
+              name=maven-settings-cm,config=settings-xml --workspace
+              name=mvn-cache-pvc,claimName=mvn-cache --showlog
+  params: []
+  resources: []
+  workspaces: []
+  finally: []
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: demo-prep
+  namespace: quarkus-superheroes-serverless
+  labels:
+    tekton.dev/pipeline: 01-prepare-maven
+spec:
+  pipelineRef:
+    name: 01-prepare-maven
+  workspaces:
+    - name: shared-workspace-pvc
+      persistentVolumeClaim:
+        claimName: shared-workspace
+    - configMap:
+        name: settings-xml
+      name: maven-settings-cm
+    - name: mvn-cache-pvc
+      persistentVolumeClaim:
+        claimName: mvn-cache

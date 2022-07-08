@@ -4,25 +4,13 @@ metadata:
   name: maven-settings-cm
   namespace: quarkus-superheroes-serverless
 data:
-  settings.xml: >
+  maven-settings.xml: >
     <?xml version="1.0" encoding="UTF-8"?>
 
     <settings xmlns="http://maven.apache.org/SETTINGS/1.1.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0
     http://maven.apache.org/xsd/settings-1.1.0.xsd">
-       <servers>
-          <server>
-             <username>username</username>
-             <password>password</password>
-             <id>central</id>
-          </server>
-          <server>
-             <username>username</username>
-             <password>password</password>
-             <id>snapshots</id>
-          </server>
-       </servers>
        <profiles>
           <profile>
              <repositories>
@@ -57,10 +45,10 @@ data:
                    <url>http://repo1.maven.org/maven2/</url>
                 </pluginRepository>
              </pluginRepositories>
-             <id>maven</id>
+             <id>central</id>
           </profile>
        </profiles>
        <activeProfiles>
           <activeProfile>central</activeProfile>
        </activeProfiles>
-       </proxies>
+      </settings>

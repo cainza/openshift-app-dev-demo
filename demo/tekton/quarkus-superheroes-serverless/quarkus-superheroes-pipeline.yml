@@ -621,7 +621,7 @@ spec:
         - name: ARGS
           value:
             - >-
-              pipeline start 01-event-statistics --workspace
+              pipeline start 02-event-statistics --workspace
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
               name=maven-settings-cm,config=settings-xml --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
@@ -638,7 +638,7 @@ spec:
         - name: ARGS
           value:
             - >-
-              pipeline start 02-rest-heroes --workspace
+              pipeline start 03-rest-heroes --workspace
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
               name=maven-settings-cm,config=settings-xml --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
@@ -657,7 +657,7 @@ spec:
         - name: ARGS
           value:
             - >-
-              pipeline start 03-rest-villains --workspace
+              pipeline start 04-rest-villains --workspace
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
               name=maven-settings-cm,config=settings-xml --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
@@ -676,7 +676,7 @@ spec:
         - name: ARGS
           value:
             - >-
-              pipeline start 04-rest-fights --workspace
+              pipeline start 05-rest-fights --workspace
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
               name=maven-settings-cm,config=settings-xml --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
@@ -695,7 +695,7 @@ spec:
         - name: ARGS
           value:
             - >-
-              pipeline start 05-ui-super-heroes --workspace
+              pipeline start 06-ui-super-heroes --workspace
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
               name=maven-settings-cm,config=settings-xml --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog

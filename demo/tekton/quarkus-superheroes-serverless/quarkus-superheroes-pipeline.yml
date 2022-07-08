@@ -723,10 +723,10 @@ spec:
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
               name=maven-settings-cm,config=settings-xml --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
-  params: []
-  resources: []
+  #params: []
+  #resources: []
   workspaces: []
-  finally: []
+  #finally: []
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun

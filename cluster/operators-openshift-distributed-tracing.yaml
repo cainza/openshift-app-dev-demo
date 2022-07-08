@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: openshift-distributed-tracing
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: openshift-distributed-tracing
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    directory:
+      jsonnet: {}
+      recurse: true
+    path: operators/openshift-distributed-tracing
+    repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
+    targetRevision: main
+  syncPolicy:
+    automated: {}
+    retry:
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m0s
+      limit: 2
+    syncOptions:
+      - CreateNamespace=true

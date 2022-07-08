@@ -1,0 +1,20 @@
+#apiVersion: operators.coreos.com/v1
+#kind: OperatorGroup
+#metadata:
+#  name: openshift-workspaces-5ln2k
+#  namespace: openshift-workspaces
+#spec:
+#  targetNamespaces:
+#    - openshift-workspaces
+#---
+#apiVersion: operators.coreos.com/v1alpha1
+#kind: Subscription
+#metadata:
+#  name: codeready-workspaces
+#  namespace: openshift-workspaces
+#spec:
+#  channel: latest
+#  installPlanApproval: Automatic
+#  name: codeready-workspaces
+#  source: redhat-operators
+#  sourceNamespace: openshift-marketplace

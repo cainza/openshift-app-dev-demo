@@ -1,0 +1,21 @@
+apiVersion: camel.apache.org/v1
+kind: Integration
+metadata:
+  name: welcome-camel-k
+  namespace: camel-k
+spec:
+  flows:
+    - from:
+        parameters:
+          period: 10000
+        steps:
+          - set-body:
+              constant: Welcome to Apache Camel K
+          - set-header:
+              name: ContentType
+              simple: text/plain
+          - transform:
+              simple: '${body.toUpperCase()}'
+          - to:
+              uri: 'log:info?multiline=true&showAll=true'
+        uri: 'timer:tick'

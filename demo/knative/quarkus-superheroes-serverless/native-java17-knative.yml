@@ -1,0 +1,290 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: villains-db
+    application: villains-service
+    system: quarkus-super-heroes
+  name: villains-db-config
+data:
+  POSTGRESQL_DATABASE: dmlsbGFpbnNfZGF0YWJhc2U=
+  POSTGRESQL_USERNAME: c3VwZXJiYWQ=
+  POSTGRESQL_PASSWORD: c3VwZXJiYWQ=
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: villains-db
+    application: villains-service
+    system: quarkus-super-heroes
+  name: villains-db
+spec:
+  ports:
+    - port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    name: villains-db
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: villains-db
+    application: villains-service
+    system: quarkus-super-heroes
+  name: villains-db-init
+data:
+  get-data.sh: |-
+    #!/bin/bash
+
+    curl https://raw.githubusercontent.com/quarkusio/quarkus-super-heroes/main/rest-villains/deploy/db-init/initialize-tables.sql --output /docker-entrypoint-initdb.d/1-init-tables.sql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: villains-db
+    application: villains-service
+    system: quarkus-super-heroes
+    app.kubernetes.io/part-of: villains-service
+    app.openshift.io/runtime: postgresql
+  name: villains-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: villains-db
+  template:
+    metadata:
+      labels:
+        application: villains-service
+        name: villains-db
+    spec:
+      containers:
+        - envFrom:
+            - secretRef:
+                name: villains-db-config
+          image: bitnami/postgresql:14
+          name: villains-db
+          ports:
+            - containerPort: 5432
+          resources:
+            limits:
+              memory: 128Mi
+            requests:
+              memory: 32Mi
+          volumeMounts:
+            - mountPath: /bitnami/postgresql
+              name: villains-db-data
+            - mountPath: /docker-entrypoint-preinitdb.d
+              name: villains-db-init
+      volumes:
+        - emptyDir: {}
+          name: villains-db-data
+        - configMap:
+            name: villains-db-init
+          name: villains-db-init
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: heroes-db
+    application: heroes-service
+    system: quarkus-super-heroes
+  name: heroes-db-config
+data:
+  POSTGRESQL_DATABASE: aGVyb2VzX2RhdGFiYXNl
+  POSTGRESQL_USERNAME: c3VwZXJtYW4=
+  POSTGRESQL_PASSWORD: c3VwZXJtYW4=
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: rest-heroes
+    application: heroes-service
+    system: quarkus-super-heroes
+  name: rest-heroes-config-creds
+data:
+  quarkus.datasource.username: c3VwZXJtYW4=
+  quarkus.datasource.password: c3VwZXJtYW4=
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: heroes-db
+    application: heroes-service
+    system: quarkus-super-heroes
+  name: heroes-db
+spec:
+  ports:
+    - port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    name: heroes-db
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: heroes-db
+    application: heroes-service
+    system: quarkus-super-heroes
+  name: heroes-db-init
+data:
+  get-data.sh: |-
+    #!/bin/bash
+
+    curl https://raw.githubusercontent.com/quarkusio/quarkus-super-heroes/main/rest-heroes/deploy/db-init/initialize-tables.sql --output /docker-entrypoint-initdb.d/1-init-tables.sql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: heroes-db
+    application: heroes-service
+    system: quarkus-super-heroes
+    app.kubernetes.io/part-of: heroes-service
+    app.openshift.io/runtime: postgresql
+  name: heroes-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: heroes-db
+  template:
+    metadata:
+      labels:
+        name: heroes-db
+        application: heroes-service
+        system: quarkus-super-heroes
+    spec:
+      containers:
+        - envFrom:
+            - secretRef:
+                name: heroes-db-config
+          image: bitnami/postgresql:14
+          name: heroes-db
+          ports:
+            - containerPort: 5432
+          resources:
+            limits:
+              memory: 128Mi
+            requests:
+              memory: 32Mi
+          volumeMounts:
+            - mountPath: /bitnami/postgresql
+              name: heroes-db-data
+            - mountPath: /docker-entrypoint-preinitdb.d
+              name: heroes-db-init
+      volumes:
+        - emptyDir: {}
+          name: heroes-db-data
+        - configMap:
+            name: heroes-db-init
+          name: heroes-db-init
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: fights-db
+    application: fights-service
+    system: quarkus-super-heroes
+  name: fights-db-config
+data:
+  MONGODB_DATABASE: ZmlnaHRz
+  MONGODB_USERNAME: c3VwZXJmaWdodA==
+  MONGODB_PASSWORD: c3VwZXJmaWdodA==
+  MONGODB_ROOT_USER: c3VwZXI=
+  MONGODB_ROOT_PASSWORD: c3VwZXI=
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: rest-fights
+    application: fights-service
+    system: quarkus-super-heroes
+  name: rest-fights-config-creds
+data:
+  quarkus.mongodb.credentials.username: c3VwZXJmaWdodA==
+  quarkus.mongodb.credentials.password: c3VwZXJmaWdodA==
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: fights-db
+    application: fights-service
+    system: quarkus-super-heroes
+  name: fights-db
+spec:
+  ports:
+    - port: 27017
+      protocol: TCP
+      targetPort: 27017
+  selector:
+    name: fights-db
+  type: ClusterIP
+---
+#apiVersion: rbac.authorization.k8s.io/v1
+#kind: RoleBinding
+#metadata:
+#  name: default_view
+#roleRef:
+#  kind: ClusterRole
+#  apiGroup: rbac.authorization.k8s.io
+#  name: view
+#subjects:
+#  - kind: ServiceAccount
+#    name: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: fights-db
+    application: fights-service
+    system: quarkus-super-heroes
+    app.kubernetes.io/part-of: fights-service
+    app.openshift.io/runtime: mongodb
+  name: fights-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: fights-db
+  template:
+    metadata:
+      labels:
+        application: fights-service
+        name: fights-db
+        system: quarkus-super-heroes
+    spec:
+      containers:
+        - envFrom:
+            - secretRef:
+                name: fights-db-config
+          image: bitnami/mongodb:5.0
+          name: fights-db
+          ports:
+            - containerPort: 27017
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              memory: 64Mi

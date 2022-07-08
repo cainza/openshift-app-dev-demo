@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: 2-demo-quarkus-superheroes-tekton
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: quarkus-superheroes-serverless
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    directory:
+      jsonnet: {}
+      recurse: true
+    path: demo/tekton/quarkus-superheroes-serverless
+    repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
+    targetRevision: main
+  syncPolicy:
+    retry:
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m0s
+      limit: 2
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,40 @@
+apiVersion: route.openshift.io/v1	
+kind: Route	
+metadata:	
+  annotations:	
+    app.openshift.io/connects-to: rest-fights	
+    haproxy.router.openshift.io/timeout: 600s	
+    networking.knative.dev/ingress.class: istio.ingress.networking.knative.dev	
+    prometheus.io/path: /	
+    prometheus.io/port: '8080'	
+    prometheus.io/scheme: http	
+    prometheus.io/scrape: 'true'	
+    serving.knative.openshift.io/enablePassthrough: 'true'	
+  labels:	
+    app: ui-super-heroes	
+    app.kubernetes.io/instance: 2-demo-quarkus-superheroes-serverless	
+    app.kubernetes.io/name: ui-super-heroes	
+    app.kubernetes.io/part-of: super-heroes	
+    app.openshift.io/runtime: nodejs	
+    application: super-heroes	
+    networking.internal.knative.dev/ingress: ui-super-heroes	
+    serving.knative.dev/route: ui-super-heroes	
+    serving.knative.dev/routeNamespace: quarkus-superheroes-serverless	
+    serving.knative.dev/service: ui-super-heroes	
+    serving.knative.openshift.io/ingressName: ui-super-heroes	
+    serving.knative.openshift.io/ingressNamespace: quarkus-superheroes-serverless	
+    system: quarkus-super-heroes		
+  name: route-76986dbc-2a00-4838-bdea-081695240a9c-386162313461	
+  namespace: istio-system	
+spec:	
+  host: ui-super-heroes-quarkus-superheroes-serverless.apps-crc.testing	
+  port:	
+    targetPort: https	
+  tls:	
+    insecureEdgeTerminationPolicy: Redirect	
+    termination: passthrough	
+  to:	
+    kind: Service	
+    name: istio-ingressgateway	
+    weight: 100	
+  wildcardPolicy: None

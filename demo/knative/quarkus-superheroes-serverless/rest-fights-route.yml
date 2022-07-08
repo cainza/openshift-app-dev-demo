@@ -1,0 +1,43 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    app.openshift.io/connects-to: 'fights-db,fights-kafka,apicurio,rest-villains,rest-heroes'
+    app.openshift.io/vcs-ref: main
+    app.openshift.io/vcs-url: 'https://github.com/quarkusio/quarkus-super-heroes'
+    haproxy.router.openshift.io/timeout: 600s
+    networking.knative.dev/ingress.class: istio.ingress.networking.knative.dev
+    prometheus.io/path: /q/metrics
+    prometheus.io/port: '8082'
+    prometheus.io/scheme: http
+    prometheus.io/scrape: 'true'
+    serving.knative.openshift.io/enablePassthrough: 'true'
+  labels:
+    app: rest-fights
+    app.kubernetes.io/instance: 2-demo-quarkus-superheroes-serverless
+    app.kubernetes.io/name: rest-fights
+    app.kubernetes.io/part-of: fights-service
+    app.kubernetes.io/version: native-java17-latest
+    app.openshift.io/runtime: quarkus
+    application: fights-service
+    networking.internal.knative.dev/ingress: rest-fights
+    serving.knative.dev/route: rest-fights
+    serving.knative.dev/routeNamespace: quarkus-superheroes-serverless
+    serving.knative.dev/service: rest-fights
+    serving.knative.openshift.io/ingressName: rest-fights
+    serving.knative.openshift.io/ingressNamespace: quarkus-superheroes-serverless
+    system: quarkus-super-heroes
+  name: route-db4d9edf-6682-4037-a97b-3a1608b68b21-373230353861
+  namespace: istio-system
+spec:
+  host: rest-fights-quarkus-superheroes-serverless.apps-crc.testing
+  port:
+    targetPort: https
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: passthrough
+  to:
+    kind: Service
+    name: istio-ingressgateway
+    weight: 100
+  wildcardPolicy: None

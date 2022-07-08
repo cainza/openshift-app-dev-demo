@@ -47,3 +47,4 @@ export HOME=/tmp/
 argocd  login openshift-gitops-server-openshift-gitops.apps-crc.testing:443 --insecure --username=admin --password=2Xv9xiYdpSbcVDTNtZL4sHg6ulJWj8mU
 
 
+oc get secret -n openshift-gitops openshift-gitops-cluster -o "jsonpath={.data.admin\.password}"

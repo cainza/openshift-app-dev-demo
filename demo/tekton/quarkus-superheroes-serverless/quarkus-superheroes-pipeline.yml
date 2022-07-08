@@ -607,22 +607,8 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  creationTimestamp: '2022-07-06T11:48:25Z'
-  generation: 1
-  managedFields:
-    - apiVersion: tekton.dev/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:spec':
-          .: {}
-          'f:tasks': {}
-      manager: kubectl-create
-      operation: Update
-      time: '2022-07-06T11:48:25Z'
   name: 00-quarkus-superheroes
   namespace: quarkus-superheroes-serverless
-  resourceVersion: '517659'
-  uid: 5fb6c1c2-1458-49a9-919f-0f1b22d10415
 spec:
   tasks:
     - name: build-event-statistics

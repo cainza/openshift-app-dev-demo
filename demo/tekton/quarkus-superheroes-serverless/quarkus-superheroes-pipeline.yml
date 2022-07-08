@@ -477,8 +477,8 @@ metadata:
   name: 01-prepare-maven
   namespace: quarkus-superheroes-serverless
 spec:
-  params: []
-  resources: []
+  #params: []
+  #resources: []
   workspaces:
     - name: shared-workspace-pvc
     - name: maven-settings-cm

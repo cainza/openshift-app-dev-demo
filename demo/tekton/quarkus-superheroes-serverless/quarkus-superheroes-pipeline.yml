@@ -623,7 +623,7 @@ spec:
             - >-
               pipeline start 02-event-statistics --workspace
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
-              name=maven-settings-cm,config=maven-settings-xml --workspace
+              name=maven-settings-cm,config=maven-settings-cm --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
       taskRef:
         kind: ClusterTask
@@ -640,7 +640,7 @@ spec:
             - >-
               pipeline start 03-rest-heroes --workspace
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
-              name=maven-settings-cm,config=maven-settings-xml --workspace
+              name=maven-settings-cm,config=maven-settings-cm --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
       runAfter:
         - prepare-maven
@@ -659,7 +659,7 @@ spec:
             - >-
               pipeline start 04-rest-villains --workspace
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
-              name=maven-settings-cm,config=maven-settings-xml --workspace
+              name=maven-settings-cm,config=maven-settings-cm --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
       runAfter:
         - rest-heroes
@@ -678,7 +678,7 @@ spec:
             - >-
               pipeline start 05-rest-fights --workspace
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
-              name=maven-settings-cm,config=maven-settings-xml --workspace
+              name=maven-settings-cm,config=maven-settings-cm --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
       runAfter:
         - rest-villains
@@ -697,7 +697,7 @@ spec:
             - >-
               pipeline start 06-ui-super-heroes --workspace
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
-              name=maven-settings-cm,config=maven-settings-xml --workspace
+              name=maven-settings-cm,config=maven-settings-cm --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
       runAfter:
         - rest-fights
@@ -721,7 +721,7 @@ spec:
             - >-
               pipeline start 01-prepare-maven --workspace
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
-              name=maven-settings-cm,config=maven-settings-xml --workspace
+              name=maven-settings-cm,config=maven-settings-cm --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
   #params: []
   #resources: []

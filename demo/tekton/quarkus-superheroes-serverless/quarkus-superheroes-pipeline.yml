@@ -727,24 +727,3 @@ spec:
   #resources: []
   #workspaces: []
   #finally: []
----
-apiVersion: tekton.dev/v1beta1
-kind: PipelineRun
-metadata:
-  name: demo-prep
-  namespace: quarkus-superheroes-serverless
-  labels:
-    tekton.dev/pipeline: 01-prepare-maven
-spec:
-  pipelineRef:
-    name: 01-prepare-maven
-  workspaces:
-    - name: shared-workspace-pvc
-      persistentVolumeClaim:
-        claimName: shared-workspace
-    - configMap:
-        name: settings-xml
-      name: maven-settings-cm
-    - name: mvn-cache-pvc
-      persistentVolumeClaim:
-        claimName: mvn-cache

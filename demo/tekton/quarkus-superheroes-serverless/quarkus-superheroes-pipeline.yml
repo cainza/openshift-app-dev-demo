@@ -725,7 +725,7 @@ spec:
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
   #params: []
   #resources: []
-  workspaces: []
+  #workspaces: []
   #finally: []
 ---
 apiVersion: tekton.dev/v1beta1

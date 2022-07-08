@@ -39,3 +39,11 @@ https://developers.redhat.com/blog/2020/10/14/building-modern-ci-cd-workflows-fo
 
 
 https://docs.openshift.com/container-platform/4.10/serverless/admin_guide/serverless-ossm-setup.html
+
+
+
+####  ARGOCD
+export HOME=/tmp/
+argocd  login openshift-gitops-server-openshift-gitops.apps-crc.testing:443 --insecure --username=admin --password=2Xv9xiYdpSbcVDTNtZL4sHg6ulJWj8mU
+
+

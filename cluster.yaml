@@ -12,12 +12,6 @@ spec:
     path: cluster
     repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
     targetRevision: development
-    directory:
-      jsonnet:
-        extVars:
-          - name: GIT_OPS_BRANCH
-            value: development
-      recurse: true
   project: default
   syncPolicy:
     automated: {}

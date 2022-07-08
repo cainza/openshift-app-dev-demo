@@ -1,25 +1,8 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  creationTimestamp: '2022-07-05T13:26:09Z'
-  generation: 6
-  managedFields:
-    - apiVersion: tekton.dev/v1beta1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:spec':
-          .: {}
-          'f:description': {}
-          'f:params': {}
-          'f:steps': {}
-          'f:workspaces': {}
-      manager: Mozilla
-      operation: Update
-      time: '2022-07-05T13:26:09Z'
   name: maven-demo
   namespace: quarkus-superheroes-serverless
-  resourceVersion: '378923'
-  uid: 2622522f-67c1-4249-aedc-2550d793a3f2
 spec:
   description: This Task can be used to run a Maven build.
   params:

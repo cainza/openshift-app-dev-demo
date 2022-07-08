@@ -537,7 +537,7 @@ spec:
           workspace: mvn-cache-pvc
         - name: maven-settings
           workspace: maven-settings-cm
-  finally: []
+  #finally: []
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline

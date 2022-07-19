@@ -300,15 +300,19 @@ argocdPassword(){
     echo "$(oc get secret/openshift-gitops-cluster -n openshift-gitops -o yaml | grep "admin.password" | head -n1 | awk '{ print $2 }' | base64 --decode)"
 }
 
+argocdCreds(){
+
+    echo "ArgoCD Login URL: https://$(oc get route -n openshift-gitops | grep openshift-gitops-server | awk '{ print $2 }')"
+    echo "ArgoCD Admin user password: $(argocdPassword)"
+}
+
 crcCreds(){
 
     echo "CRC Console URL: $(oc get route -n openshift-console | grep ^console | awk '{ print $2 }')"
 
     crc console --credentials
 
-    echo "ArgoCD Login URL: https://$(oc get route -n openshift-gitops | grep openshift-gitops-server | awk '{ print $2 }')"
-    echo "ArgoCD Admin user password: $(argocdPassword)"
-
+    argocdCreds
 }
 
 # Startup

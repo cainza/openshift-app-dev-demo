@@ -323,14 +323,3 @@ case "${1}" in
     "")         startupOptions ;;
     *)          startupOptions ;;
 esac
-
-# argocd login openshift-gitops-server:443 --username="admin" --password="oVEQXLxCZjHrafcUi0RTJmlAKwI857S1" --insecure --config /tmp/.config/argocd/config
-#demo-cluster-configs
-#openshift-distributed-tracing
-#openshift-operators
-#openshift-operators-redhat
-#openshift-serverless
-# argocd app list --config /tmp/.config/argocd/config | grep default | egrep -v "^[0-9].*"
-
-
-

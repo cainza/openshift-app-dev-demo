@@ -58,13 +58,84 @@ verifyGitOpsOperator(){
     echo "GitOps install Completed"
 }
 
+argocdPod(){
+    echo $(oc get po | grep ^openshift-gitops-server | awk '{ print $1 }')
+}
+
+argocdSyncServiceMesh(){
+
+    # Switch to argocd project
+    oc project openshift-gitops
+
+    # Get the ArgoCD pod
+    arcgocdPod=$(argocdPod)
+
+    # Log into ArgoCD Server
+    oc rsh -c argocd-server $arcgocdPod argocd login openshift-gitops-server:443 --username=admin --password=$(argocdPassword) --insecure --config /tmp/.config/argocd/config
+
+    # Start the ArgoCD Sync
+    oc rsh -c argocd-server $arcgocdPod argocd --config /tmp/.config/argocd/config app sync 1-istio-controlplane
+
+    # Wait for the Service Mesh to become Ready
+    while [ $(oc get ServiceMeshControlPlane -n istio-system --no-headers | grep ComponentsReady | wc -l) -ne 1 ]; do
+        echo -e "\n\nWaiting for service mesh to become ready:\n"
+
+        oc get ServiceMeshControlPlane -n istio-system --no-headers
+
+        sleep 5
+        
+    done
+
+}
+
+argocdSyncKnative(){
+
+    # Switch to argocd project
+    oc project openshift-gitops
+
+    # Get the ArgoCD pod
+    arcgocdPod=$(argocdPod)
+
+    # Log into ArgoCD Server
+    oc rsh -c argocd-server $arcgocdPod argocd login openshift-gitops-server:443 --username=admin --password=$(argocdPassword) --insecure --config /tmp/.config/argocd/config
+
+    # Start the ArgoCD Sync
+    oc rsh -c argocd-server $arcgocdPod argocd --config /tmp/.config/argocd/config app sync 1-knative
+
+    # Wait for the Service Mesh to become Ready
+    while [ $(oc get KnativeServing/knative-serving -n knative-serving --no-headers | grep True | wc -l) -ne 1 ]; do
+        echo -e "\n\nWaiting for Knative to become ready:\n"
+
+        oc get KnativeServing/knative-serving -n knative-serving --no-headers
+
+        sleep 5
+        
+    done
+
+}
+
+argocdSyncTekton(){
+
+    # Switch to argocd project
+    oc project openshift-gitops
+
+    # Get the ArgoCD pod
+    arcgocdPod=$(argocdPod)
+
+    # Log into ArgoCD Server
+    oc rsh -c argocd-server $arcgocdPod argocd login openshift-gitops-server:443 --username=admin --password=$(argocdPassword) --insecure --config /tmp/.config/argocd/config
+
+    # Start the ArgoCD Sync
+    oc rsh -c argocd-server $arcgocdPod argocd --config /tmp/.config/argocd/config app sync 2-demo-quarkus-superheroes-tekton
+}
+
 getArgoCDDefaultSyncStatus(){
 
     # Switch to argocd project
     oc project openshift-gitops
 
     # Get the ArgoCD pod
-    arcgocdPod=$(oc get po | grep ^openshift-gitops-server | awk '{ print $1 }')
+    arcgocdPod=$(argocdPod)
 
     # Log into ArgoCD Server
     oc rsh -c argocd-server $arcgocdPod argocd login openshift-gitops-server:443 --username=admin --password=$(argocdPassword) --insecure --config /tmp/.config/argocd/config
@@ -203,6 +274,15 @@ setupCRC(){
 
     # Wait for ArgoCD To install all the operators
     getArgoCDDefaultSyncStatus
+
+    # Start syncing Service Mesh
+    argocdSyncServiceMesh
+    
+    # Start syncing Tekton
+    argocdSyncTekton
+    
+    # Start syncing Knative
+    argocdSyncKnative
 
     # Show login Creds
     crcCreds

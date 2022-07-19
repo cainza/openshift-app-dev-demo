@@ -137,6 +137,15 @@ startupOptions(){
     exit 1
 }
 
+setupServerlessTekton(){
+
+    if [ $(oc get project quarkus-superheroes-serverless --no-headers | wc -l) -eq 0 ]; then
+        echo "Create serverless project"
+    fi
+
+    # argocdPassword
+}
+
 setupCRC(){
 
     # Check if Setup has happened before
@@ -163,6 +172,9 @@ setupCRC(){
     # Install Gitops Operator
     deployGitOpsOperator
 
+    # Setup Tekton integration for OCP Serverless to openshift-gitops
+    setupServerlessTekton 
+
     # Show login Creds
     crcCreds
 
@@ -188,6 +200,7 @@ crcCreds(){
     echo "ArgoCD Login URL: https://$(oc get route -n openshift-gitops | grep openshift-gitops-server | awk '{ print $2 }')"
     echo "ArgoCD Admin user password: $(argocdPassword)"
 
+    setupServerlessTekton
 }
 
 # Startup

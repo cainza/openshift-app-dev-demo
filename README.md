@@ -9,13 +9,14 @@ Currently a shell script exists to prepare Openshift Local / Cloud Ready Contain
  1. Openshift GitOps - by setting up the demo environment
  2. Openshift Pipelines - Build our serverless applications
  3. Openshift Pipelines with GitOps - Deploy our serverless application with the pipeline syncing the GitOps application
- 4. Demo Openshift Service Mesh
- 5. Demo Openshift Serverless (Knative)
+ 4. Openshift Service Mesh - Serverless Application integrated into the service mesh
+ 5. Openshift Serverless (Knative Serving)
 
 ## What will come in future
 
  1. A/B Deployments ( Other deployment models )
  2. 3Scale API Management
+ 3. Openshift Serverless ( Knative Eventing )
 
 
 

@@ -175,6 +175,10 @@ crcDebug(){
 
 }
 
+argocdPassword(){
+    echo "$(oc get secret/openshift-gitops-cluster -n openshift-gitops -o yaml | grep "admin.password" | head -n1 | awk '{ print $2 }' | base64 --decode)"
+}
+
 crcCreds(){
 
     echo "CRC Console URL: $(oc get route -n openshift-console | grep ^console | awk '{ print $2 }')"
@@ -182,7 +186,7 @@ crcCreds(){
     crc console --credentials
 
     echo "ArgoCD Login URL: https://$(oc get route -n openshift-gitops | grep openshift-gitops-server | awk '{ print $2 }')"
-    echo "ArgoCD Admin user password: $(oc get secret/openshift-gitops-cluster -n openshift-gitops -o yaml | grep "admin.password" | head -n1 | awk '{ print $2 }' | base64 --decode)"
+    echo "ArgoCD Admin user password: $(argocdPassword)"
 
 }
 
@@ -198,9 +202,3 @@ case "${1}" in
     "")         startupOptions ;;
     *)          startupOptions ;;
 esac
-
-
-# ODF LVM Doesn't work yet
-# ARGOCD ODF LVM Storage Group Doesn't work yet
-# Maybe use built in PVC's? 
-# i.e. pv0030

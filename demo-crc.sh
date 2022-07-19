@@ -60,12 +60,15 @@ verifyGitOpsOperator(){
 
 getArgoCDDefaultSyncStatus(){
 
+    # Switch to argocd project
+    oc project openshift-gitops
+
     # Get the ArgoCD pod
     arcgocdPod=$(oc get po | grep ^openshift-gitops-server | awk '{ print $1 }')
 
     # Log into ArgoCD Server
-    oc rsh -c argocd-server $arcgocdPod argocd login openshift-gitops-server:443 --username="admin" --password="oVEQXLxCZjHrafcUi0RTJmlAKwI857S1" --insecure --config /tmp/.config/argocd/config
-
+    oc rsh -c argocd-server $arcgocdPod argocd login openshift-gitops-server:443 --username="admin" --password="$(argocdPassword)" --insecure --config /tmp/.config/argocd/config
+    
     while [ $(oc rsh -c argocd-server $arcgocdPod argocd app list --config /tmp/.config/argocd/config | grep default | egrep -v "^[0-9].*" | egrep -v "Synced.*Healthy" | wc -l) -ne 0 ]; do
         # Get App List and get status
 
@@ -226,6 +229,7 @@ crcCreds(){
     echo "ArgoCD Login URL: https://$(oc get route -n openshift-gitops | grep openshift-gitops-server | awk '{ print $2 }')"
     echo "ArgoCD Admin user password: $(argocdPassword)"
 
+    getArgoCDDefaultSyncStatus
 }
 
 # Startup

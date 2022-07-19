@@ -36,13 +36,13 @@ verifyGitOpsOperator(){
     while [ $(oc get po -n openshift-operators | grep gitops-operator-controller-manager | grep "1/1" | wc -l) -ne 1 ]; do 
         echo "Waiting for Openshift GitOps Operator to be ready in openshift-gitops namespace";
 
-        sleep 2
+        sleep 5
     done
 
     echo -e "Waiting for GitOps Deployments to be available"
     while [ $(oc get deployments -n openshift-gitops --no-headers | wc -l) -lt 7 ]; do
         echo -e "."
-        sleep 2
+        sleep 5
     done
     
     echo "Verify Gitops is running"
@@ -51,7 +51,7 @@ verifyGitOpsOperator(){
 
         oc get deployments -n openshift-gitops --no-headers | grep -v "1/1"
 
-        sleep 2
+        sleep 5
     done
 
     # Completed GitOps install

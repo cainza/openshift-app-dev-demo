@@ -718,7 +718,7 @@ spec:
       runAfter:
         - ui-super-heroes
       taskRef:
-        kind: Task
+        kind: ClusterTask
         name: argocd-task-sync-and-wait
     - name: build-event-statistics
       runAfter:

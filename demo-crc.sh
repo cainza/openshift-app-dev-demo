@@ -226,7 +226,6 @@ crcCreds(){
     echo "ArgoCD Login URL: https://$(oc get route -n openshift-gitops | grep openshift-gitops-server | awk '{ print $2 }')"
     echo "ArgoCD Admin user password: $(argocdPassword)"
 
-    getArgoCDDefaultSyncStatus
 }
 
 # Startup

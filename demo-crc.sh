@@ -58,6 +58,26 @@ verifyGitOpsOperator(){
     echo "GitOps install Completed"
 }
 
+getArgoCDDefaultSyncStatus(){
+
+    # Get the ArgoCD pod
+    arcgocdPod=$(oc get po | grep ^openshift-gitops-server | awk '{ print $1 }')
+
+    # Log into ArgoCD Server
+    oc rsh -c argocd-server $arcgocdPod argocd login openshift-gitops-server:443 --username="admin" --password="oVEQXLxCZjHrafcUi0RTJmlAKwI857S1" --insecure --config /tmp/.config/argocd/config
+
+    while [ $(oc rsh -c argocd-server $arcgocdPod argocd app list --config /tmp/.config/argocd/config | grep default | egrep -v "^[0-9].*" | egrep -v "Synced.*Healthy" | wc -l) -ne 0 ]; do
+        # Get App List and get status
+
+        echo -e "Waiting for the following apps to sync:\n"
+        echo $(oc rsh -c argocd-server $arcgocdPod argocd app list --config /tmp/.config/argocd/config | grep default | egrep -v "^[0-9].*" | egrep -v "Synced.*Healthy" | awk '{ print $1 }')
+        #oc rsh -c argocd-server $arcgocdPod argocd app list --config /tmp/.config/argocd/config | grep default | egrep -v "^[0-9].*"
+
+        sleep 5
+    done
+
+}
+
 deployGitOpsOperator(){
     
     # Create Operator Subscription
@@ -181,6 +201,9 @@ setupCRC(){
     # Show login Creds
     crcCreds
 
+    # Wait for ArgoCD To install all the operators
+    getArgoCDDefaultSyncStatus
+
 }
 
 crcDebug(){
@@ -203,6 +226,7 @@ crcCreds(){
     echo "ArgoCD Login URL: https://$(oc get route -n openshift-gitops | grep openshift-gitops-server | awk '{ print $2 }')"
     echo "ArgoCD Admin user password: $(argocdPassword)"
 
+    getArgoCDDefaultSyncStatus
 }
 
 # Startup
@@ -217,3 +241,14 @@ case "${1}" in
     "")         startupOptions ;;
     *)          startupOptions ;;
 esac
+
+# argocd login openshift-gitops-server:443 --username="admin" --password="oVEQXLxCZjHrafcUi0RTJmlAKwI857S1" --insecure --config /tmp/.config/argocd/config
+#demo-cluster-configs
+#openshift-distributed-tracing
+#openshift-operators
+#openshift-operators-redhat
+#openshift-serverless
+# argocd app list --config /tmp/.config/argocd/config | grep default | egrep -v "^[0-9].*"
+
+
+

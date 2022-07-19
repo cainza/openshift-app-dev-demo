@@ -1,14 +1,21 @@
-OPENSHIFT-APP-DEV-DEMO
+# Openshift Appdev All in One Demo!
 
---- 
-What we want to achieve:
+The purpose of this repository is to provide you with a simple method to deploy and demo multiple components within the Red Hat Openshift Application development environment. Many of the components is integrated with each other tries to illustrate the full flow of components and how you might want to use them within a production environment.
 
-1. Demo Openshift GitOps by setting up the demo environment with it
-2. Demo Openshift Pipelines
-3. Demo Openshift Pipelines integrating to GitOps
-4. Demo Openshift Service Mesh
-5. Demo Openshift A/B application deployments
-6. Demo Openshift Serverless (Knative)
+Currently a shell script exists to prepare Openshift Local / Cloud Ready Containers. This will be expanded to work on Openshift Container Platform / Single Node Openshift.
+
+## What can we Demo Today
+
+ 1. Openshift GitOps - by setting up the demo environment
+ 2. Openshift Pipelines - Build our serverless applications
+ 3. Openshift Pipelines with GitOps - Deploy our serverless application with the pipeline syncing the GitOps application
+ 4. Demo Openshift Service Mesh
+ 5. Demo Openshift Serverless (Knative)
+
+## What will come in future
+
+ 1. A/B Deployments ( Other deployment models )
+ 2. 3Scale API Management
 
 
 

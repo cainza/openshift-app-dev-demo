@@ -222,7 +222,8 @@ crcClean(){
 startupOptions(){
     echo "No startup options specified. Valid options:"
     echo "============================================"
-    echo "* Set Up demo CRC: $0 setup"
+    echo "* Set Up demo CRC (Some Manual): $0 setup"
+    echo "* Set Up demo CRC (All Automated): $0 setup-all"
     echo "* Start CRC: $0 start"
     echo "* Stop CRC: $0 stop"
     echo "* Log into CRC with kubeadmin: $0 stop"
@@ -240,6 +241,31 @@ setupServerlessTekton(){
         echo "Create argocd Secret"
         oc create secret generic argocd-env-secret -n quarkus-superheroes-serverless --from-literal=ARGOCD_USERNAME=admin --from-literal=ARGOCD_PASSWORD=$(argocdPassword)
     fi
+
+}
+
+setupCRCAll(){
+
+    # Setup Initial
+    setupCRC
+
+    # Setup Tekton integration for OCP Serverless to openshift-gitops
+    setupServerlessTekton
+
+    # Wait for ArgoCD To install all the operators
+    getArgoCDDefaultSyncStatus
+
+    # Start syncing Service Mesh
+    argocdSyncServiceMesh
+    
+    # Start syncing Tekton
+    argocdSyncTekton
+    
+    # Start syncing Knative
+    argocdSyncKnative
+
+    # Show login Creds
+    crcCreds
 
 }
 
@@ -268,21 +294,6 @@ setupCRC(){
 
     # Install Gitops Operator
     deployGitOpsOperator
-
-    # Setup Tekton integration for OCP Serverless to openshift-gitops
-    setupServerlessTekton
-
-    # Wait for ArgoCD To install all the operators
-    getArgoCDDefaultSyncStatus
-
-    # Start syncing Service Mesh
-    argocdSyncServiceMesh
-    
-    # Start syncing Tekton
-    argocdSyncTekton
-    
-    # Start syncing Knative
-    argocdSyncKnative
 
     # Show login Creds
     crcCreds
@@ -318,6 +329,7 @@ crcCreds(){
 # Startup
 case "${1}" in
     setup)      setupCRC ;;
+    setup-all)      setupCRCAll ;;
     start)      crcStart ;;
     stop)       crcStop ;;
     login)      crcLogin ;;

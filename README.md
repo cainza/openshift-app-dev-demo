@@ -64,11 +64,15 @@ This can also be manually set in Openshift Local/Cloud Ready Containers by runni
 
 ## 1. Openshift GitOps/ArgoCD
 
-  
+  The initial script will deploy the GitOps operator and when ready deploys the cluster configs application. This Deployment will deploy multiple other Applications to GitOps, some of which would start syncing immediately, others that require a manual sync.
+
+  The applications that automatically sync is mainly for cluster operators that are dependencies for other Applications to be deployed. As an example the Service Mesh Operator requires ElasticSearch and Kiali Operators to be deployed before the service mesh can be created.
 
 ## 2. Openshift Pipelines/Tekton
 
-  
+  At this we use the quarkus superheroes github repository that can be found here: https://github.com/quarkusio/quarkus-super-heroes.git
+
+  The quarkus super heroes API features multiple microservices low resource requirements, thanks to Quarkus. Due to the microservices having interservices dependencies using REST they form an ideal candidate for Service Mesh coming later.
 
 ## 3. Openshift Pipelines triggers GitOps
 

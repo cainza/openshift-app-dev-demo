@@ -232,6 +232,29 @@ startupOptions(){
     exit 1
 }
 
+createSSLCerts(){
+
+    tempDirectory=$(mktemp)
+
+    echo "Temp Dir: $tempDirectory"
+
+    openssl req -x509 -sha256 -nodes -days 3650 -newkey rsa:2048 \
+        -subj '/O=CRC./CN=Testing' \
+        -keyout $tempDirectory/root.key \
+        -out $tempDirectory/root.crt
+
+    openssl req -nodes -newkey rsa:2048 \
+        -subj "/CN=*.apps-crc.testing/O=Example Inc." \
+        -keyout $tempDirectory/wildcard.key \
+        -out $tempDirectory/wildcard.csr
+
+    openssl x509 -req -days 3650 -set_serial 0 \
+        -CA $tempDirectory/root.crt \
+        -CAkey $tempDirectory/root.key \
+        -in $tempDirectory/wildcard.csr \
+        -out $tempDirectory/wildcard.crt
+}
+
 setupServerlessTekton(){
 
     if [ $(oc get project quarkus-superheroes-serverless --no-headers | wc -l) -eq 0 ]; then
@@ -324,6 +347,8 @@ crcCreds(){
     crc console --credentials
 
     argocdCreds
+
+    createSSLCerts
 }
 
 # Startup

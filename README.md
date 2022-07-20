@@ -16,14 +16,10 @@ Currently a shell script exists to prepare Openshift Local / Cloud Ready Contain
   
 
 1. Openshift GitOps - by setting up the demo environment
-
 2. Openshift Pipelines - Build our serverless applications
-
 3. Openshift Pipelines with GitOps - Deploy our serverless application with the pipeline syncing the GitOps application
-
-4. Demo Openshift Serverless (Knative)
-
-5. Demo Openshift Service Mesh
+4. Openshift Serverless (Knative Serving)
+5. Openshift Service Mesh
 
   
 
@@ -32,14 +28,13 @@ Currently a shell script exists to prepare Openshift Local / Cloud Ready Contain
   
 
 1. A/B Deployments ( Other deployment models )
-
 2. 3Scale API Management
+3. Openshift Serverless (Knative Eventing)
+4. Openshift Serverless (Functions)
+5. Openshift Serverless with Integration (CamelK)
 
   
-
 # Configuration & Requirements
-
-  
 
 This demo requires a minimum of 32GB RAM to run.
 

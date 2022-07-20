@@ -64,6 +64,13 @@ argocdPod(){
 
 argocdSyncServiceMesh(){
 
+    # Ensure the ServiceMeshControlPlane CR exists
+    while [ $(oc get CustomResourceDefinition | grep -i ServiceMeshControlPlanes | wc -l) -ne 1 ]; do         
+        echo "Waiting for the Service Mesh Control Plane CR API to become available";
+
+        sleep 5
+    done
+
     # Switch to argocd project
     oc project openshift-gitops
 
@@ -95,9 +102,7 @@ argocdSyncKnative(){
 
     # Switch to argocd project
     oc project openshift-gitops
-
-    # Get the ArgoCD pod
-    arcgocdPod=$(argocdPod)
+Total 5 (delta 4), reused 0 (delta 0), pack-reused 0
 
     # Log into ArgoCD Server
     oc rsh -c argocd-server $arcgocdPod argocd login openshift-gitops-server:443 --username=admin --password=$(argocdPassword) --insecure --config /tmp/.config/argocd/config
@@ -352,7 +357,7 @@ crcCreds(){
     crc console --credentials
 
     argocdCreds
-    
+
 }
 
 # Startup

@@ -86,6 +86,9 @@ argocdSyncServiceMesh(){
         
     done
 
+    # Create Wildcard certificate for Istio
+    createSSLCerts
+
 }
 
 argocdSyncKnative(){
@@ -234,7 +237,7 @@ startupOptions(){
 
 createSSLCerts(){
 
-    tempDirectory=$(mktemp)
+    tempDirectory=$(mktemp -d)
 
     echo "Temp Dir: $tempDirectory"
 
@@ -253,6 +256,8 @@ createSSLCerts(){
         -CAkey $tempDirectory/root.key \
         -in $tempDirectory/wildcard.csr \
         -out $tempDirectory/wildcard.crt
+
+    oc create -n istio-system secret tls wildcard-certs --key=$tempDirectory/wildcard.key --cert=$tempDirectory/wildcard.crt
 }
 
 setupServerlessTekton(){
@@ -347,8 +352,7 @@ crcCreds(){
     crc console --credentials
 
     argocdCreds
-
-    createSSLCerts
+    
 }
 
 # Startup

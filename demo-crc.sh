@@ -102,7 +102,6 @@ argocdSyncKnative(){
 
     # Switch to argocd project
     oc project openshift-gitops
-Total 5 (delta 4), reused 0 (delta 0), pack-reused 0
 
     # Log into ArgoCD Server
     oc rsh -c argocd-server $arcgocdPod argocd login openshift-gitops-server:443 --username=admin --password=$(argocdPassword) --insecure --config /tmp/.config/argocd/config
@@ -373,3 +372,9 @@ case "${1}" in
     "")         startupOptions ;;
     *)          startupOptions ;;
 esac
+
+
+# oc get apimanager/3scale -o json | jq .status.deployments.starting
+# Bug in tenant crd - creates multiple in 3scale
+
+# registry.redhat.io/3scale-amp2/toolbox-rhel8:3scale2.12

@@ -1,0 +1,6 @@
+---
+- debug:
+    msg: "Deploying Gitops Cluster Demo Application"
+
+- name: Deploying Openshift GitOps Operator
+  command: oc create -f cluster.yml -n openshift-gitops

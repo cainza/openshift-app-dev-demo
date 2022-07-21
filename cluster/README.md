@@ -8,7 +8,7 @@ Project: default
 Sync Policy: Manual
 
 Repository URL: https://github.com/cainza/openshift-app-dev-demo.git
-Revision: main
+Revision: development
 Path: cluster/openshift-operators
 
 Cluster URL: https://kubernetes.default.svc

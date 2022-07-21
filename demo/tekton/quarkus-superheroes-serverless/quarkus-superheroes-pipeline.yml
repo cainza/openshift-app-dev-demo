@@ -611,23 +611,6 @@ metadata:
   namespace: quarkus-superheroes-serverless
 spec:
   tasks:
-    - name: build-event-statistics
-      params:
-        - name: TKN_IMAGE
-          value: >-
-            registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8@sha256:4c0e850cdcf91a94a726be5e1fc1893be9b00e4210214dbef19bfc9240c13fa4
-        - name: SCRIPT
-          value: tkn $@
-        - name: ARGS
-          value:
-            - >-
-              pipeline start 02-event-statistics --workspace
-              name=shared-workspace-pvc,claimName=shared-workspace --workspace
-              name=maven-settings-cm,config=maven-settings-cm --workspace
-              name=mvn-cache-pvc,claimName=mvn-cache --showlog
-      taskRef:
-        kind: ClusterTask
-        name: tkn
     - name: rest-heroes
       params:
         - name: TKN_IMAGE
@@ -643,7 +626,7 @@ spec:
               name=maven-settings-cm,config=maven-settings-cm --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
       runAfter:
-        - prepare-maven
+        - build-event-statistics
       taskRef:
         kind: ClusterTask
         name: tkn
@@ -705,8 +688,41 @@ spec:
         kind: ClusterTask
         name: tkn
     - name: prepare-maven
+      params:
+        - name: TKN_IMAGE
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8@sha256:4c0e850cdcf91a94a726be5e1fc1893be9b00e4210214dbef19bfc9240c13fa4
+        - name: SCRIPT
+          value: tkn $@
+        - name: ARGS
+          value:
+            - >-
+              pipeline start 01-prepare-maven --workspace
+              name=shared-workspace-pvc,claimName=shared-workspace --workspace
+              name=maven-settings-cm,config=maven-settings-cm --workspace
+              name=mvn-cache-pvc,claimName=mvn-cache --showlog
+      #runAfter: []
+      taskRef:
+        kind: ClusterTask
+        name: tkn
+    - name: sync-quarkus-superheroes-serverless
+      params:
+        - name: application-name
+          value: 2-demo-quarkus-superheroes-serverless
+        - name: revision
+          value: HEAD
+        - name: flags
+          value: '--'
+        - name: argocd-version
+          value: v2.2.2
       runAfter:
-        - build-event-statistics
+        - ui-super-heroes
+      taskRef:
+        kind: ClusterTask
+        name: argocd-task-sync-and-wait
+    - name: build-event-statistics
+      runAfter:
+        - prepare-maven
       taskRef:
         kind: ClusterTask
         name: tkn
@@ -719,7 +735,7 @@ spec:
         - name: ARGS
           value:
             - >-
-              pipeline start 01-prepare-maven --workspace
+              pipeline start 02-event-statistics --workspace
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
               name=maven-settings-cm,config=maven-settings-cm --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog

@@ -1,34 +1,5 @@
 #!/bin/bash
 
-# Now in ansble
-#setCRCConfigs (){
-#    # Enable / Disable Telemetry to Red Hat
-#    crc config set consent-telemetry no
-
-#    # Enable / Disable Cluster Monitoring 
-#    # Enable only if you have enough memory, needs ~4G extra
-#    crc config set enable-cluster-monitoring false
-
-#    # Set CRC CPU's
-#    crc config set cpus 16
-
-#    # Set CRC Memory
-#    crc config set memory 20480
-
-#    # Set Disk Size, Thin Provisioned
-#    crc config set disk-size 250
-
-#    # Set Pull secret
-#    #crc config set pull-secret-file ~/.crc/pull-secret.txt
-
-#    # Show config
-#    crc config view
-
-#    # Set up CRC if needed
-#    crc setup
-#
-#}
-
 verifyGitOpsOperator(){
 
     echo "Verify GitOps Operator is running"
@@ -163,7 +134,6 @@ getArgoCDDefaultSyncStatus(){
 deployGitOpsOperator(){
     
     # Create Operator Subscription
-    #oc create -f openshift-gitops-operator.yaml
     ansible localhost -m include_role -a name=openshift-gitops
 
 
@@ -178,13 +148,6 @@ deployGitOpsOperator(){
 
 }
 
-createCRCPersistantStorage(){
-    # Attach secondary disk for persistant storage - Thin provisioned
-    # Create Disk
-    qemu-img create -f raw ~/.crc/vdb 100G
-    # Attach Disk
-    sudo virsh attach-disk crc ~/.crc/vdb vdb --cache none
-}
 
 crcLogin(){
     # Loging to CRC
@@ -223,11 +186,7 @@ crcStop(){
 }
 
 crcClean(){
-    crc stop
-    crc delete
-    #rm ~/.crc/vdb
-    rm ~/.crc/crc.log*
-    rm ~/.crc/crc.json
+    ansible localhost -m include_role -a name=crc-clean
 }
 
 startupOptions(){
@@ -320,9 +279,6 @@ setupCRC(){
 
     # Start CRC
     crc start
-
-    # Create & Attach Storage
-    #createCRCPersistantStorage
 
     # Check Uptime
     ssh -p 22 -i ~/.crc/machines/crc/id_ecdsa core@"$(crc ip)" uptime

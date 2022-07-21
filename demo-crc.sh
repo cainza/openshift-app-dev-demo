@@ -1,32 +1,33 @@
 #!/bin/bash
 
-setCRCConfigs (){
-    # Enable / Disable Telemetry to Red Hat
-    crc config set consent-telemetry no
+# Now in ansble
+#setCRCConfigs (){
+#    # Enable / Disable Telemetry to Red Hat
+#    crc config set consent-telemetry no
 
-    # Enable / Disable Cluster Monitoring 
-    # Enable only if you have enough memory, needs ~4G extra
-    crc config set enable-cluster-monitoring false
+#    # Enable / Disable Cluster Monitoring 
+#    # Enable only if you have enough memory, needs ~4G extra
+#    crc config set enable-cluster-monitoring false
 
-    # Set CRC CPU's
-    crc config set cpus 16
+#    # Set CRC CPU's
+#    crc config set cpus 16
 
-    # Set CRC Memory
-    crc config set memory 20480
+#    # Set CRC Memory
+#    crc config set memory 20480
 
-    # Set Disk Size, Thin Provisioned
-    crc config set disk-size 250
+#    # Set Disk Size, Thin Provisioned
+#    crc config set disk-size 250
 
-    # Set Pull secret
-    #crc config set pull-secret-file ~/.crc/pull-secret.txt
+#    # Set Pull secret
+#    #crc config set pull-secret-file ~/.crc/pull-secret.txt
 
-    # Show config
-    crc config view
+#    # Show config
+#    crc config view
 
-    # Set up CRC if needed
-    crc setup
-
-}
+#    # Set up CRC if needed
+#    crc setup
+#
+#}
 
 verifyGitOpsOperator(){
 
@@ -162,7 +163,9 @@ getArgoCDDefaultSyncStatus(){
 deployGitOpsOperator(){
     
     # Create Operator Subscription
-    oc create -f openshift-gitops-operator.yaml
+    #oc create -f openshift-gitops-operator.yaml
+    ansible localhost -m include_role -a name=openshift-gitops
+
 
     # Verify that GitOps is running
     verifyGitOpsOperator
@@ -171,7 +174,7 @@ deployGitOpsOperator(){
     #setupArgoCDPermissions
 
     # Create Initial Cluster GitOps Application
-    oc create -f cluster.yaml -n openshift-gitops
+    oc create -f cluster.yml -n openshift-gitops
 
 }
 
@@ -198,7 +201,8 @@ crcLogin(){
 crcStart(){
 
     # Ensure configs are correct
-    setCRCConfigs
+    #setCRCConfigs
+    ansible-playbook -i hosts demo-crc.yml
     
     # Start CRC
     crc start
@@ -310,7 +314,9 @@ setupCRC(){
     fi
 
     # Set CRC Configs
-    setCRCConfigs
+    #setCRCConfigs
+    ansible localhost -m include_role -a name=crc-config
+    ansible localhost -m include_role -a name=crc-setup
 
     # Start CRC
     crc start

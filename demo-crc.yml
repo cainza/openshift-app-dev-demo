@@ -5,5 +5,7 @@
   connection: local
   gather_facts: false
   roles:
-    - crc-config
-    - crc-setup
+    #- crc-config
+    #- crc-setup
+    #- openshift-gitops
+    #- cluster-demo

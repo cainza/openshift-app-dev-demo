@@ -136,7 +136,6 @@ deployGitOpsOperator(){
     # Create Operator Subscription
     ansible localhost -m include_role -a name=openshift-gitops
 
-
     # Verify that GitOps is running
     verifyGitOpsOperator
 
@@ -144,7 +143,7 @@ deployGitOpsOperator(){
     #setupArgoCDPermissions
 
     # Create Initial Cluster GitOps Application
-    oc create -f cluster.yml -n openshift-gitops
+    ansible localhost -m include_role -a name=cluster-demo
 
 }
 
@@ -154,12 +153,6 @@ crcLogin(){
     echo "Logging in..."
     $(crc console --credentials | awk -F"'" '$0=$2' | grep kubeadmin)
 }
-
-# Moved this to a argocd definition
-#setupArgoCDPermissions(){
-#    # Give ARGOCD cluster admin to CRC for demo purposes
-#    oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller
-#}
 
 crcStart(){
 
@@ -313,9 +306,7 @@ argocdCreds(){
 
 crcCreds(){
 
-    echo "CRC Console URL: $(oc get route -n openshift-console | grep ^console | awk '{ print $2 }')"
-
-    crc console --credentials
+   ansible localhost -m include_role -a name=crc-credentials
 
     argocdCreds
 

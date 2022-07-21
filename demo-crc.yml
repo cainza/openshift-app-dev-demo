@@ -1,0 +1,9 @@
+---
+# This playbook deploys demo for CRC.
+
+- hosts: crc
+  connection: local
+  gather_facts: false
+  roles:
+    - crc-config
+    - crc-setup

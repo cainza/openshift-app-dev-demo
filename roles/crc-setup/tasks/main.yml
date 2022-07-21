@@ -1,0 +1,10 @@
+---
+- debug:
+    msg: "Setting up CRC Environment"
+
+- name: Running crc setup
+  command: crc setup
+  register: crc_setup_output
+
+- debug:
+    var: crc_setup_output.stdout_lines

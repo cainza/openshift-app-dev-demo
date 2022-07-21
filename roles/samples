@@ -1,0 +1,2 @@
+- name: Wait for user to copy SSH public key   
+  pause: prompt="Please add the SSH public key above to your GitHub account"

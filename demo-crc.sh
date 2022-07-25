@@ -1,34 +1,35 @@
 #!/bin/bash
 
-verifyGitOpsOperator(){
+# Moved this to an ansible module
+#verifyGitOpsOperator(){
 
-    echo "Verify GitOps Operator is running"
+#    echo "Verify GitOps Operator is running"
     
 
-    while [ $(oc get po -n openshift-operators | grep gitops-operator-controller-manager | grep "1/1" | wc -l) -ne 1 ]; do 
-        echo "Waiting for Openshift GitOps Operator to be ready in openshift-gitops namespace";
+#    while [ $(oc get po -n openshift-operators | grep gitops-operator-controller-manager | grep "1/1" | wc -l) -ne 1 ]; do 
+#        echo "Waiting for Openshift GitOps Operator to be ready in openshift-gitops namespace";
 
-        sleep 5
-    done
+#        sleep 5
+#    done
 
-    echo -e "Waiting for GitOps Deployments to be available"
-    while [ $(oc get deployments -n openshift-gitops --no-headers | wc -l) -lt 7 ]; do
-        echo -e "."
-        sleep 5
-    done
+#    echo -e "Waiting for GitOps Deployments to be available"
+#    while [ $(oc get deployments -n openshift-gitops --no-headers | wc -l) -lt 7 ]; do
+#        echo -e "."
+#        sleep 5
+#    done
     
-    echo "Verify Gitops is running"
-    while [ $(oc get deployments -n openshift-gitops --no-headers | grep -v "1/1"  | wc -l) -ne 0 ]; do 
-        echo "Waiting for Openshift GitOps containers to be ready in openshift-gitops namespace";
+#    echo "Verify Gitops is running"
+#    while [ $(oc get deployments -n openshift-gitops --no-headers | grep -v "1/1"  | wc -l) -ne 0 ]; do 
+#        echo "Waiting for Openshift GitOps containers to be ready in openshift-gitops namespace";
 
-        oc get deployments -n openshift-gitops --no-headers | grep -v "1/1"
+#        oc get deployments -n openshift-gitops --no-headers | grep -v "1/1"
 
-        sleep 5
-    done
+#        sleep 5
+#    done
 
-    # Completed GitOps install
-    echo "GitOps install Completed"
-}
+#    # Completed GitOps install
+#    echo "GitOps install Completed"
+#}
 
 argocdPod(){
     echo $(oc get po | grep ^openshift-gitops-server | awk '{ print $1 }')

@@ -28,6 +28,12 @@ options:
     plural: Object Name of the Operator , required=False
     timeout: Timeout to wait for the Operator to Finish Installing, required=False
 
+author:
+    - Francis Viviers (@cainza)
+'''
+
+EXAMPLES = r'''
+
 To test this module:
 
 python library/monitor_operator_install.py /tmp/args.json
@@ -39,15 +45,11 @@ cat /tmp/args.json
     }
 }
 
-author:
-    - Francis Viviers (@cainza)
-'''
-
-EXAMPLES = r'''
-
 '''
 
 RETURN = r'''
+
+{"changed": true, "invocation": {"module_args": {"name": "openshift-gitops-operator", "namespace": "openshift-operators", "group": "operators.coreos.com", "version": "v1", "plural": "operators", "timeout": 600}}}
 
 '''
 
@@ -186,7 +188,6 @@ def run_module():
 
 def main():
     run_module()
-
 
 if __name__ == '__main__':
     main()

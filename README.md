@@ -96,3 +96,4 @@ https://developers.redhat.com/blog/2020/10/14/building-modern-ci-cd-workflows-fo
 
 # pip install kubernetes
 # ansible-galaxy collection install community.okd
+# ansible-galaxy collection install community.crypto

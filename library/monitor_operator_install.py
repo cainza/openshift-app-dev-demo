@@ -94,24 +94,38 @@ def verify_operator_subscription(name, namespace, group, version, plural, timeou
 
                 for k8s_response in api_response['status']['components']['refs']:
 
-                    if k8s_response['kind'] == "InstallPlan" and 'conditions' in k8s_response:
 
-                        # Find the install plan                        
-                        install_plan_name = k8s_response['name']
-
-                        # Ensure Install Plan is Status: Installed             
+                    if k8s_response['kind'] == "ClusterServiceVersion" and 'conditions' in k8s_response:
+                        
+                        # Ensure ClusterServiceVersion is Status: Installed             
                         for condition in k8s_response['conditions']:
-                            if condition['type'] == 'Installed':
+                            if condition['type'] == 'Succeeded':
                                 operator_installed = True
                                 break
+
+                        if operator_installed:
+                            break           
 
                     elif k8s_response['kind'] == "Subscription" and 'conditions' in k8s_response:
 
                         for condition in k8s_response['conditions']:
                             if condition['reason'] == 'Installing' or condition['type'] == 'InstallPlanPending':
                                 print ("Operator install still in progress")
+                    
+                    #elif k8s_response['kind'] == "InstallPlan" and 'conditions' in k8s_response:
+
+                    #    # Find the install plan                        
+                    #    install_plan_name = k8s_response['name']
+
+                    #    # Ensure Install Plan is Status: Installed             
+                    #    for condition in k8s_response['conditions']:
+                    #        if condition['type'] == 'Installed':
+                    #            operator_installed = True
+                    #            break
+
+                    
                 
-                if operator_installed == True:
+                if operator_installed:
                     print ("Operator Installed")
                     break
                 elif elapsed_time >= timeout:

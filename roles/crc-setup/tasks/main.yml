@@ -1,6 +1,6 @@
 ---
 - debug:
-    msg: "Setting up CRC Environment"
+  msg: "Setting up CRC Environment"
 
 - name: Running crc setup
   command: crc setup

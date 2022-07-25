@@ -2,9 +2,16 @@
 - debug:
     msg: "Deploying Gitops Operator"
 
-- name: Deploying Openshift GitOps Operator
-  command: oc create -f openshift-gitops-operator.yaml
+- name: Create Operator Subscription for Openshift GitOps Operator
+  community.okd.k8s:
+    state: present
+    src: openshift-gitops-operator.yaml
 
 # TODO Wait For CRD to be available
 # oc get po -n openshift-gitops ; oc get CustomResourceDefinition | grep Application -i
 #oc get gitopsservice -o yaml
+
+- name: Check if Operator Subscription has finished / Succeeded
+  monitor_operator_install:
+    name: openshift-gitops-operator
+    namespace: openshift-operators

@@ -1,0 +1,18 @@
+---
+
+- debug:
+    msg: "Deploying Gitops Cluster Demo Application"
+
+#- name: run the new module
+#  my_test:
+#    name: 'hello'
+#    new: true
+#  register: testout
+  
+#- name: dump test output
+#  debug:
+#    msg: '{{ testout }}'
+
+#- name: run the new module
+#  deploy_gitops_operator:
+#    channel: latest

@@ -1,0 +1,10 @@
+---
+- debug:
+    msg: "CRC UI & Login Credentials:"
+
+- name: Openshift UI URL
+  command: oc get route/console -n openshift-console --no-headers
+  # | grep ^console | awk '{ print $2 }')
+
+- name: Login Credentials
+  command: crc console --credentials

@@ -137,7 +137,7 @@ deployGitOpsOperator(){
     ansible localhost -m include_role -a name=openshift-gitops
 
     # Verify that GitOps is running
-    verifyGitOpsOperator
+    #verifyGitOpsOperator
 
     # Set Up ArgoCD Permissions - To be removed in future
     #setupArgoCDPermissions

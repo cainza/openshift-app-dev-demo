@@ -128,7 +128,6 @@ def verify_operator_subscription(name, namespace, group, version, plural, timeou
 
     return operator_installed
 
-
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(

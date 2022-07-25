@@ -6,7 +6,7 @@
   command: crc stop
 
 - name: Delete CRC Virtual Machine
-  command: crc delete
+  command: crc delete --force
 
 - name: Find CRC Log files
   find:

@@ -2,5 +2,10 @@
 - debug:
     msg: "Deploying Gitops Cluster Demo Application"
 
-- name: Deploying Openshift GitOps Operator
-  command: oc create -f cluster.yml -n openshift-gitops
+#- name: Deploying Openshift GitOps Operator
+#  command: oc create -f cluster.yml -n openshift-gitops
+
+- name: Create Cluster Demo Applications within Openshift GitOps Operator
+  community.okd.k8s:
+    state: present
+    src: cluster.yml

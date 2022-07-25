@@ -58,6 +58,7 @@ import kubernetes.config
 import kubernetes.client
 from kubernetes.client.rest import ApiException
 from pprint import pprint
+import time
 
 def verify_operator_subscription(name, namespace, group, version, plural, timeout ):
 
@@ -77,27 +78,47 @@ def verify_operator_subscription(name, namespace, group, version, plural, timeou
             # TODO needs to loop through installplan until installed
 
             operatorname = "%s.%s" % (name, namespace)
-
-            api_response = api_instance.get_cluster_custom_object(group, version, plural, operatorname)
             
-            # Itterate through operator status details
-            for k8s_response in api_response['status']['components']['refs']:
+            # Run until operator has become available
+            start_time = time.time() #  Start time
+            while True:
+
+                # Calculate the time spent to run
+                current_time = time.time()
+                elapsed_time = current_time - start_time
+
+                # Get / Refresh the object status
+                api_response = api_instance.get_cluster_custom_object(group, version, plural, operatorname)
+
+                for k8s_response in api_response['status']['components']['refs']:
+
+                    if k8s_response['kind'] == "InstallPlan" and 'conditions' in k8s_response:
+
+                        # Find the install plan                        
+                        install_plan_name = k8s_response['name']
+
+                        # Ensure Install Plan is Status: Installed             
+                        for condition in k8s_response['conditions']:
+                            if condition['type'] == 'Installed':
+                                operator_installed = True
+                                break
+
+                    elif k8s_response['kind'] == "Subscription" and 'conditions' in k8s_response:
+
+                        for condition in k8s_response['conditions']:
+                            if condition['reason'] == 'Installing' or condition['type'] == 'InstallPlanPending':
+                                print ("Operator install still in progress")
                 
-                # Find the install plan
-                if k8s_response['kind'] == "InstallPlan":
-                    print ("=======================")
-                    
-                    install_plan_name = k8s_response['name']
-
-                    for condition in k8s_response['conditions']:
-
-                        if condition['type'] == 'Installed':
-                            operator_installed = True
-            
-            # Check if install plan was found otherwise throw exceptions
-            if operator_installed == False:
-                print ("failed")
-                raise NameError("No install plan was found for Operator")
+                if operator_installed == True:
+                    print ("Operator Installed")
+                    break
+                elif elapsed_time >= timeout:
+                    print("Finished iterating in: " + str(int(elapsed_time))  + " seconds")
+                    #raise "Timeout waiting for Operator to become ready"
+                    break
+                
+                # Wait between attempts
+                time.sleep(5)
 
         except ApiException as e:
             print("Exception when calling CustomObjectsApi->get_cluster_custom_object: %s\n" % e)

@@ -7,9 +7,8 @@
     state: present
     src: openshift-gitops-operator.yaml
 
-# TODO Wait For CRD to be available
-# oc get po -n openshift-gitops ; oc get CustomResourceDefinition | grep Application -i
-#oc get gitopsservice -o yaml
+- debug:
+    msg: "Waiting for Gitops Operator to become ready"
 
 - name: Check if Operator Subscription has finished / Succeeded
   monitor_operator_install:

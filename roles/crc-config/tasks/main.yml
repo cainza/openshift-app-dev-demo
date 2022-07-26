@@ -1,4 +1,14 @@
 ---
+
+# Check if CRC is already set up
+#crc status
+#CRC VM:          Running
+#OpenShift:       Running (v4.10.22)
+#Podman:          
+#Disk Usage:      24.63GB of 267.9GB (Inside the CRC VM)
+#Cache Usage:     51.04GB
+#Cache Directory: /home/francis/.crc/cache
+
 - debug:
     msg: "Configuring CRC Environment"
 

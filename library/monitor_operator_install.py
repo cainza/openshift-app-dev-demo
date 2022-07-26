@@ -144,6 +144,20 @@ def verify_operator_subscription(name, namespace, group, version, plural, timeou
 
     return operator_installed
 
+def get_argocd_secret():
+
+    print ("debug")
+
+    kubernetes.config.load_kube_config()
+
+    # Enter a context with an instance of the API kubernetes.client
+    with kubernetes.client.ApiClient() as api_client:
+
+        print ("Busy with Secret")
+        # Create API Instance
+        #api_instance = kubernetes.client.CustomObjectsApi(api_client)    
+        #
+
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(

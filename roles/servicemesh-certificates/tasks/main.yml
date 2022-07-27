@@ -1,0 +1,6 @@
+---
+- debug:
+    msg: "Generate Service Mesh Certificates"
+
+# Change to use this 
+https://docs.ansible.com/ansible/latest/collections/community/crypto/docsite/guide_selfsigned.html

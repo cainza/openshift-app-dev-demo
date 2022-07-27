@@ -179,7 +179,6 @@ def run_module():
     # simple AnsibleModule.exit_json(), passing the key/value results
     module.exit_json(**result)
 
-
 def main():
     run_module()
 

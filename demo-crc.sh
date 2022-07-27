@@ -109,6 +109,9 @@ deployGitOpsOperator(){
     # Create Initial Cluster GitOps Application
     ansible localhost -m include_role -a name=cluster-demo
 
+    # Deploy GitOps CLI
+    ansible localhost -m include_role -a name=argocd-client-install
+
 }
 
 

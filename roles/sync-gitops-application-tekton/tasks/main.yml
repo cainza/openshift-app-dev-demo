@@ -1,0 +1,10 @@
+---
+- debug:
+    msg: "Sync Tekton GitOps Application"
+
+- sync_gitops_application:
+    namespace: openshift-gitops
+    secret: openshift-gitops-cluster
+    url: openshift-gitops-server-openshift-gitops.apps-crc.testing
+    port: 443
+    application: 2-demo-quarkus-superheroes-tekton

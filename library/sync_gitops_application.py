@@ -36,12 +36,15 @@ EXAMPLES = r'''
 
 To test this module:
 
-python library/monitor_operator_install.py /tmp/args.json
+python library/sync_gitops_application.py /tmp/args.json
 cat /tmp/args.json 
 {
     "ANSIBLE_MODULE_ARGS": {
-        "name": "openshift-gitops-operator",
-        "namespace": "openshift-operators"
+        "secret": "openshift-gitops-cluster",
+        "namespace": "openshift-gitops",
+        "url": "openshift-gitops-server-openshift-gitops.apps-crc.testing",
+        "port": "443",
+        "application": ""
     }
 }
 
@@ -62,6 +65,8 @@ from kubernetes.client.rest import ApiException
 from pprint import pprint
 import time
 from base64 import b64decode
+import tempfile
+import os
 
 def get_argocd_admin_password_secret(name, namespace):
 
@@ -113,25 +118,57 @@ def get_argocd_pod(namespace):
 
         return False
 
-def sync_monitor_application(namespace, secret):
+def argocd_login(argocd_config, url, port, password):
+
+    exit_code = os.system("argocd login %s:%s --username=admin --password=%s --insecure --config %s" % (url, port, password, argocd_config))
+
+    if exit_code != 0:
+        return False
+    
+    return True
+
+
+
+def sync_gitops_application(namespace, secret, gitops_url, gitops_port, application):
 
     print ("Sync APP")
-    print ("Gitops Secret (openshift-gitops-cluster): %s" % secret)
-    print ("Gitops namespace (openshift-gitops): %s" % namespace)
 
-    gitops_password = get_argocd_admin_password_secret('openshift-gitops-cluster', 'openshift-gitops')
-
-    print ("GitOps Password: %s" % gitops_password)
-
-    gitops_pod = get_argocd_pod(namespace)
+    # Get Gitops Password - Byte encoded by default
+    gitops_password_encoded = get_argocd_admin_password_secret('openshift-gitops-cluster', 'openshift-gitops')
     
-    print ("GitOps POD: %s" % gitops_pod)
+    # Decode GitOps Password
+    gitops_password = gitops_password_encoded.decode()
+
+    #gitops_pod = get_argocd_pod(namespace)
+
+    # Create Temporary Directory for ArgoCD Credentials
+    argocd_tempdir = tempfile.mkdtemp()
+    argocd_config = "%s/config" % argocd_tempdir
+
+    # Log into Gitops
+    login = argocd_login(argocd_config, gitops_url, gitops_port, gitops_password)
+
+    if not login:
+        print ("Login Failed")
+        return login
+
+    print ("argocd app list --config %s" % (argocd_config))
+
+    sync_exit_code = os.system("argocd --config %s app sync %s" % (argocd_config, application) )
+
+    if sync_exit_code != 0:
+        return False
+
+    return True
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(    
-        gitops_namespace=dict(type='str', required=True), # str | 
-        secret_name=dict(type='str', required=False, default="openshift-gitops-cluster") # str | Gitops Admin password
+        namespace=dict(type='str', required=True), # str | 
+        secret=dict(type='str', required=False, default="openshift-gitops-cluster"), # str | Gitops Admin password
+        url=dict(type='str', required=False, default="openshift-gitops-server"), # str | Gitops URL
+        port=dict(type='str', required=False, default="443"), # str | Gitops Port
+        application=dict(type='str', required=True) # str | GitOps Application to sync
     )
 
     # seed the result dict in the object
@@ -153,9 +190,7 @@ def run_module():
     )
 
     # Generate the subscription
-    #gitops_password = get_argocd_admin_password_secret('openshift-gitops-cluster', 'openshift-gitops')
-    # gitops_password = get_argocd_admin_password_secret(module.params['secret_name'], module.params['gitops_namespace'])
-    subscription = sync_monitor_application(module.params['gitops_namespace'], module.params['secret_name'])
+    sync_status = sync_gitops_application(module.params['namespace'], module.params['secret'],module.params['url'],module.params['port'], module.params['application'])
 
     # if the user is working with this module in only check mode we do not
     # want to make any changes to the environment, just return the current
@@ -165,15 +200,13 @@ def run_module():
 
     # manipulate or modify the state as needed (this is going to be the
     # part where your module will do what it needs to do)
-    #result['channel'] = module.params['channel']
-    #result['message'] = 'goodbye'
-    result['changed'] = subscription
+    result['changed'] = sync_status
 
     # during the execution of the module, if there is an exception or a
     # conditional state that effectively causes a failure, run
     # AnsibleModule.fail_json() to pass in the message and the result
     if result['changed'] == False:
-        module.fail_json(msg='Operator install not found or valid', **result)
+        module.fail_json(msg='GitOps Appplication could not be synced', **result)
 
     # in the event of a successful module execution, you will want to
     # simple AnsibleModule.exit_json(), passing the key/value results

@@ -6,6 +6,11 @@ argocdPod(){
 
 argocdSyncServiceMesh(){
 
+    # Switch to argocd project
+    oc project openshift-gitops
+    
+    ansible localhost -m include_role -a name=sync-gitops-application-servicemesh
+
     # Ensure the ServiceMeshControlPlane CR exists
     while [ $(oc get CustomResourceDefinition | grep -i ServiceMeshControlPlanes | wc -l) -ne 1 ]; do         
         echo "Waiting for the Service Mesh Control Plane CR API to become available";
@@ -13,17 +18,8 @@ argocdSyncServiceMesh(){
         sleep 5
     done
 
-    # Switch to argocd project
-    oc project openshift-gitops
 
-    # Get the ArgoCD pod
-    arcgocdPod=$(argocdPod)
 
-    # Log into ArgoCD Server
-    oc rsh -c argocd-server $arcgocdPod argocd login openshift-gitops-server:443 --username=admin --password=$(argocdPassword) --insecure --config /tmp/.config/argocd/config
-
-    # Start the ArgoCD Sync
-    oc rsh -c argocd-server $arcgocdPod argocd --config /tmp/.config/argocd/config app sync 1-istio-controlplane
 
     # Wait for the Service Mesh to become Ready
     while [ $(oc get ServiceMeshControlPlane -n istio-system --no-headers | grep ComponentsReady | wc -l) -ne 1 ]; do
@@ -45,11 +41,7 @@ argocdSyncKnative(){
     # Switch to argocd project
     oc project openshift-gitops
 
-    # Log into ArgoCD Server
-    oc rsh -c argocd-server $arcgocdPod argocd login openshift-gitops-server:443 --username=admin --password=$(argocdPassword) --insecure --config /tmp/.config/argocd/config
-
-    # Start the ArgoCD Sync
-    oc rsh -c argocd-server $arcgocdPod argocd --config /tmp/.config/argocd/config app sync 1-knative
+    ansible localhost -m include_role -a name=sync-gitops-application-knative
 
     # Wait for the Service Mesh to become Ready
     while [ $(oc get KnativeServing/knative-serving -n knative-serving --no-headers | grep True | wc -l) -ne 1 ]; do
@@ -65,17 +57,19 @@ argocdSyncKnative(){
 
 argocdSyncTekton(){
 
+    ansible localhost -m include_role -a name=sync-gitops-application-tekton
+
     # Switch to argocd project
-    oc project openshift-gitops
+    #oc project openshift-gitops
 
     # Get the ArgoCD pod
-    arcgocdPod=$(argocdPod)
+    #arcgocdPod=$(argocdPod)
 
     # Log into ArgoCD Server
-    oc rsh -c argocd-server $arcgocdPod argocd login openshift-gitops-server:443 --username=admin --password=$(argocdPassword) --insecure --config /tmp/.config/argocd/config
+    #oc rsh -c argocd-server $arcgocdPod argocd login openshift-gitops-server:443 --username=admin --password=$(argocdPassword) --insecure --config /tmp/.config/argocd/config
 
     # Start the ArgoCD Sync
-    oc rsh -c argocd-server $arcgocdPod argocd --config /tmp/.config/argocd/config app sync 2-demo-quarkus-superheroes-tekton
+    #oc rsh -c argocd-server $arcgocdPod argocd --config /tmp/.config/argocd/config app sync 2-demo-quarkus-superheroes-tekton
 }
 
 getArgoCDDefaultSyncStatus(){
@@ -106,11 +100,11 @@ deployGitOpsOperator(){
     # Create Operator Subscription
     ansible localhost -m include_role -a name=openshift-gitops
 
-    # Create Initial Cluster GitOps Application
-    ansible localhost -m include_role -a name=cluster-demo
-
     # Deploy GitOps CLI
     ansible localhost -m include_role -a name=argocd-client-install
+
+    # Create Initial Cluster GitOps Application
+    ansible localhost -m include_role -a name=cluster-demo
 
 }
 
@@ -277,6 +271,9 @@ crcCreds(){
     argocdCreds
 
 }
+
+# Include ansible libraries we wrote
+export ANSIBLE_LIBRARY=./library
 
 # Startup
 case "${1}" in

@@ -56,20 +56,7 @@ argocdSyncKnative(){
 }
 
 argocdSyncTekton(){
-
     ansible localhost -m include_role -a name=sync-gitops-application-tekton
-
-    # Switch to argocd project
-    #oc project openshift-gitops
-
-    # Get the ArgoCD pod
-    #arcgocdPod=$(argocdPod)
-
-    # Log into ArgoCD Server
-    #oc rsh -c argocd-server $arcgocdPod argocd login openshift-gitops-server:443 --username=admin --password=$(argocdPassword) --insecure --config /tmp/.config/argocd/config
-
-    # Start the ArgoCD Sync
-    #oc rsh -c argocd-server $arcgocdPod argocd --config /tmp/.config/argocd/config app sync 2-demo-quarkus-superheroes-tekton
 }
 
 getArgoCDDefaultSyncStatus(){

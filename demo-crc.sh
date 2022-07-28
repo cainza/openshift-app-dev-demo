@@ -11,31 +11,6 @@ argocdSyncServiceMesh(){
     
     ansible localhost -m include_role -a name=sync-gitops-application-servicemesh
 
-    # This moved to our ansible module
-    # Ensure the ServiceMeshControlPlane CR exists
-    #while [ $(oc get CustomResourceDefinition | grep -i ServiceMeshControlPlanes | wc -l) -ne 1 ]; do         
-    #    echo "Waiting for the Service Mesh Control Plane CR API to become available";
-
-    #    sleep 5
-    #done
-
-    # Wait for the Service Mesh to become Ready
-    #while [ $(oc get ServiceMeshControlPlane -n istio-system --no-headers | grep ComponentsReady | wc -l) -ne 1 ]; do
-    #    echo -e "\n\nWaiting for service mesh to become ready:\n"
-
-    #    oc get ServiceMeshControlPlane -n istio-system --no-headers
-
-    #    sleep 5
-
-        #     - lastTransitionTime: "2022-07-27T11:24:00Z"
-        # message: All component deployments are Available
-        # reason: ComponentsReady
-        # status: "True"
-        # type: Ready
-
-        
-    #done
-
     # Create Wildcard certificate for Istio
     createSSLCerts
 
@@ -47,17 +22,6 @@ argocdSyncKnative(){
     oc project openshift-gitops
 
     ansible localhost -m include_role -a name=sync-gitops-application-knative-serving
-
-    # This moved to our ansible module
-    # Wait for the Service Mesh to become Ready
-    #while [ $(oc get KnativeServing/knative-serving -n knative-serving --no-headers | grep True | wc -l) -ne 1 ]; do
-    #    echo -e "\n\nWaiting for Knative to become ready:\n"
-
-    #    oc get KnativeServing/knative-serving -n knative-serving --no-headers
-
-    #    sleep 5
-        
-    #done
 
 }
 
@@ -240,13 +204,6 @@ setupCRC(){
 
 }
 
-crcDebug(){
-
-    # Echo Remove this debug stage. This is for testing new features at this point
-    deployGitOpsOperator
-
-}
-
 argocdPassword(){
     echo "$(oc get secret/openshift-gitops-cluster -n openshift-gitops -o yaml | grep "admin.password" | head -n1 | awk '{ print $2 }' | base64 --decode)"
 }
@@ -259,7 +216,7 @@ argocdCreds(){
 
 crcCreds(){
 
-   ansible localhost -m include_role -a name=crc-credentials
+    ansible localhost -m include_role -a name=crc-credentials
 
     argocdCreds
 

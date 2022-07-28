@@ -1,0 +1,21 @@
+---
+- debug:
+    msg: "Sync Knative GitOps Application"
+
+- sync_gitops_application:
+    namespace: openshift-gitops
+    secret: openshift-gitops-cluster
+    url: openshift-gitops-server-openshift-gitops.apps-crc.testing
+    port: 443
+    application: 1-knative
+
+- debug:
+    msg: "Monitoring Knative Serving to Become Ready"
+
+- monitor_operator_custom_resource:
+    name: basic
+    namespace: istio-system
+    group: maistra.io
+    version: v2
+    plural: servicemeshcontrolplanes
+

@@ -3,7 +3,10 @@
     msg: "Cleaning up CRC Environment"
 
 - name: Stopping CRC
-  command: crc stop
+  command: crc stop --force
+  register: result_stop
+  failed_when: "'does not exist' in command_result.stderr"
+  #ignore_errors: yes
 
 - name: Delete CRC Virtual Machine
   command: crc delete --force

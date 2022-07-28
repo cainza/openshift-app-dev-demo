@@ -1,5 +1,37 @@
 ---
 - debug:
+    msg: "Monitor Kiali operator is installed"
+
+- name: Check if Kiali Operator is installed
+  monitor_operator_install:
+    name: kiali-ossm
+    namespace: openshift-operators
+
+- debug:
+    msg: "Elasticsearch operator is installed"
+
+- name: Check if Elasticsearch Operator is installed
+  monitor_operator_install:
+    name: elasticsearch-operator
+    namespace: openshift-operators-redhat
+
+- debug:
+    msg: "Monitor Jaeger operator is installed"
+
+- name: Check if Jaeger Operator is installed
+  monitor_operator_install:
+    name: jaeger-product
+    namespace: openshift-distributed-tracing
+
+- debug:
+    msg: "Monitor service mesh operator is installed"
+
+- name: Check if Service Mesh Operator is installed
+  monitor_operator_install:
+    name: servicemeshoperator
+    namespace: openshift-operators
+
+- debug:
     msg: "Sync Service Mesh GitOps Application"
 
 - sync_gitops_application:
@@ -12,9 +44,4 @@
 - debug:
     msg: "Monitoring Service Mesh to Become Ready"
 
-- monitor_operator_custom_resource:
-    name: basic
-    namespace: istio-system
-    group: maistra.io
-    version: v2
-    plural: servicemeshcontrolplanes
+

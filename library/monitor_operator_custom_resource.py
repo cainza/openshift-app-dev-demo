@@ -98,7 +98,7 @@ def monitor_operator_custom_resource(name, namespace, group, version, plural, ti
 
                 for k8s_response in api_response['items']:
 
-                    if k8s_response['metadata']['name'] == name and k8s_response['metadata']['namespace'] == namespace :
+                    if k8s_response['metadata']['name'] == name and k8s_response['metadata']['namespace'] == namespace and "status" in k8s_response:
 
                         # Loop through conditions
                         for condition in k8s_response['status']['conditions']:

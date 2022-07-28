@@ -151,7 +151,7 @@ def sync_gitops_application(namespace, secret, gitops_url, gitops_port, applicat
         print ("Login Failed")
         return login
 
-    print ("argocd app list --config %s" % (argocd_config))
+    #print ("argocd app list --config %s" % (argocd_config))
 
     sync_exit_code = os.system("argocd --config %s app sync %s" % (argocd_config, application) )
 

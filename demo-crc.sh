@@ -28,6 +28,13 @@ argocdSyncServiceMesh(){
         oc get ServiceMeshControlPlane -n istio-system --no-headers
 
         sleep 5
+
+        #     - lastTransitionTime: "2022-07-27T11:24:00Z"
+        # message: All component deployments are Available
+        # reason: ComponentsReady
+        # status: "True"
+        # type: Ready
+
         
     done
 

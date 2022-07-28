@@ -8,3 +8,6 @@
     url: openshift-gitops-server-openshift-gitops.apps-crc.testing
     port: 443
     application: 1-istio-controlplane
+
+- custom_resource_deployment:
+    

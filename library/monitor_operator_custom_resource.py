@@ -18,15 +18,14 @@ short_description: Module that installs gitops Operator and Waits for it to beco
 # i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "1.0.0"
 
-description: Monifor Operator Install Success
+description: Monifor Operator CRD Success
 
 options:
-    name: Name of the operator , required=True
-    namespace: Namespace of the Operator, required=True
-    group: API Group of the Operator, required=False
-    version: API Version of the Operator, required=False
-    plural: Object Name of the Operator , required=False
-    timeout: Timeout to wait for the Operator to Finish Installing, required=False
+    name: Name of the CR , required=True
+    namespace: Namespace of the CR, required=True
+    group: API Group of the CR, required=False
+    version: API Version of the CR, required=False
+    plural: Object Name of the CR , required=False
 
 author:
     - Francis Viviers (@cainza)
@@ -36,12 +35,15 @@ EXAMPLES = r'''
 
 To test this module:
 
-python library/monitor_operator_install.py /tmp/args.json
+python library/monitor_operator_custom_resource.py /tmp/args.json
 cat /tmp/args.json 
 {
     "ANSIBLE_MODULE_ARGS": {
-        "name": "openshift-gitops-operator",
-        "namespace": "openshift-operators"
+        "name": "basic",
+        "namespace": "openshift-operators",
+        "group": "maistra.io",
+        "version": "v2",
+        "plural": "servicemeshcontrolplanes"
     }
 }
 
@@ -62,7 +64,7 @@ from kubernetes.client.rest import ApiException
 from pprint import pprint
 import time
 
-def verify_operator_subscription(name, namespace, group, version, plural, timeout ):
+def monitor_operator_custom_resource(name, namespace, group, version, plural, timeout ):
 
     kubernetes.config.load_kube_config()
 
@@ -77,7 +79,11 @@ def verify_operator_subscription(name, namespace, group, version, plural, timeou
 
         try:
 
-            operatorname = "%s.%s" % (name, namespace)
+            #operatorname = "%s.%s" % (name, namespace)
+            operatorname = ""
+
+            # Operator installed status
+            operator_installed = False
             
             # Run until operator has become available
             start_time = time.time() #  Start time
@@ -90,34 +96,26 @@ def verify_operator_subscription(name, namespace, group, version, plural, timeou
                 # Get / Refresh the object status
                 api_response = api_instance.get_cluster_custom_object(group, version, plural, operatorname)
 
-                for k8s_response in api_response['status']['components']['refs']:
+                for k8s_response in api_response['items']:
 
+                    if k8s_response['metadata']['name'] == name:
 
-                    if k8s_response['kind'] == "ClusterServiceVersion" and 'conditions' in k8s_response:
-                        
-                        # Ensure ClusterServiceVersion is Status: Installed             
-                        for condition in k8s_response['conditions']:
-                            if condition['type'] == 'Succeeded':
+                        # Loop through conditions
+                        for condition in k8s_response['status']['conditions']:
+
+                            # Check if Ready status is True
+                            if condition['type'] == 'Ready' and condition['status'] == "True":
                                 operator_installed = True
                                 break
-
-                        if operator_installed:
-                            break           
-
-                    elif k8s_response['kind'] == "Subscription" and 'conditions' in k8s_response:
-
-                        for condition in k8s_response['conditions']:
-                            if condition['reason'] == 'Installing' or condition['type'] == 'InstallPlanPending':
-                                print ("Operator install still in progress")
-                              
+                    
                 if operator_installed:
-                    print ("Operator Installed")
+                    print ("Custom resource deploment finished")
                     break
                 elif elapsed_time >= timeout:
                     print("Finished iterating in: " + str(int(elapsed_time))  + " seconds")
-                    #raise "Timeout waiting for Operator to become ready"
+                    raise "Timeout waiting for Custom resource to become available"
                     break
-                
+
                 # Wait between attempts
                 time.sleep(5)
 
@@ -128,20 +126,6 @@ def verify_operator_subscription(name, namespace, group, version, plural, timeou
             print ("%s" % e)
 
     return operator_installed
-
-def get_argocd_secret():
-
-    print ("debug")
-
-    kubernetes.config.load_kube_config()
-
-    # Enter a context with an instance of the API kubernetes.client
-    with kubernetes.client.ApiClient() as api_client:
-
-        print ("Busy with Secret")
-        # Create API Instance
-        #api_instance = kubernetes.client.CustomObjectsApi(api_client)    
-        #
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
@@ -172,8 +156,8 @@ def run_module():
         supports_check_mode=True
     )
 
-    # Generate the subscription
-    subscription = verify_operator_subscription(module.params['name'], module.params['namespace'], module.params['group'], module.params['version'
+    # Generate the deployment
+    custom_resource_deployment = monitor_operator_custom_resource(module.params['name'], module.params['namespace'], module.params['group'], module.params['version'
     ], module.params['plural'], module.params['timeout'])
 
     # if the user is working with this module in only check mode we do not
@@ -186,7 +170,7 @@ def run_module():
     # part where your module will do what it needs to do)
     #result['channel'] = module.params['channel']
     #result['message'] = 'goodbye'
-    result['changed'] = subscription
+    result['changed'] = custom_resource_deployment
 
     # during the execution of the module, if there is an exception or a
     # conditional state that effectively causes a failure, run

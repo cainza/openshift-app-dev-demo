@@ -26,7 +26,6 @@ with kubernetes.client.ApiClient() as api_client:
     plural = 'operators' # str | the custom resource's plural name. For TPRs this would be lowercase plural kind.
     name = 'openshift-gitops-operator.openshift-operators' # str | the custom object's name
 
-
     try:
         #api_response = api_instance.get_namespaced_custom_object(group, version, namespace, plural, name)
         #pprint(api_response)
@@ -35,7 +34,6 @@ with kubernetes.client.ApiClient() as api_client:
 
         #print (api_response)
 
-        
         api_response = api_instance.get_cluster_custom_object(group, version, plural, name)
 
         pprint (api_response)

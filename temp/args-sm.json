@@ -1,0 +1,9 @@
+{
+    "ANSIBLE_MODULE_ARGS": {
+        "name": "basic",
+        "namespace": "openshift-operators",
+        "group": "maistra.io",
+        "version": "v2",
+        "plural": "servicemeshcontrolplanes"
+    }
+}

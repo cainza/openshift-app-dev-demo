@@ -21,12 +21,11 @@ version_added: "1.0.0"
 description: Monifor Operator Install Success
 
 options:
-    name: Name of the operator , required=True
-    namespace: Namespace of the Operator, required=True
-    group: API Group of the Operator, required=False
-    version: API Version of the Operator, required=False
-    plural: Object Name of the Operator , required=False
-    timeout: Timeout to wait for the Operator to Finish Installing, required=False
+    secret: Secret contianing the Gitops Admin password
+    namespace: Namespace GitOps Operator
+    url: URL where GitOps is running
+    port: Port on which GitOps is running/exposed
+    application: Application within GitOps to sync
 
 author:
     - Francis Viviers (@cainza)
@@ -44,7 +43,7 @@ cat /tmp/args.json
         "namespace": "openshift-gitops",
         "url": "openshift-gitops-server-openshift-gitops.apps-crc.testing",
         "port": "443",
-        "application": ""
+        "application": "my-application"
     }
 }
 

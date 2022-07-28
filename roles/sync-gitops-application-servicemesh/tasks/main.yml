@@ -9,5 +9,13 @@
     port: 443
     application: 1-istio-controlplane
 
-- custom_resource_deployment:
-    
+- debug:
+    msg: "Monitoring Service Mesh to Become Ready"
+
+- monitor_operator_custom_resource:
+    name: basic
+    namespace: istio-system
+    group: maistra.io
+    version: v2
+    plural: servicemeshcontrolplanes
+

@@ -5,9 +5,6 @@ argocdPod(){
 }
 
 argocdSyncServiceMesh(){
-
-    # Switch to argocd project
-    oc project openshift-gitops
     
     ansible localhost -m include_role -a name=sync-gitops-application-servicemesh
 

@@ -104,7 +104,7 @@ def monitor_operator_custom_resource(name, namespace, group, version, plural, ti
                         for condition in k8s_response['status']['conditions']:
 
                             # Check if Ready status is True
-                            if condition['type'] == 'Ready' and condition['status'] == "True":
+                            if ( "type" in condition and "status" in condition ) and  (condition['type'] == 'Ready' and condition['status'] == "True"):
                                 operator_installed = True
                                 break
                     

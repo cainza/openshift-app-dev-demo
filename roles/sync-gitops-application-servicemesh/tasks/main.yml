@@ -13,9 +13,9 @@
     msg: "Monitoring Service Mesh to Become Ready"
 
 - monitor_operator_custom_resource:
-    name: basic
-    namespace: istio-system
-    group: maistra.io
-    version: v2
-    plural: servicemeshcontrolplanes
+    name: knative-serving
+    namespace: knative-serving
+    group: operator.knative.dev
+    version: v1alpha1
+    plural: knativeservings
 

@@ -11,23 +11,21 @@ argocdSyncServiceMesh(){
     
     ansible localhost -m include_role -a name=sync-gitops-application-servicemesh
 
+    # This moved to our ansible module
     # Ensure the ServiceMeshControlPlane CR exists
-    while [ $(oc get CustomResourceDefinition | grep -i ServiceMeshControlPlanes | wc -l) -ne 1 ]; do         
-        echo "Waiting for the Service Mesh Control Plane CR API to become available";
+    #while [ $(oc get CustomResourceDefinition | grep -i ServiceMeshControlPlanes | wc -l) -ne 1 ]; do         
+    #    echo "Waiting for the Service Mesh Control Plane CR API to become available";
 
-        sleep 5
-    done
-
-
-
+    #    sleep 5
+    #done
 
     # Wait for the Service Mesh to become Ready
-    while [ $(oc get ServiceMeshControlPlane -n istio-system --no-headers | grep ComponentsReady | wc -l) -ne 1 ]; do
-        echo -e "\n\nWaiting for service mesh to become ready:\n"
+    #while [ $(oc get ServiceMeshControlPlane -n istio-system --no-headers | grep ComponentsReady | wc -l) -ne 1 ]; do
+    #    echo -e "\n\nWaiting for service mesh to become ready:\n"
 
-        oc get ServiceMeshControlPlane -n istio-system --no-headers
+    #    oc get ServiceMeshControlPlane -n istio-system --no-headers
 
-        sleep 5
+    #    sleep 5
 
         #     - lastTransitionTime: "2022-07-27T11:24:00Z"
         # message: All component deployments are Available
@@ -36,7 +34,7 @@ argocdSyncServiceMesh(){
         # type: Ready
 
         
-    done
+    #done
 
     # Create Wildcard certificate for Istio
     createSSLCerts
@@ -48,17 +46,18 @@ argocdSyncKnative(){
     # Switch to argocd project
     oc project openshift-gitops
 
-    ansible localhost -m include_role -a name=sync-gitops-application-knative
+    ansible localhost -m include_role -a name=sync-gitops-application-knative-serving
 
+    # This moved to our ansible module
     # Wait for the Service Mesh to become Ready
-    while [ $(oc get KnativeServing/knative-serving -n knative-serving --no-headers | grep True | wc -l) -ne 1 ]; do
-        echo -e "\n\nWaiting for Knative to become ready:\n"
+    #while [ $(oc get KnativeServing/knative-serving -n knative-serving --no-headers | grep True | wc -l) -ne 1 ]; do
+    #    echo -e "\n\nWaiting for Knative to become ready:\n"
 
-        oc get KnativeServing/knative-serving -n knative-serving --no-headers
+    #    oc get KnativeServing/knative-serving -n knative-serving --no-headers
 
-        sleep 5
+    #    sleep 5
         
-    done
+    #done
 
 }
 

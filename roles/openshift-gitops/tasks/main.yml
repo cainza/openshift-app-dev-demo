@@ -14,3 +14,15 @@
   monitor_operator_install:
     name: openshift-gitops-operator
     namespace: openshift-operators
+
+- debug:
+    msg: "Monitoring ArgoCD to Become Ready"
+
+- monitor_operator_custom_resource:
+    name: openshift-gitops
+    namespace: openshift-gitops
+    group: argoproj.io
+    version: v1alpha1
+    plural: argocds
+    custom_ready_key: phase
+    custom_ready_value: Available

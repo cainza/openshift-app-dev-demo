@@ -1,9 +1,6 @@
 {
     "ANSIBLE_MODULE_ARGS": {
-        "name": "basic",
-        "namespace": "istio-system",
-        "group": "maistra.io",
-        "version": "v2",
-        "plural": "servicemeshcontrolplanes"
+        "name": "openshift-gitops-operator",
+        "namespace": "openshift-operators"
     }
 }

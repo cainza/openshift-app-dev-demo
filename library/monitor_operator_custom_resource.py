@@ -64,7 +64,7 @@ from kubernetes.client.rest import ApiException
 from pprint import pprint
 import time
 
-def monitor_operator_custom_resource(name, namespace, group, version, plural, timeout ):
+def monitor_operator_custom_resource(name, namespace, group, version, plural, timeout, custom_ready_key, custom_ready_value ):
 
     kubernetes.config.load_kube_config()
 
@@ -100,13 +100,27 @@ def monitor_operator_custom_resource(name, namespace, group, version, plural, ti
 
                     if k8s_response['metadata']['name'] == name and k8s_response['metadata']['namespace'] == namespace and "status" in k8s_response:
 
-                        # Loop through conditions
-                        for condition in k8s_response['status']['conditions']:
+                        # Check if we can measure based on conditions
+                        if 'conditions' in k8s_response['status']:
+                            # Loop through conditions
+                            for condition in k8s_response['status']['conditions']:
 
-                            # Check if Ready status is True
-                            if ( "type" in condition and "status" in condition ) and  (condition['type'] == 'Ready' and condition['status'] == "True"):
+                                # Check if Ready status is True
+                                if ( "type" in condition and "status" in condition ) and  (condition['type'] == 'Ready' and condition['status'] == "True"):
+                                    operator_installed = True
+                                    break
+                        else:
+                            
+                            print ("Using non standard custom resource check")
+                            print ("Custom Ready Key: %s" % custom_ready_key)
+                            print ("Custom Ready Value %s" % custom_ready_value)
+  
+                            if custom_ready_key in k8s_response['status']:
                                 operator_installed = True
-                                break
+                                print (k8s_response['status'][custom_ready_key])
+                            
+                            else:
+                                raise "Custom Ready Key does not exist in status"
                     
                 if operator_installed:
                     print ("Custom resource deploment finished")
@@ -135,7 +149,9 @@ def run_module():
         group=dict(type='str', required=False, default="operators.coreos.com"), # str | the custom resource's version
         version=dict(type='str', required=False, default="v1"), # str | the custom resource's plural name. For TPRs this would be lowercase plural kind.
         plural=dict(type='str', required=False, default="operators"), # str | the custom object's name
-        timeout=dict(type='int', required=False, default=600) # int | set the timeout waiting for the subscription to install
+        timeout=dict(type='int', required=False, default=600), # int | set the timeout waiting for the subscription to install
+        custom_ready_key=dict(type='str', required=False), # int | set the timeout waiting for the subscription to install
+        custom_ready_value=dict(type='str', required=False) # int | set the timeout waiting for the subscription to install
     )
 
     # seed the result dict in the object
@@ -158,7 +174,7 @@ def run_module():
 
     # Generate the deployment
     custom_resource_deployment = monitor_operator_custom_resource(module.params['name'], module.params['namespace'], module.params['group'], module.params['version'
-    ], module.params['plural'], module.params['timeout'])
+    ], module.params['plural'], module.params['timeout'], module.params['custom_ready_key'], module.params['custom_ready_value'])
 
     # if the user is working with this module in only check mode we do not
     # want to make any changes to the environment, just return the current

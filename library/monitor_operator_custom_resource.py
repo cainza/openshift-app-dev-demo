@@ -118,13 +118,14 @@ def monitor_operator_custom_resource(name, namespace, group, version, plural, ti
                             if custom_ready_key in k8s_response['status']:
                                 operator_installed = True
                                 print (k8s_response['status'][custom_ready_key])
-                            
+
                             else:
                                 raise "Custom Ready Key does not exist in status"
                     
                 if operator_installed:
                     print ("Custom resource deploment finished")
                     break
+                
                 elif elapsed_time >= timeout:
                     print("Finished iterating in: " + str(int(elapsed_time))  + " seconds")
                     raise "Timeout waiting for Custom resource to become available"

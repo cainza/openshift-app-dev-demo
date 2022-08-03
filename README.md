@@ -88,12 +88,3 @@ https://developers.redhat.com/blog/2020/10/14/building-modern-ci-cd-workflows-fo
  
 
 ### Notes
-# export ANSIBLE_LIBRARY=./library
-
-
-# ansible -m  library/monitor_operator_install.py localhost
-
-
-# pip install kubernetes
-# ansible-galaxy collection install community.okd
-# ansible-galaxy collection install community.crypto

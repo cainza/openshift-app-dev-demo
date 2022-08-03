@@ -1,0 +1,24 @@
+---
+
+- name: Configure CRC
+  debug:
+    msg: "Configuring CRC Environment"
+
+- name: Enable / Disable Telemetry to Red Hat
+  command: crc config set consent-telemetry '{{ crc_consent_telemetry }}'
+
+- name: Enable / Disable Cluster Monitoring  # Enable only if you have enough memory, needs ~4G extra
+  command: crc config set enable-cluster-monitoring '{{ crc_cluster_monitoring }}'
+
+- name: Set CRC CPU's
+  command: crc config set cpus '{{ crc_cpus }}'
+
+- name: Set CRC Memory
+  command: crc config set memory '{{ crc_memory }}'
+
+- name: Set Disk Size, Thin Provisioned
+  command: crc config set disk-size '{{ crc_disk_size }}'
+
+- name: "Show config"
+  command: crc config view
+  register: crc_config_output

@@ -1,0 +1,5 @@
+crc:
+  hosts: localhost
+
+ocp:
+  hosts: localhost

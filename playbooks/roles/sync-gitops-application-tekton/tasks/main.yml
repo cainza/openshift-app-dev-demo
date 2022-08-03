@@ -1,0 +1,33 @@
+---
+- name: Sync Tekton GitOps Application
+  debug:
+    msg: "Sync Tekton GitOps Application"
+
+- sync_gitops_application:
+    namespace: openshift-gitops
+    secret: openshift-gitops-cluster
+    url: openshift-gitops-server-openshift-gitops.apps-crc.testing
+    port: 443
+    application: 2-demo-quarkus-superheroes-tekton
+
+- get_secret_value:
+    secret: openshift-gitops-cluster
+    namespace: openshift-gitops
+    key: admin.password
+  no_log: True
+  register: argopassword
+
+- name: Create a Service object from an inline definition
+  kubernetes.core.k8s:
+    state: present
+    definition:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+            name: argocd-env-secret
+            namespace: quarkus-superheroes-serverless
+        type: Opaque
+        data:
+            ARGOCD_PASSWORD: "{{ argopassword.password | b64encode }}"
+            ARGOCD_USERNAME: "{{ 'admin' | b64encode }}"
+  no_log: True

@@ -1,0 +1,105 @@
+---
+- name: Waiting for Kiali Operator
+  debug:
+    msg: "Monitor Kiali operator is installed"
+
+- name: Check if Kiali Operator is installed
+  monitor_operator_install:
+    name: kiali-ossm
+    namespace: openshift-operators
+
+- name: Waiting for Elasticsearch Operator
+  debug:
+    msg: "Elasticsearch operator is installed"
+
+- name: Check if Elasticsearch Operator is installed
+  monitor_operator_install:
+    name: elasticsearch-operator
+    namespace: openshift-operators-redhat
+
+- name: Waiting for Jaeger Operator
+  debug:
+    msg: "Monitor Jaeger operator is installed"
+
+- name: Check if Jaeger Operator is installed
+  monitor_operator_install:
+    name: jaeger-product
+    namespace: openshift-distributed-tracing
+
+- name: Waiting for Service Mesh Operator
+  debug:
+    msg: "Monitor service mesh operator is installed"
+
+- name: Check if Service Mesh Operator is installed
+  monitor_operator_install:
+    name: servicemeshoperator
+    namespace: openshift-operators
+
+- name: Waiting for Service Mesh Application
+  debug:
+    msg: "Sync Service Mesh GitOps Application"
+
+- sync_gitops_application:
+    namespace: openshift-gitops
+    secret: openshift-gitops-cluster
+    url: openshift-gitops-server-openshift-gitops.apps-crc.testing
+    port: 443
+    application: 1-istio-controlplane
+
+- name: Generate Service Mesh Certificate
+  debug:
+    msg: "Generate Service Mesh Certificate"
+
+- name: Create temporary build directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: -openssl
+  register: ssldirectory
+  no_log: True
+
+- name: Generate Root Certificate/Key
+  command: "openssl req -x509 -sha256 -nodes -days 3650 -newkey rsa:2048 -subj '/O=CRC./CN=Testing'  -keyout {{ ssldirectory.path }}/root.key -out {{ ssldirectory.path }}/root.crt	"
+
+- name: Generate CSR
+  command: "openssl req -nodes -newkey rsa:2048 -subj '/CN=*.apps-crc.testing/O=Demo.' -keyout {{ ssldirectory.path }}/wildcard.key -out {{ ssldirectory.path }}/wildcard.csr"
+
+- name: Generate  Wildcart Cert
+  command: openssl x509 -req -days 3650 -set_serial 0  -CA {{ ssldirectory.path }}/root.crt -CAkey {{ ssldirectory.path }}/root.key -in {{ ssldirectory.path }}/wildcard.csr -out {{ ssldirectory.path }}/wildcard.crt
+
+- name: Set Certificate / Key paths
+  set_fact:
+    wildcard_key: "{{ ssldirectory.path }}/wildcard.key"
+    wildcard_crt: "{{ ssldirectory.path }}/wildcard.crt"
+  no_log: True
+
+- name: Read Certificate / Key Data
+  set_fact:
+    wildcard_key_data: "{{ lookup('file', wildcard_key) }}"
+    wildcard_crt_data: "{{ lookup('file', wildcard_crt) }}"
+  no_log: True
+
+- name: Create Service Mesh Certificate Secret
+  kubernetes.core.k8s:
+    state: present
+    definition:
+        apiVersion: v1
+        data:
+            tls.crt: "{{ wildcard_crt_data | b64encode }}"
+            tls.key: "{{ wildcard_key_data | b64encode }}"
+        kind: Secret
+        metadata:
+            name: wildcard-certificates
+            namespace: istio-system
+        type: kubernetes.io/tls
+  no_log: True
+
+- name: Waiting for Service Mesh
+  debug:
+    msg: "Monitoring Service Mesh to Become Ready"
+
+- monitor_operator_custom_resource:
+    name: basic
+    namespace: istio-system
+    group: maistra.io
+    version: v2
+    plural: servicemeshcontrolplanes

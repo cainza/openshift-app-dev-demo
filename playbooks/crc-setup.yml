@@ -1,0 +1,15 @@
+- hosts: crc
+  connection: local
+  gather_facts: false
+  roles:
+    - crc-config
+    - crc-setup
+    - openshift-gitops
+    - argocd-client-install
+    - cluster-demo
+    - sync-gitops-application-servicemesh
+    - sync-gitops-application-knative-serving
+    - sync-gitops-application-tekton
+    - crc-credentials
+    - argocd-get-login
+    

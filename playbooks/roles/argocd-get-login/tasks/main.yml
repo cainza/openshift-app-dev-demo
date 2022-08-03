@@ -1,0 +1,26 @@
+---
+- name: ArgoCD Login
+  debug:
+      msg: "Get ArgoCD Login"
+
+- get_secret_value:
+    secret: openshift-gitops-cluster
+    namespace: openshift-gitops
+    key: admin.password
+  no_log: True
+  register: argopassword
+
+- name: Get an existing Service object
+  kubernetes.core.k8s_info:
+    api_version: route.openshift.io/v1
+    kind: Route
+    name: openshift-gitops-server
+    namespace: openshift-gitops
+  register: argocdroute
+
+- name: ArgoCD Credentials
+  debug:
+    msg: 
+      - "ArgoCD Username: admin"
+      - "ArgoCD Password: {{ argopassword.password }}"
+      - "ArgoCD URL: {{ argocdroute.resources[0].spec.port.targetPort }}://{{ argocdroute.resources[0].spec.host }}"

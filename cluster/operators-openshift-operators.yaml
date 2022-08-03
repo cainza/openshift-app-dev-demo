@@ -15,7 +15,7 @@ spec:
       recurse: true
     path: operators/openshift-operators
     repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
-    targetRevision: main
+    targetRevision: development
   syncPolicy:
     automated: {}
     retry:

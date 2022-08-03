@@ -1,0 +1,13 @@
+- hosts: ocp
+  connection: local
+  gather_facts: false
+  roles:
+    #- TODO OCP LOGIN CLUSTER ADMIN
+    - openshift-gitops
+    - argocd-client-install
+    - cluster-demo
+    - sync-gitops-application-servicemesh
+    - sync-gitops-application-knative-serving
+    - sync-gitops-application-tekton
+    - crc-credentials
+    - argocd-get-login

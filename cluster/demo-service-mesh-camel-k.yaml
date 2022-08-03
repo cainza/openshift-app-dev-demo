@@ -14,7 +14,7 @@
 #      recurse: true
 #    path: demo/knative/camel-k
 #    repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
-#    targetRevision: main
+#    targetRevision: development
 #  syncPolicy:
 #    retry:
 #      backoff:

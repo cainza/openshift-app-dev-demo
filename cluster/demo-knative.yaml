@@ -5,7 +5,7 @@ metadata:
   namespace: openshift-gitops
 spec:
   destination:
-    namespace: istio-system
+    namespace: knative-serving
     server: 'https://kubernetes.default.svc'
   project: default
   source:
@@ -14,7 +14,7 @@ spec:
       recurse: true
     path: demo/knative/serverless
     repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
-    targetRevision: main
+    targetRevision: development
     directory:
       recurse: true
   syncPolicy:

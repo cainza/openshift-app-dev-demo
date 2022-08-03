@@ -1,0 +1,5 @@
+- hosts: crc
+  connection: local
+  gather_facts: false
+  roles:
+    - crc-clean

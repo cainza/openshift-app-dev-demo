@@ -1,0 +1,22 @@
+---
+- name: Knative GitOps Application
+  debug:
+    msg: "Sync Knative GitOps Application"
+
+- sync_gitops_application:
+    namespace: openshift-gitops
+    secret: openshift-gitops-cluster
+    url: openshift-gitops-server-openshift-gitops.apps-crc.testing
+    port: 443
+    application: 1-knative
+
+- name: Waiting for Knative Serving
+  debug:
+    msg: "Monitoring Knative Serving to Become Ready"
+
+- monitor_operator_custom_resource:
+    name: knative-serving
+    namespace: knative-serving
+    group: operator.knative.dev
+    version: v1alpha1
+    plural: knativeservings

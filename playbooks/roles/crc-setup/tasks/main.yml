@@ -1,0 +1,15 @@
+---
+- name: CRC Setup
+  debug:
+    msg: "Setting up CRC Environment"
+
+- name: Running crc setup
+  command: crc setup
+
+- name: Start CRC
+  command: crc start
+
+- name: Check Logged in with kubadmin
+  command: oc whoami
+  register: crcuser
+  failed_when: '"kubeadmin" not in crcuser.stdout'

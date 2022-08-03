@@ -1,0 +1,10 @@
+---
+- name: ArgoCD CLI
+  debug:
+    msg: "Installing Gitops Cluster Client"
+
+- name: Download ArgoCD CLI
+  get_url:
+    url: https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+    dest: "{{ lookup('env', 'HOME') }}/.local/bin/argocd"
+    mode: 0755

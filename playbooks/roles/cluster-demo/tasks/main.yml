@@ -1,0 +1,26 @@
+---
+- name: Demo ArgoCD Application
+  debug:
+    msg: "Deploying Gitops Cluster Demo Application"
+
+- name: Create Cluster Demo Applications within Openshift GitOps Operator
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: demo-cluster-configs
+        namespace: openshift-gitops
+      spec:
+        destination:
+          name: ""
+          namespace: default
+          server: https://kubernetes.default.svc
+        project: default
+        source:
+          path: cluster
+          repoURL: https://github.com/cainza/openshift-app-dev-demo.git
+          targetRevision: development
+        syncPolicy:
+          automated: {}

@@ -1,0 +1,18 @@
+- hosts: all
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Install Ansible Galaxy Module - kubernetes.core
+      command: ansible-galaxy collection install kubernetes.core
+
+    - name: Install Ansible Galaxy Module - community.okd
+      command: ansible-galaxy collection install community.okd
+
+    - name: Install Ansible Galaxy Module - community.crypto
+      command: ansible-galaxy collection install community.crypto
+
+      
+
+    - name: Install PIP Package - kubernetes
+      ansible.builtin.pip:
+        name: kubernetes

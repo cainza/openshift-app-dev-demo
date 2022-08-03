@@ -1,0 +1,42 @@
+---
+- name: GitOps Operator
+  debug:
+    msg: "Deploying Gitops Operator"
+
+- name: Create Operator Subscription for Openshift GitOps Operator
+  kubernetes.core.k8s:
+    state: present
+    definition:
+        apiVersion: operators.coreos.com/v1alpha1
+        kind: Subscription
+        metadata:
+          name: openshift-gitops-operator
+          namespace: openshift-operators
+        spec:
+          channel: latest
+          installPlanApproval: Automatic
+          name: openshift-gitops-operator
+          source: redhat-operators
+          sourceNamespace: openshift-marketplace
+
+- name: Waiting for Gitops Operator
+  debug:
+    msg: "Waiting for Gitops Operator to become ready"
+
+- name: Check if Operator Subscription has finished / Succeeded
+  monitor_operator_install:
+    name: openshift-gitops-operator
+    namespace: openshift-operators
+
+- name: Waiting For GitOps Deployment
+  debug:
+    msg: "Monitoring ArgoCD to Become Ready"
+
+- monitor_operator_custom_resource:
+    name: openshift-gitops
+    namespace: openshift-gitops
+    group: argoproj.io
+    version: v1alpha1
+    plural: argocds
+    custom_ready_key: server
+    custom_ready_value: Running

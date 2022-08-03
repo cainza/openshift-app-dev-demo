@@ -22,7 +22,7 @@ metadata:
 data:
   quarkus.hibernate-orm.database.generation: validate
   quarkus.hibernate-orm.sql-load-script: no-file
-  quarkus.datasource.jdbc.url: jdbc:postgresql://villains-db:5432/villains_database
+  quarkus.datasource.jdbc.url: jdbc:otel:postgresql://villains-db:5432/villains_database
 ---
 apiVersion: serving.knative.dev/v1
 kind: Service

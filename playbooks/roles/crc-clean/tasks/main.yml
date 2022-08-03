@@ -1,0 +1,24 @@
+---
+- name: Cleanup
+  debug:
+    msg: "Cleaning up CRC Environment"
+
+- name: Stopping CRC
+  command: crc stop --force
+  ignore_errors: yes
+
+- name: Delete CRC Virtual Machine
+  command: crc delete --force
+
+- name: Find CRC Log files
+  find:
+    paths: ~/.crc/
+    patterns: 'crc.log*'
+  register: crc_logs_to_delete
+
+- name: Delete CRC Log files
+  file:
+    path: "{{item.path}}"
+    state: absent
+  with_items:
+    - '{{crc_logs_to_delete.files}}'

@@ -119,8 +119,5 @@ spec:
           workspace: maven-settings-cm
   workspaces:
     - name: shared-workspace-pvc
-      optional: false
     - name: maven-settings-cm
-      optional: false
     - name: mvn-cache-pvc
-      optional: false

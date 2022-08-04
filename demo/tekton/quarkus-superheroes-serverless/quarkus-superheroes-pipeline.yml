@@ -96,7 +96,6 @@ spec:
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
               name=maven-settings-cm,config=maven-settings-cm --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
-      #runAfter: []
       taskRef:
         kind: ClusterTask
         name: tkn
@@ -134,7 +133,3 @@ spec:
               name=shared-workspace-pvc,claimName=shared-workspace --workspace
               name=maven-settings-cm,config=maven-settings-cm --workspace
               name=mvn-cache-pvc,claimName=mvn-cache --showlog
-  #params: []
-  #resources: []
-  #workspaces: []
-  #finally: []

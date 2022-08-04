@@ -124,5 +124,3 @@ spec:
       optional: false
     - name: mvn-cache-pvc
       optional: false
-  resources: []
-  finally: []

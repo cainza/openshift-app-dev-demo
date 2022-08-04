@@ -66,7 +66,7 @@ spec:
           workspace: maven-settings-cm
         - name: mvn-cache
           workspace: mvn-cache-pvc
-    - name: build-rest-heroes-image
+    - name: build-rest-fights-image
       params:
         - name: IMAGE
           value: '$(params.image_base_url)/rest-fights:latest'

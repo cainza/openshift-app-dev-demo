@@ -1,28 +1,28 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: 1-knative
-  namespace: openshift-gitops
-spec:
-  destination:
-    namespace: knative-serving
-    server: 'https://kubernetes.default.svc'
-  project: default
-  source:
-    directory:
-      jsonnet: {}
-      recurse: true
-    path: demo/knative/serverless
-    repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
-    targetRevision: development
-    directory:
-      recurse: true
-  syncPolicy:
-    retry:
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m0s
-      limit: 2
-    syncOptions:
-      - CreateNamespace=true
+#apiVersion: argoproj.io/v1alpha1
+#kind: Application
+#metadata:
+#  name: 1-knative
+#  namespace: openshift-gitops
+#spec:
+#  destination:
+#    namespace: knative-serving
+#    server: 'https://kubernetes.default.svc'
+#  project: default
+#  source:
+#    directory:
+#      jsonnet: {}
+#      recurse: true
+#    path: demo/knative/serverless
+#    repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
+#    targetRevision: development
+#    directory:
+#      recurse: true
+#  syncPolicy:
+#    retry:
+#      backoff:
+#        duration: 5s
+#        factor: 2
+#        maxDuration: 3m0s
+#      limit: 2
+#    syncOptions:
+#      - CreateNamespace=true

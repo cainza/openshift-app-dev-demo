@@ -53,7 +53,6 @@ spec:
         application: heroes-service
         system: quarkus-super-heroes
         app.kubernetes.io/name: rest-heroes
-        app.kubernetes.io/version: native-java17-latest
         app.kubernetes.io/part-of: heroes-service
     spec:
       containerConcurrency: 0
@@ -63,7 +62,7 @@ spec:
                 name: rest-heroes-config
             - secretRef:
                 name: rest-heroes-config-creds
-          image: rest-heroes:latest
+          image: image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/rest-heroes:latest
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3

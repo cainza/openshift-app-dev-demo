@@ -37,7 +37,7 @@ spec:
         app.kubernetes.io/name: ui-super-heroes
     spec:
       containers:
-        - image: rest-heroes:latest
+        - image: image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/rest-heroes:latest
           env:
             - name: API_BASE_URL
               value: https://rest-fights-quarkus-superheroes-serverless.apps-crc.testing

@@ -70,5 +70,6 @@
       kind: ConfigMap
       metadata:
         name: argocd-env-configmap
+        namespace: quarkus-superheroes-serverless
       data:
         ARGOCD_SERVER: "{{argocdroute.resources[0].spec.host}}:443"

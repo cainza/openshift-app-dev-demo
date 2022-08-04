@@ -31,7 +31,6 @@ metadata:
     app.openshift.io/connects-to: villains-db
     app.openshift.io/vcs-ref: main
     app.openshift.io/vcs-url: https://github.com/quarkusio/quarkus-super-heroes
-    app.quarkus.io/build-timestamp: 2022-06-24 - 20:20:53 +0000
     prometheus.io/scrape: "true"
     prometheus.io/path: /q/metrics
     prometheus.io/port: "8084"
@@ -78,9 +77,8 @@ spec:
                 name: rest-villains-config-creds
             - configMapRef:
                 name: rest-villains-config
-          image: quay.io/quarkus-super-heroes/rest-villains:native-java17-latest
-          #imagePullPolicy: Always
-          imagePullPolicy: IfNotPresent
+          image: rest-villains:latest
+          imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
             httpGet:

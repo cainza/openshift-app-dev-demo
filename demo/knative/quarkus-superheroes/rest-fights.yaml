@@ -77,7 +77,7 @@ spec:
                 name: rest-fights-config
             - secretRef:
                 name: rest-fights-config-creds
-          image: quay.io/quarkus-super-heroes/rest-fights:native-java17-latest
+          image: rest-fights:latest
           #imagePullPolicy: Always
           imagePullPolicy: IfNotPresent
           livenessProbe:

@@ -1,5 +1,5 @@
 crc:
   hosts: localhost
 
-ocp:
-  hosts: localhost
+#ocp:
+#  hosts: ocp

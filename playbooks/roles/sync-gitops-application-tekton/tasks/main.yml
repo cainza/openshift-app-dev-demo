@@ -47,7 +47,7 @@
   no_log: True
   register: argopassword
 
-- name: Create a Service object from an inline definition
+- name: Create argocd-env-secret
   kubernetes.core.k8s:
     state: present
     definition:
@@ -61,3 +61,14 @@
             ARGOCD_PASSWORD: "{{ argopassword.password | b64encode }}"
             ARGOCD_USERNAME: "{{ 'admin' | b64encode }}"
   no_log: True
+
+- name: Create argocd-env-configmap
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: argocd-env-configmap
+      data:
+        ARGOCD_SERVER: "{{argocdroute.resources[0].spec.host}}:443"

@@ -9,5 +9,5 @@
     - sync-gitops-application-servicemesh
     - sync-gitops-application-knative-serving
     - sync-gitops-application-tekton
-    - crc-credentials
+    - sync-gitops-application-quarkus-superheroes
     - argocd-get-login

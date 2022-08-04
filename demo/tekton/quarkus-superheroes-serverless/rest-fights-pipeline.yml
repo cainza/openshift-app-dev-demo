@@ -39,7 +39,7 @@ spec:
       workspaces:
         - name: output
           workspace: shared-workspace-pvc
-    - name: maven-build-rest-heroes
+    - name: maven-build-rest-fights
       params:
         - name: MAVEN_IMAGE
           value: >-

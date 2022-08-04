@@ -1,28 +1,27 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: openshift-serverless
-  namespace: openshift-gitops
-spec:
-  destination:
-    namespace: default
-    server: 'https://kubernetes.default.svc'
-    namespace: openshift-serverless
-  project: default
-  source:
-    directory:
-      jsonnet: {}
-      recurse: true
-    path: operators/openshift-serverless
-    repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
-    targetRevision: development
-  syncPolicy:
-    automated: {}
-    retry:
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m0s
-      limit: 2
-    syncOptions:
-      - CreateNamespace=true
+#apiVersion: argoproj.io/v1alpha1
+#kind: Application
+#metadata:
+#  name: openshift-serverless
+#  namespace: openshift-gitops
+#spec:
+#  destination:
+#    server: 'https://kubernetes.default.svc'
+#    namespace: openshift-serverless
+#  project: default
+#  source:
+#    directory:
+#      jsonnet: {}
+#      recurse: true
+#    path: operators/openshift-serverless
+#    repoURL: 'https://github.com/cainza/openshift-app-dev-demo.git'
+#    targetRevision: development
+#  syncPolicy:
+#    automated: {}
+#    retry:
+#      backoff:
+#        duration: 5s
+#        factor: 2
+#        maxDuration: 3m0s
+#      limit: 2
+#    syncOptions:
+#      - CreateNamespace=true

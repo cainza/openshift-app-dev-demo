@@ -3,24 +3,130 @@
   debug:
     msg: "Deploying Gitops Cluster Demo Application"
 
-- name: Create Cluster Demo Applications within Openshift GitOps Operator
+- name: Create Cluster Demo Applications in GitOps
   kubernetes.core.k8s:
     state: present
     definition:
       apiVersion: argoproj.io/v1alpha1
       kind: Application
       metadata:
-        name: demo-cluster-configs
-        namespace: openshift-gitops
+        name: "{{ cluster_demo_setup_name }}"
+        namespace: "{{ openshift_argocd_namespace }}"
       spec:
         destination:
           name: ""
-          namespace: default
+          namespace: "{{ cluster_demo_setup_project }}"
           server: https://kubernetes.default.svc
-        project: default
+        project: "{{ cluster_demo_setup_project }}"
         source:
-          path: cluster
-          repoURL: https://github.com/cainza/openshift-app-dev-demo.git
-          targetRevision: development
+          path: "{{ cluster_demo_setup_path }}"
+          repoURL: "{{ cluster_demo_setup_repo }}"
+          targetRevision: "{{ cluster_demo_setup_revision }}"
         syncPolicy:
           automated: {}
+
+- name: Deploy openshift-operators-redhat in GitOps
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: openshift-operators-redhat
+        namespace: "{{ openshift_argocd_namespace }}"
+      spec:
+        destination:
+          name: ""
+          server: 'https://kubernetes.default.svc'
+          namespace: openshift-operators-redhat
+        project: "{{ cluster_demo_setup_project }}"
+        source:
+          directory:
+            jsonnet: {}
+            recurse: true
+          path: operators/openshift-operators-redhat
+          repoURL: "{{ cluster_demo_setup_repo }}"
+          targetRevision: "{{ cluster_demo_setup_revision }}"
+        syncPolicy:
+          automated: {}
+          syncOptions:
+            - CreateNamespace=true
+
+- name: Deploy openshift-operators GitOps
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: openshift-operators
+        namespace: "{{ openshift_argocd_namespace }}"
+      spec:
+        destination:
+          name: ""
+          server: 'https://kubernetes.default.svc'
+          namespace: openshift-operators
+        project: "{{ cluster_demo_setup_project }}"
+        source:
+          directory:
+            jsonnet: {}
+            recurse: true
+          path: operators/openshift-operators
+          repoURL: "{{ cluster_demo_setup_repo }}"
+          targetRevision: "{{ cluster_demo_setup_revision }}"
+        syncPolicy:
+          automated: {}
+          syncOptions:
+            - CreateNamespace=true
+
+- name: Deploy openshift-distributed-tracing in GitOps
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: openshift-distributed-tracing
+        namespace: "{{ openshift_argocd_namespace }}"
+      spec:
+        destination:
+          namespace: openshift-distributed-tracing
+          server: 'https://kubernetes.default.svc'
+        project: "{{ cluster_demo_setup_project }}"
+        source:
+          directory:
+            jsonnet: {}
+            recurse: true
+          path: operators/openshift-distributed-tracing
+          repoURL: "{{ cluster_demo_setup_repo }}"
+          targetRevision: "{{ cluster_demo_setup_revision }}"
+        syncPolicy:
+          automated: {}
+          syncOptions:
+            - CreateNamespace=true
+
+- name: Deploy openshift-serverless in GitOps
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: openshift-serverless
+        namespace: "{{ openshift_argocd_namespace }}"
+      spec:
+        destination:
+          server: 'https://kubernetes.default.svc'
+          namespace: openshift-serverless
+        project: "{{ cluster_demo_setup_project }}"
+        source:
+          directory:
+            jsonnet: {}
+            recurse: true
+          path: operators/openshift-serverless
+          repoURL: "{{ cluster_demo_setup_repo }}"
+          targetRevision: "{{ cluster_demo_setup_revision }}"
+        syncPolicy:
+          automated: {}
+          syncOptions:
+            - CreateNamespace=true

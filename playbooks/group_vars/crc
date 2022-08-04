@@ -1,3 +1,4 @@
+### CRC CONFIG
 # Enable / Disable Telemetry to Red Hat
 crc_consent_telemetry: "no"
 
@@ -13,3 +14,56 @@ crc_memory: "20480"
 
 # Set Disk Size, Thin Provisioned
 crc_disk_size: "250"
+
+### CRC SETUP
+crc_user: kubeadmin
+
+### OPENSHIFT GITOPS
+openshift_gitops_apiversion: operators.coreos.com/v1alpha1
+openshift_gitops_name: openshift-gitops-operator
+openshift_gitops_namespace: openshift-operators
+openshift_gitops_channel: latest
+openshift_gitops_spec_installPlanApproval: Automatic
+openshift_gitops_spec_name: openshift-gitops-operator
+openshift_gitops_spec_source: redhat-operators
+openshift_gitops_spec_sourceNamespace: openshift-marketplace
+
+openshift_argocd_name: openshift-gitops
+openshift_argocd_namespace: openshift-gitops
+openshift_argocd_secret: openshift-gitops-cluster
+openshift_argocd_group: argoproj.io
+openshift_argocd_version: v1alpha1
+openshift_argocd_plural: argocds
+openshift_argocd_custom_ready_key: server
+openshift_argocd_custom_ready_value: Running
+openshift_argocd_gitops_route: openshift-gitops-server
+
+### ARGOCD CLIENT INSTALL
+argocd_download_url: https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+
+
+### CLUSTER GITOPS SETUP 
+cluster_demo_setup_name: cluster-configs
+cluster_demo_setup_project: default
+cluster_demo_setup_path: cluster
+cluster_demo_setup_repo: https://github.com/cainza/openshift-app-dev-demo.git
+cluster_demo_setup_revision: main
+
+### SYNC SERVICE MESH
+istio_control_plane_name: basic
+istio_control_plane_apigroup: maistra.io
+istio_control_plane_apiversion: v2
+
+### SYNC KNATIVE SERVING
+knative_name: knative-serving
+knative_apigroup: operator.knative.dev
+knative_apiversion: v1alpha1
+
+### SYNC TEKTON
+
+### CRC CREDENTIALS
+
+### ARGOCD LOGIN
+
+
+    

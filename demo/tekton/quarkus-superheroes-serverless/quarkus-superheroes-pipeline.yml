@@ -705,10 +705,10 @@ spec:
       taskRef:
         kind: ClusterTask
         name: tkn
-    - name: sync-quarkus-superheroes-serverless
+    - name: sync-quarkus-superheroes
       params:
         - name: application-name
-          value: 2-demo-quarkus-superheroes-serverless
+          value: quarkus-superheroes
         - name: revision
           value: HEAD
         - name: flags

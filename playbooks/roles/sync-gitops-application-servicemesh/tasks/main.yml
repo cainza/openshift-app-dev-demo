@@ -1,4 +1,36 @@
 ---
+
+- name: ArgoCD Route
+  kubernetes.core.k8s_info:
+    api_version: route.openshift.io/v1
+    kind: Route
+    name: "{{ openshift_argocd_gitops_route }}"
+    namespace: "{{ openshift_argocd_namespace }}"
+  register: argocdroute
+
+- name: Create Service Mesh Application in GitOps
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: istio-controlplane
+        namespace: "{{ openshift_argocd_namespace }}"
+      spec:
+        destination:
+          namespace: istio-system
+          server: https://kubernetes.default.svc
+        project: "{{ cluster_demo_setup_project }}"
+        source:
+          path: demo/istio
+          repoURL: "{{ cluster_demo_setup_repo }}"
+          targetRevision: "{{ cluster_demo_setup_revision }}"
+        syncPolicy:
+          automated: {}
+          syncOptions:
+            - CreateNamespace=true
+
 - name: Waiting for Kiali Operator
   debug:
     msg: "Monitor Kiali operator is installed"
@@ -40,11 +72,11 @@
     msg: "Sync Service Mesh GitOps Application"
 
 - sync_gitops_application:
-    namespace: openshift-gitops
-    secret: openshift-gitops-cluster
-    url: openshift-gitops-server-openshift-gitops.apps-crc.testing
+    namespace: "{{ openshift_argocd_namespace }}"
+    secret: "{{ openshift_argocd_secret }}"
+    url: "{{argocdroute.resources[0].spec.host}}"
     port: 443
-    application: 1-istio-controlplane
+    application: istio-controlplane
 
 - name: Generate Service Mesh Certificate
   debug:
@@ -98,8 +130,8 @@
     msg: "Monitoring Service Mesh to Become Ready"
 
 - monitor_operator_custom_resource:
-    name: basic
+    name: "{{ istio_control_plane_name }}"
     namespace: istio-system
-    group: maistra.io
-    version: v2
+    group: "{{ istio_control_plane_apigroup }}"
+    version: "{{ istio_control_plane_apiversion }}"
     plural: servicemeshcontrolplanes

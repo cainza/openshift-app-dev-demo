@@ -2,14 +2,15 @@
   connection: local
   gather_facts: false
   roles:
-    - crc-config
-    - crc-setup
-    - openshift-gitops
-    - argocd-client-install
-    - cluster-demo
-    - sync-gitops-application-servicemesh
-    - sync-gitops-application-knative-serving
+    #- crc-config
+    #- crc-setup
+    #- openshift-gitops
+    #- argocd-client-install
+    #- cluster-demo
+    #- sync-gitops-application-servicemesh
+    #- sync-gitops-application-knative-serving
     - sync-gitops-application-tekton
-    - crc-credentials
-    - argocd-get-login
+    - sync-gitops-application-quarkus-superheroes
+    #- crc-credentials
+    #- argocd-get-login
     

@@ -1,42 +1,42 @@
 ---
-- name: GitOps Operator
+- name: "{{ openshift_gitops_name }}"
   debug:
-    msg: "Deploying Gitops Operator"
+    msg: "Deploying {{ openshift_gitops_name }}"
 
-- name: Create Operator Subscription for Openshift GitOps Operator
+- name: Create Operator Subscription for Openshift {{ openshift_gitops_name }}
   kubernetes.core.k8s:
     state: present
     definition:
-        apiVersion: operators.coreos.com/v1alpha1
+        apiVersion: "{{ openshift_gitops_apiversion }}"
         kind: Subscription
         metadata:
-          name: openshift-gitops-operator
-          namespace: openshift-operators
+          name: "{{ openshift_gitops_name }}"
+          namespace: "{{ openshift_gitops_namespace }}"
         spec:
-          channel: latest
-          installPlanApproval: Automatic
-          name: openshift-gitops-operator
-          source: redhat-operators
-          sourceNamespace: openshift-marketplace
+          channel: "{{ openshift_gitops_channel }}"
+          installPlanApproval: "{{ openshift_gitops_spec_installPlanApproval }}"
+          name: "{{ openshift_gitops_spec_name }}"
+          source: "{{ openshift_gitops_spec_source }}"
+          sourceNamespace: "{{ openshift_gitops_spec_sourceNamespace }}"
 
-- name: Waiting for Gitops Operator
+- name: Waiting for {{ openshift_gitops_name }}
   debug:
-    msg: "Waiting for Gitops Operator to become ready"
+    msg: "Waiting for {{ openshift_gitops_name }} to become ready"
 
-- name: Check if Operator Subscription has finished / Succeeded
+- name: Check if {{ openshift_gitops_name }} Subscription has finished / Succeeded {{openshift_gitops_name}} - {{openshift_argocd_namespace}}
   monitor_operator_install:
-    name: openshift-gitops-operator
-    namespace: openshift-operators
+    name: "{{ openshift_gitops_name }}"
+    namespace: "{{ openshift_gitops_namespace }}"
 
-- name: Waiting For GitOps Deployment
+- name: Waiting for {{ openshift_argocd_name }} Deployment
   debug:
-    msg: "Monitoring ArgoCD to Become Ready"
+    msg: "Monitoring {{ openshift_argocd_plural }}/{{ openshift_argocd_name }} in {{ openshift_argocd_namespace }} to be ready"
 
 - monitor_operator_custom_resource:
-    name: openshift-gitops
-    namespace: openshift-gitops
-    group: argoproj.io
-    version: v1alpha1
-    plural: argocds
-    custom_ready_key: server
-    custom_ready_value: Running
+    name: "{{ openshift_argocd_name }}"
+    namespace: "{{ openshift_argocd_namespace }}"
+    group: "{{ openshift_argocd_group }}"
+    version: "{{ openshift_argocd_version }}"
+    plural: "{{ openshift_argocd_plural }}"
+    custom_ready_key: "{{ openshift_argocd_custom_ready_key }}"
+    custom_ready_value: "{{ openshift_argocd_custom_ready_value }}"

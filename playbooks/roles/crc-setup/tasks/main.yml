@@ -9,7 +9,7 @@
 - name: Start CRC
   command: crc start
 
-- name: Check Logged in with kubadmin
+- name: Check Logged in with {{ crc_user }}
   command: oc whoami
   register: crcuser
-  failed_when: '"kubeadmin" not in crcuser.stdout'
+  failed_when: "'{{ crc_user }}' not in crcuser.stdout"

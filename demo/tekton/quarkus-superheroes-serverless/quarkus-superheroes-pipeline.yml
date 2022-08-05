@@ -6,21 +6,6 @@ metadata:
   namespace: quarkus-superheroes-serverless
 spec:
   tasks:
-    - name: sync-quarkus-superheroes
-      params:
-        - name: application-name
-          value: quarkus-superheroes
-        - name: revision
-          value: HEAD
-        - name: flags
-          value: '--'
-        - name: argocd-version
-          value: v2.2.2
-      runAfter:
-        - ui-super-heroes
-      taskRef:
-        kind: ClusterTask
-        name: argocd-task-sync-and-wait
     - name: prepare-maven
       params:
         - name: TKN_IMAGE
@@ -151,3 +136,18 @@ spec:
       taskRef:
         kind: ClusterTask
         name: tkn
+    - name: sync-quarkus-superheroes
+      params:
+        - name: application-name
+          value: quarkus-superheroes
+        - name: revision
+          value: HEAD
+        - name: flags
+          value: '--'
+        - name: argocd-version
+          value: v2.2.2
+      runAfter:
+        - ui-super-heroes
+      taskRef:
+        kind: ClusterTask
+        name: argocd-task-sync-and-wait

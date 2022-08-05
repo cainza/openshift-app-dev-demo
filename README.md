@@ -31,7 +31,7 @@ Currently a shell script exists to prepare Openshift Local / Cloud Ready Contain
 2. 3Scale API Management
 3. Openshift Serverless (Knative Eventing)
 4. Openshift Serverless (Functions)
-5. Openshift Serverless with Integration (CamelK)
+5. Openshift Serverless with Integration (Camel-K)
 
   
 # Configuration & Requirements
@@ -60,27 +60,35 @@ This can also be manually set in Openshift Local/Cloud Ready Containers by runni
  - crc config set cpus 16
  - crc config set memory 16384
  - crc config set disk-size 100000
-  
 
-## 1. Openshift GitOps/ArgoCD
 
-  The initial script will deploy the GitOps operator and when ready deploys the cluster configs application. This Deployment will deploy multiple other Applications to GitOps, some of which would start syncing immediately, others that require a manual sync.
+## Ansible Playbooks
 
-  The applications that automatically sync is mainly for cluster operators that are dependencies for other Applications to be deployed. As an example the Service Mesh Operator requires ElasticSearch and Kiali Operators to be deployed before the service mesh can be created.
+  The setup of the demo environment is done via ansible playbooks.
 
-## 2. Openshift Pipelines/Tekton
+  I have written custom libraries that monitor the state of things such as syncing ArgoCD/GitOps applications, syncing custom resources, monitoring operator installs etc. This ensures certain steps in the ansible roles only run when the dependencies they have are ready to be consumed. As an example the Service Mesh Operator requires ElasticSearch and Kiali Operators to be deployed before the service mesh can be created.
+
+## Openshift GitOps/ArgoCD
+
+  The initial script will deploy the GitOps operator and when ready deploys the cluster configs application. 
+
+  Other GitOps application will be deployed via the ansible playbook.They will vary from installing operators to deploying Quarkus applications to deploying things just as AMQ Streams ( Kafka ).
+
+  The applications that automatically sync is mainly for cluster operators that are dependencies for other Applications to be deployed. 
+
+## Openshift Pipelines/Tekton
 
   At this we use the quarkus superheroes github repository that can be found here: https://github.com/quarkusio/quarkus-super-heroes.git
 
   The quarkus super heroes API features multiple microservices low resource requirements, thanks to Quarkus. Due to the microservices having interservices dependencies using REST they form an ideal candidate for Service Mesh coming later.
 
-## 3. Openshift Pipelines triggers GitOps
-
-  https://developers.redhat.com/blog/2020/10/01/building-modern-ci-cd-workflows-for-serverless-applications-with-red-hat-openshift-pipelines-and-argo-cd-part-1
-
-https://developers.redhat.com/blog/2020/10/14/building-modern-ci-cd-workflows-for-serverless-applications-with-red-hat-openshift-pipelines-and-argo-cd-part-2
+  There is also a stage within the pipeline that triggers the sync of the quarkus demo application knative deployment. This bothnot only shows how GitOps can sync resources but also how these resources could be synced after a successfull pipeline run.
 
 ## 4. Openshift Serverless
+
+  Openshift Service mesh was set up so that we can monitor the state of our quarkus microservices. Two of the rest services are exposed externally while the rest are internal to the cluster.
+
+  Note: You have to access both the rest-fights and the ui-superheroes external links directly once when using self service mesh signed certificates (The default for this demo). HTTPs is a requirement for using Serverless on Service mesh. If don't access the rest-fights service the and accept the self signed certificate then the UI will not work correctly as it calls that service.
 
   https://docs.openshift.com/container-platform/4.10/serverless/admin_guide/serverless-ossm-setup.html
 

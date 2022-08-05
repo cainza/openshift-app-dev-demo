@@ -71,7 +71,8 @@
   debug:
     msg: "Sync Service Mesh GitOps Application"
 
-- sync_gitops_application:
+- name: Syncing istio-controlplane application
+  sync_gitops_application:
     namespace: "{{ openshift_argocd_namespace }}"
     secret: "{{ openshift_argocd_secret }}"
     url: "{{argocdroute.resources[0].spec.host}}"

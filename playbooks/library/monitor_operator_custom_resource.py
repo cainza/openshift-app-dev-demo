@@ -147,7 +147,7 @@ def run_module():
         group=dict(type='str', required=False, default="operators.coreos.com"), # str | the custom resource's version
         version=dict(type='str', required=False, default="v1"), # str | the custom resource's plural name. For TPRs this would be lowercase plural kind.
         plural=dict(type='str', required=False, default="operators"), # str | the custom object's name
-        timeout=dict(type='int', required=False, default=600), # int | set the timeout waiting for the subscription to install
+        timeout=dict(type='int', required=False, default=1200), # int | set the timeout waiting for the subscription to install
         custom_ready_key=dict(type='str', required=False, default=None), # int | set the timeout waiting for the subscription to install
         custom_ready_value=dict(type='str', required=False, default=None) # int | set the timeout waiting for the subscription to install
     )

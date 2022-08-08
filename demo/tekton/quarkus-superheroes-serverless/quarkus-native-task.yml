@@ -7,7 +7,7 @@ spec:
   description: This Task can be used to run a Maven build.
   params:
     - default: 'quay.io/quarkus/ubi-quarkus-native-image:22.1-java11'
-      description: Maven base image
+      description: Quarkus Native base image
       name: QUARKUS_IMAGE
       type: string
     - default:

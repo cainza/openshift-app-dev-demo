@@ -12,7 +12,60 @@ spec:
       name: image_base_url
       type: string
   tasks:
-    - name: clone-superheroes
+    - name: rest-heroes-native-binary
+      params:
+        - name: QUARKUS_IMAGE
+          value: 'quay.io/quarkus/ubi-quarkus-native-image:22.1-java11'
+        - name: GOALS
+          value:
+            - clean
+            - package
+            - '-Dnative'
+            - '-Dmaven.repo.local=/media/.m2/'
+            - '-Dmaven.artifact.threads=30'
+            - '-DskipTests=true'
+        - name: CONTEXT_DIR
+          value: ./rest-heroes
+        - name: PROXY_PROTOCOL
+          value: http
+      runAfter:
+        - clone-repository
+      taskRef:
+        kind: Task
+        name: quarkus-native
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+        - name: maven-settings
+          workspace: maven-settings
+        - name: mvn-cache
+          workspace: mvn-cache
+    - name: rest-heroes-native-image
+      params:
+        - name: IMAGE
+          value: '$(params.image_base_url)/rest-heroes-native:latest'
+        - name: BUILDER_IMAGE
+          value: >-
+            registry.redhat.io/rhel8/buildah@sha256:23fb7971ea6ac4aaaaa1139473a602df0df19222a3b5a76b551b2b9ddd92e927
+        - name: STORAGE_DRIVER
+          value: vfs
+        - name: DOCKERFILE
+          value: ./rest-heroes/src/main/docker/Dockerfile.native
+        - name: CONTEXT
+          value: ./rest-heroes
+        - name: TLSVERIFY
+          value: 'true'
+        - name: FORMAT
+          value: oci
+      runAfter:
+        - rest-heroes-native-binary
+      taskRef:
+        kind: ClusterTask
+        name: buildah
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: clone-repository
       params:
         - name: url
           value: 'https://github.com/quarkusio/quarkus-super-heroes.git'
@@ -30,7 +83,7 @@ spec:
           value: 'true'
         - name: gitInitImage
           value: >-
-            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:5b36e9d4ddffa4c253c47e444b7d3158bbbd2a3acf3c301389f6c50cbf5e8086
+            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:8949bb90e05704aef387e5b8d7143f2dc807c8c693c59193a9bb54d8c0e43b21
         - name: userHome
           value: /tekton/home
       taskRef:
@@ -38,86 +91,8 @@ spec:
         name: git-clone
       workspaces:
         - name: output
-          workspace: shared-workspace-pvc
-    - name: maven-build-rest-heroes
-      params:
-        - name: MAVEN_IMAGE
-          value: >-
-            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
-        - name: GOALS
-          value:
-            - package
-            - '-DskipTests=true'
-            - '-Dmaven.artifact.threads=30'
-            - '-Dmaven.repo.local=/media/.m2/'
-        - name: PROXY_PROTOCOL
-          value: http
-        - name: CONTEXT_DIR
-          value: rest-heroes
-      runAfter:
-        - maven-download-dependencies
-      taskRef:
-        kind: Task
-        name: maven-demo
-      workspaces:
-        - name: source
-          workspace: shared-workspace-pvc
-        - name: maven-settings
-          workspace: maven-settings-cm
-        - name: mvn-cache
-          workspace: mvn-cache-pvc
-    - name: build-rest-heroes-image
-      params:
-        - name: IMAGE
-          value: '$(params.image_base_url)/rest-heroes:latest'
-        - name: BUILDER_IMAGE
-          value: >-
-            registry.redhat.io/rhel8/buildah@sha256:23fb7971ea6ac4aaaaa1139473a602df0df19222a3b5a76b551b2b9ddd92e927
-        - name: STORAGE_DRIVER
-          value: vfs
-        - name: DOCKERFILE
-          value: ./src/main/docker/Dockerfile.jvm17
-        - name: CONTEXT
-          value: rest-heroes
-        - name: TLSVERIFY
-          value: 'true'
-        - name: FORMAT
-          value: oci
-      runAfter:
-        - maven-build-rest-heroes
-      taskRef:
-        kind: ClusterTask
-        name: buildah
-      workspaces:
-        - name: source
-          workspace: shared-workspace-pvc
-    - name: maven-download-dependencies
-      params:
-        - name: MAVEN_IMAGE
-          value: >-
-            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
-        - name: GOALS
-          value:
-            - 'dependency:resolve'
-            - '-Dmaven.repo.local=/media/.m2/'
-            - '-Dmaven.artifact.threads=30'
-        - name: PROXY_PROTOCOL
-          value: http
-        - name: CONTEXT_DIR
-          value: rest-heroes
-      runAfter:
-        - clone-superheroes
-      taskRef:
-        kind: Task
-        name: maven-demo
-      workspaces:
-        - name: source
-          workspace: shared-workspace-pvc
-        - name: mvn-cache
-          workspace: mvn-cache-pvc
-        - name: maven-settings
-          workspace: maven-settings-cm
+          workspace: shared-workspace
   workspaces:
-    - name: shared-workspace-pvc
-    - name: maven-settings-cm
-    - name: mvn-cache-pvc
+    - name: shared-workspace
+    - name: maven-settings
+    - name: mvn-cache

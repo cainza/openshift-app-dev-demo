@@ -27,17 +27,17 @@ spec:
         - name: PROXY_PROTOCOL
           value: http
       runAfter:
-        - clone-repository
+        - maven-download-dependencies
       taskRef:
         kind: Task
         name: quarkus-native
       workspaces:
         - name: source
-          workspace: shared-workspace
+          workspace: shared-workspace-pvc
         - name: maven-settings
-          workspace: maven-settings
+          workspace: maven-settings-cm
         - name: mvn-cache
-          workspace: mvn-cache
+          workspace: mvn-cache-pvc
     - name: event-statistics-native-image
       params:
         - name: IMAGE
@@ -62,7 +62,7 @@ spec:
         name: buildah
       workspaces:
         - name: source
-          workspace: shared-workspace
+          workspace: shared-workspace-pvc
     - name: clone-repository
       params:
         - name: url
@@ -89,8 +89,34 @@ spec:
         name: git-clone
       workspaces:
         - name: output
-          workspace: shared-workspace
+          workspace: shared-workspace-pvc
+    - name: maven-download-dependencies
+      params:
+        - name: MAVEN_IMAGE
+          value: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/java:latest
+        - name: GOALS
+          value:
+            - 'dependency:resolve'
+            - '-Dmaven.repo.local=/media/.m2/'
+            - '-Dmaven.artifact.threads=30'
+        - name: PROXY_PROTOCOL
+          value: http
+        - name: CONTEXT_DIR
+          value: ./event-statistics
+      runAfter:
+        - clone-repository
+      taskRef:
+        kind: Task
+        name: maven-demo
+      workspaces:
+        - name: source
+          workspace: shared-workspace-pvc
+        - name: mvn-cache
+          workspace: mvn-cache-pvc
+        - name: maven-settings
+          workspace: maven-settings-cm
   workspaces:
-    - name: shared-workspace
-    - name: maven-settings
-    - name: mvn-cache
+    - name: shared-workspace-pvc
+    - name: maven-settings-cm
+    - name: mvn-cache-pvc

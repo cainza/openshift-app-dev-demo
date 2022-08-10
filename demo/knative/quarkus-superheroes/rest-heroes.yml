@@ -62,7 +62,7 @@ spec:
                 name: rest-heroes-config
             - secretRef:
                 name: rest-heroes-config-creds
-          image: image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/rest-heroes:latest
+          image: image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/rest-heroes-native:latest
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3

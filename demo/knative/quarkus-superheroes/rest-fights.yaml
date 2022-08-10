@@ -76,7 +76,7 @@ spec:
                 name: rest-fights-config
             - secretRef:
                 name: rest-fights-config-creds
-          image: image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/rest-fights:latest
+          image: image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/rest-fights-native:latest
           #imagePullPolicy: Always
           imagePullPolicy: IfNotPresent
           livenessProbe:

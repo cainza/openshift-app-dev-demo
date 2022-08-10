@@ -76,7 +76,7 @@ spec:
                 name: rest-villains-config-creds
             - configMapRef:
                 name: rest-villains-config
-          image: image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/rest-villains:latest
+          image: image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/rest-villains-native:latest
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3

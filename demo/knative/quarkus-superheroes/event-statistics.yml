@@ -71,7 +71,7 @@ spec:
                 name: event-statistics-config
             - secretRef:
                 name: event-statistics-config-creds
-          image: image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/event-statistics:latest
+          image: image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/event-statistics-native:latest
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3

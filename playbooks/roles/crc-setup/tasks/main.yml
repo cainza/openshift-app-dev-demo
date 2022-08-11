@@ -9,7 +9,7 @@
 - name: Start CRC
   command: crc start
 
-- name: Check Logged in with {{ crc_user }}
+- name: Check Logged in with {{ crc_admin_user }}
   command: oc whoami
   register: crcuser
-  failed_when: "'{{ crc_user }}' not in crcuser.stdout"
+  failed_when: "'{{ crc_admin_user }}' not in crcuser.stdout"

@@ -1,8 +1,25 @@
 - hosts: ocp
   connection: local
   gather_facts: false
+  vars_prompt:
+    - name: OCP_api_server
+      prompt: "Please enter your openshift location ( example: https://api.openshift.local:6443)"
+      private: no
+    - name: OCP_username
+      prompt: Please enter your OCP user (With cluster-admin rights)
+      private: no
+    - name: OCP_password
+      prompt: Please enter your OCP user's password (Output will be hidden)
+  pre_tasks:
+    - set_fact:
+        OCP_api_server: "{{OCP_api_server}}"
+    - set_fact:
+        OCP_username: "{{OCP_username}}"
+    - set_fact:
+        OCP_password: "{{OCP_password}}"
   roles:
     #- TODO OCP LOGIN CLUSTER ADMIN
+    - openshift-login
     - openshift-gitops
     - argocd-client-install
     - cluster-demo
@@ -11,3 +28,4 @@
     - sync-gitops-application-tekton
     - sync-gitops-application-quarkus-superheroes
     - argocd-get-login
+    

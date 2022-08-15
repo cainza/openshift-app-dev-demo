@@ -28,6 +28,11 @@
   with_items: "{{ pvlist }}"
   when: ocp_node_count == "1"
 
+- name: Fix PV Folders permissions on OCP node
+  ansible.builtin.command: "oc debug node/{{ocp_hostname}} -- chmod 777 /host/mnt/pv-data/{{ item }}"
+  with_items: "{{ pvlist }}"
+  when: ocp_node_count == "1"
+
 - debug:
     msg: "Create PV's"
 
@@ -55,3 +60,46 @@
         volumeMode: Filesystem
   with_items: "{{ pvlist }}"
   when: ocp_node_count == "1"
+  no_log: true
+  
+
+- name: Create Registry PVC
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: openshift-registry
+        namespace: openshift-image-registry
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 100Gi
+        volumeName: pv0001
+        volumeMode: Filesystem
+      status:
+        phase: Bound
+        accessModes:
+          - ReadWriteOnce
+          - ReadWriteMany
+          - ReadOnlyMany
+        capacity:
+          storage: 100Gi
+  when: ocp_node_count == "1"
+
+- name: Patch Registry to be available
+  ansible.builtin.command: oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"managementState":"Managed"}}'
+  when: ocp_node_count == "1"
+
+- name: Patch Registry to use PVC
+  ansible.builtin.command: oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"storage":{"pvc":{"claim":"openshift-registry"}}}}'
+  when: ocp_node_count == "1"
+
+#oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"managementState":"Managed"}}'
+#oc edit configs.imageregistry.operator.openshift.io
+# Create PVC in  openshift-image-registry
+#oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"storage":{"emptyDir":{}}}}'
+#https://docs.openshift.com/container-platform/4.11/registry/configuring_registry_storage/configuring-registry-storage-baremetal.html

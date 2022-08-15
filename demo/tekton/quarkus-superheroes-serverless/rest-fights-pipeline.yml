@@ -85,7 +85,7 @@ spec:
         - name: userHome
           value: /tekton/home
       taskRef:
-        kind: ClusterTask
+        kind: Task
         name: git-clone
       workspaces:
         - name: output

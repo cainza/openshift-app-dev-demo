@@ -96,3 +96,53 @@ This can also be manually set in Openshift Local/Cloud Ready Containers by runni
  
 
 ### Notes
+
+# TODO
+# 1) Test with SNO 
+#    - Needs Persistant Volumes
+#    - Needs PVC Registry
+# 2) User namespace monitoring
+# 3) KEDA
+
+# SNO
+sudo firewall-cmd --permanent --add-port=6443/tcp
+sudo firewall-cmd --permanent --add-port=443/tcp
+sudo firewall-cmd --permanent --add-port=80/tcp
+#systemd-resolve --interface virbr0 --set-dns 192.168.122.6 --set-domain ~local
+
+/etc/NetworkManager/dispatcher.d/00-scarab-local.sh:
+
+#!/bin/sh
+# This is a NetworkManager dispatcher script to configure split DNS for
+# the 'crc' libvirt network.
+#
+# The corresponding crc bridge is not created through NetworkManager, so
+# it cannot be configured permanently through NetworkManager. We make the
+# change directly using systemd-resolve instead.
+#
+# systemd-resolve is used instead of resolvectl due to distributions shipping
+# systemd releases older than 239 not having the newer renamed tool. resolvectl
+# supports being called as systemd-resolve, correctly handling the old CLI.
+#
+# NetworkManager will overwrite this systemd-resolve configuration every time a
+# network connection goes up/down, so we run this script on each of these events
+# to restore our settings. This is a NetworkManager bug which is fixed in
+# version 1.26.6 by this commit:
+# https://cgit.freedesktop.org/NetworkManager/NetworkManager/commit/?id=ee4e679bc7479de42780ebd8e3a4d74afa2b2ebe
+
+export LC_ALL=C
+
+systemd-resolve --interface virbr0 --set-dns 192.168.122.9 --set-domain ~sno.scarab.local
+
+exit 0
+
+
+/etc/hosts:
+
+192.168.122.6 sno.scarab.local
+
+
+https://api.sno.scarab.local:6443
+ctTMB-a9EDd-um96T-VCXAc
+
+https://access.redhat.com/solutions/4923031

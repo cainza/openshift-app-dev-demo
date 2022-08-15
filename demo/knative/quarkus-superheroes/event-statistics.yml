@@ -55,7 +55,7 @@ spec:
         prometheus.io/scheme: http
         sidecar.istio.io/inject: "true" 
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
-        autoscaling.knative.dev/min-scale: "1"
+        autoscaling.knative.dev/min-scale: "0"
       labels:
         app: event-statistics
         app.openshift.io/runtime: quarkus
@@ -64,7 +64,8 @@ spec:
         app.kubernetes.io/name: event-statistics
         app.kubernetes.io/part-of: event-stats
     spec:
-      containerConcurrency: 0
+      # Set containerConcurrency to one to show off Serverless autoscaling
+      containerConcurrency: 1
       containers:
         - envFrom:
             - configMapRef:

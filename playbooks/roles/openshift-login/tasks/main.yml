@@ -4,7 +4,7 @@
     msg: "Test"
 
 - name: Log into openshift server
-  ansible.builtin.command: oc login {{OCP_api_server}} --username={{OCP_username}} --password={{OCP_password}}
+  ansible.builtin.command: oc login --insecure-skip-tls-verify=true {{OCP_api_server}} --username={{OCP_username}} --password={{OCP_password}}
   register: ocp_login
   failed_when: "'Login successful.' not in ocp_login.stdout"
 

@@ -1,0 +1,57 @@
+---
+
+- debug:
+    msg: "Get Number of nodes - This will only run on a single node"
+
+- name: Get Number of nodes - Needs to be only one node
+  ansible.builtin.command: "oc get nodes --no-headers"
+  register: ocp_nodes
+  #failed_when: (ocp_nodes.stdout_lines | length) != 1
+
+- name: OCP Number of ocp_nodes
+  set_fact: 
+    ocp_node_count: "{{ocp_nodes.stdout_lines | length}}"
+
+- debug:
+    msg: "count {{ocp_node_count}}"
+
+- name: Set OCP Hostname
+  set_fact:
+     ocp_hostname: "{{ocp_nodes.stdout.split(' ').0}}"
+  when: ocp_node_count == "1"
+
+- debug:
+    msg: "Create PV Folders on OCP node"
+
+- name: Create PV Folders on OCP node
+  ansible.builtin.command: "oc debug node/{{ocp_hostname}} -- mkdir -p /host/mnt/pv-data/{{ item }}"
+  with_items: "{{ pvlist }}"
+  when: ocp_node_count == "1"
+
+- debug:
+    msg: "Create PV's"
+
+- name: Create PV's
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata:
+        labels:
+          volume: "{{ item }}"
+        name: "{{ item }}"
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        - ReadWriteMany
+        - ReadOnlyMany
+        capacity:
+          storage: 100Gi
+        hostPath:
+          path: "/mnt/pv-data/{{ item }}"
+          type: ""
+        persistentVolumeReclaimPolicy: Recycle
+        volumeMode: Filesystem
+  with_items: "{{ pvlist }}"
+  when: ocp_node_count == "1"

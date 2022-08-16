@@ -18,7 +18,7 @@
     - set_fact:
         OCP_password: "{{OCP_password}}"
   roles:
-    #- TODO OCP LOGIN CLUSTER ADMIN
+    - TODO OCP LOGIN CLUSTER ADMIN
     - openshift-login
     - openshift-gitops
     - argocd-client-install
@@ -28,4 +28,3 @@
     - sync-gitops-application-tekton
     - sync-gitops-application-quarkus-superheroes
     - argocd-get-login
-    

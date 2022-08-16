@@ -86,13 +86,17 @@ This can also be manually set in Openshift Local/Cloud Ready Containers by runni
 
 ## 4. Openshift Serverless
 
-  Openshift Service mesh was set up so that we can monitor the state of our quarkus microservices. Two of the rest services are exposed externally while the rest are internal to the cluster.
+  We use quarkus native built applications. We use this for the startup times required for Openshfit Serverless. Since we are using a mesh of microservices the minimum count has been set to 1 container. The reason for this is that it takes a few seconds for everything downstream to start up.
+
+  On the event statistics endpoint we will set the minimum to 0 so that we can show it starting up as needed. This same microservices will also run an instance per request to show how it scales depending on requests.
 
   Note: You have to access both the rest-fights and the ui-superheroes external links directly once when using self service mesh signed certificates (The default for this demo). HTTPs is a requirement for using Serverless on Service mesh. If don't access the rest-fights service the and accept the self signed certificate then the UI will not work correctly as it calls that service.
 
   https://docs.openshift.com/container-platform/4.10/serverless/admin_guide/serverless-ossm-setup.html
 
 ## 5. Openshift Service Mesh
+
+  Openshift Service mesh was set up so that we can monitor the state of our quarkus microservices. Two of the rest services are exposed externally while the rest are internal to the cluster.
  
 
 ### Notes
@@ -146,3 +150,5 @@ https://api.sno.scarab.local:6443
 ctTMB-a9EDd-um96T-VCXAc
 
 https://access.redhat.com/solutions/4923031
+
+oc get csv

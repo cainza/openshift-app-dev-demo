@@ -146,7 +146,8 @@ spec:
       image: $(params.MAVEN_IMAGE)
       name: mvn-goals
       resources: {}
-      securityContext: {}
+      securityContext:
+        runAsUser: 0
       workingDir: $(workspaces.source.path)/$(params.CONTEXT_DIR)
   workspaces:
     - description: The workspace consisting of maven project.

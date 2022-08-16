@@ -33,6 +33,11 @@
   with_items: "{{ pvlist }}"
   when: ocp_node_count == "1"
 
+- name: Set PV'c SeLinux Context
+  ansible.builtin.command: "oc debug node/{{ocp_hostname}} -- chcon -t container_file_t -R /host/mnt/pv-data/{{ item }}"
+  with_items: "{{ pvlist }}"
+  when: ocp_node_count == "1"
+
 - debug:
     msg: "Create PV's"
 
@@ -61,7 +66,6 @@
   with_items: "{{ pvlist }}"
   when: ocp_node_count == "1"
   no_log: true
-  
 
 - name: Create Registry PVC
   kubernetes.core.k8s:

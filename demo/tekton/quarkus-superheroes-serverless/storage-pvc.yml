@@ -5,19 +5,11 @@ metadata:
   namespace: quarkus-superheroes-serverless
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 100Gi
+      storage: 10Gi
   volumeMode: Filesystem
-status:
-  phase: Bound
-  accessModes:
-    - ReadWriteOnce
-    - ReadWriteMany
-    - ReadOnlyMany
-  capacity:
-    storage: 100Gi
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -26,16 +18,8 @@ metadata:
   namespace: quarkus-superheroes-serverless
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 100Gi
+      storage: 10Gi
   volumeMode: Filesystem
-status:
-  phase: Bound
-  accessModes:
-    - ReadWriteOnce
-    - ReadWriteMany
-    - ReadOnlyMany
-  capacity:
-    storage: 100Gi

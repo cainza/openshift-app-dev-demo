@@ -1,5 +1,21 @@
 #!/bin/bash
 
+ansibleCheck(){
+
+    unameOut="$(uname -s)"
+
+    if [ $unameOut == "Linux" ]; then
+        #dnf install 
+
+        which ansible-playbook
+
+        if [ $? -ne 0 ]; then
+            sudo dnf -y install ansible-core.noarch
+        fi
+    fi
+
+}
+
 crcStart(){
     # Start and Setup
     ansible-playbook -i hosts/hosts playbooks/host-setup.yml
@@ -35,6 +51,9 @@ crcCreds(){
 
 # Include ansible libraries we wrote
 #export ANSIBLE_LIBRARY=./library
+
+# Check ansible
+ansibleCheck
 
 # Startup
 case "${1}" in

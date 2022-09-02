@@ -50,3 +50,17 @@
           syncOptions:
             - CreateNamespace=true
   when: ocp_node_count == "1"
+
+- name: Waiting for ODF MCG Cluster to be ready
+  debug:
+    msg: "Monitoring ODF MCG Cluster"
+
+### TODO!!! Check that ODF LVM is set up
+- monitor_operator_custom_resource:
+    name: "ocs-storagecluster"
+    namespace: openshift-storage
+    group: "ocs.openshift.io"
+    version: "v1"
+    plural: storageclusters
+    custom_ready_key: "Available"
+    custom_ready_value: "True"

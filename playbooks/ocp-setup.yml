@@ -18,12 +18,17 @@
     - set_fact:
         OCP_password: "{{OCP_password}}"
   roles:
-    - openshift-login
-    - openshift-gitops
-    - argocd-client-install
-    - cluster-demo
-    - sync-gitops-application-servicemesh
-    - sync-gitops-application-knative-serving
-    - sync-gitops-application-tekton
-    - sync-gitops-application-quarkus-superheroes
+    #- openshift-login
+    #- openshift-gitops
+    #- argocd-client-install
+    #- cluster-demo
+    #- sno-local-storage
+    - sno-odf-lvm
+    #- sync-gitops-application-servicemesh
+    #- sync-gitops-application-knative-serving
+    #- sync-gitops-application-tekton
+    #- sync-gitops-application-quarkus-superheroes
     - argocd-get-login
+
+    # TODO
+    # - Quarkus Superheroes rest-fights route for UI dynamic

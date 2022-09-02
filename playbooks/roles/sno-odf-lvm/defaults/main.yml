@@ -1,0 +1,4 @@
+### SYNC SERVICE MESH
+lvmcluster_name: odf-lvmcluster
+lvmcluster_apigroup: lvm.topolvm.io
+lvmcluster_apiversion: v1alpha1

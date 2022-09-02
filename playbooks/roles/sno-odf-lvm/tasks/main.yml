@@ -14,58 +14,57 @@
 
 - debug:
     msg: "count {{ocp_node_count}}"
-
-- name: Set OCP Hostname
-  set_fact:
-     ocp_hostname: "{{ocp_nodes.stdout.split(' ').0}}"
   when: ocp_node_count == "1"
 
-- debug:
-    msg: "Create PV Folders on OCP node"
-
-- name: Create PV Folders on OCP node
-  ansible.builtin.command: "oc debug node/{{ocp_hostname}} -- mkdir -p /host/mnt/pv-data/{{ item }}"
-  with_items: "{{ pvlist }}"
+- name: Waiting for ODF LVM Operator
+  debug:
+    msg: "Monitor ODF LVM operator is installed"
   when: ocp_node_count == "1"
 
-- name: Fix PV Folders permissions on OCP node
-  ansible.builtin.command: "oc debug node/{{ocp_hostname}} -- chmod 777 /host/mnt/pv-data/{{ item }}"
-  with_items: "{{ pvlist }}"
+- name: Check if ODF LVM is installed
+  monitor_operator_install:
+    name: odf-lvm-operator
+    namespace: openshift-storage
   when: ocp_node_count == "1"
 
-- name: Set PV'c SeLinux Context
-  ansible.builtin.command: "oc debug node/{{ocp_hostname}} -- chcon -t container_file_t -R /host/mnt/pv-data/{{ item }}"
-  with_items: "{{ pvlist }}"
-  when: ocp_node_count == "1"
-
-- debug:
-    msg: "Create PV's"
-
-- name: Create PV's
+- name: Create ODF LVM in GitOps
   kubernetes.core.k8s:
     state: present
     definition:
-      apiVersion: v1
-      kind: PersistentVolume
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
       metadata:
-        labels:
-          volume: "{{ item }}"
-        name: "{{ item }}"
+        name: odf-lvm
+        namespace: "{{ openshift_argocd_namespace }}"
       spec:
-        accessModes:
-        - ReadWriteOnce
-        - ReadWriteMany
-        - ReadOnlyMany
-        capacity:
-          storage: 100Gi
-        hostPath:
-          path: "/mnt/pv-data/{{ item }}"
-          type: ""
-        persistentVolumeReclaimPolicy: Recycle
-        volumeMode: Filesystem
-  with_items: "{{ pvlist }}"
+        destination:
+          namespace: openshift-storage
+          server: https://kubernetes.default.svc
+        project: "{{ cluster_demo_setup_project }}"
+        source:
+          path: demo/odf-lvm
+          repoURL: "{{ cluster_demo_setup_repo }}"
+          targetRevision: "{{ cluster_demo_setup_revision }}"
+        syncPolicy:
+          automated: {}
+          syncOptions:
+            - CreateNamespace=true
   when: ocp_node_count == "1"
-  no_log: true
+
+#- name: Waiting for ODF LVM Cluster to be ready
+#  debug:
+#    msg: "Monitoring ODF LVM Cluster"
+
+### TODO!!! Check that ODF LVM is set up
+#- monitor_operator_custom_resource:
+#    name: "{{ lvmcluster_name }}"
+#    namespace: openshift-storage
+#    group: "{{ lvmcluster_apigroup }}"
+#    version: "{{ lvmcluster_apiversion }}"
+#    plural: lvmclusters
+#    custom_ready_key: "ready"
+#    custom_ready_value: "true"
+
 
 - name: Create Registry PVC
   kubernetes.core.k8s:
@@ -78,21 +77,21 @@
         namespace: openshift-image-registry
       spec:
         accessModes:
-          - ReadWriteMany
+          - ReadWriteOnce
         resources:
           requests:
-            storage: 100Gi
-        volumeName: pv0001
+            storage: 50Gi
+        volumeName: openshift-registry
         volumeMode: Filesystem
-      status:
-        phase: Bound
-        accessModes:
-          - ReadWriteOnce
-          - ReadWriteMany
-          - ReadOnlyMany
+        storageClassName: odf-lvm-odf-lvm-vg-immediate
         capacity:
-          storage: 100Gi
+          storage: 50Gi
   when: ocp_node_count == "1"
+  register: create_pvc
+  ignore_errors: yes
+
+- name: Change Rollout Strategy to Recreate - Needed for RWO Disks
+  ansible.builtin.command: oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"rolloutStrategy":"Recreate"}}'
 
 - name: Patch Registry to be available
   ansible.builtin.command: oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"managementState":"Managed"}}'

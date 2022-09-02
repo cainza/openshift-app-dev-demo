@@ -1,0 +1,52 @@
+apiVersion: ocs.openshift.io/v1
+kind: StorageCluster
+metadata:
+#  annotations:
+#    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+#    argocd.argoproj.io/sync-wave: '3'
+  finalizers:
+    - storagecluster.ocs.openshift.io
+  labels:
+    app.kubernetes.io/instance: deploy-mcg
+  name: ocs-storagecluster
+  namespace: openshift-storage
+spec:
+  arbiter: {}
+  encryption:
+    kms: {}
+  externalStorage: {}
+  managedResources:
+    cephBlockPools: {}
+    cephConfig: {}
+    cephDashboard: {}
+    cephFilesystems: {}
+    cephObjectStoreUsers: {}
+    cephObjectStores: {}
+  multiCloudGateway:
+    dbStorageClassName: odf-lvm-odf-lvm-vg-immediate
+    endpoints:
+      maxCount: 1
+      minCount: 1
+    reconcileStrategy: standalone
+  resources:
+    noobaa-core:
+      limits:
+        cpu: '1'
+        memory: 1Gi
+      requests:
+        cpu: 400m
+        memory: 700Mi
+    noobaa-db:
+      limits:
+        cpu: '1'
+        memory: 1Gi
+      requests:
+        cpu: 400m
+        memory: 700Mi
+    noobaa-endpoint:
+      limits:
+        cpu: 1500m
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 700Mi

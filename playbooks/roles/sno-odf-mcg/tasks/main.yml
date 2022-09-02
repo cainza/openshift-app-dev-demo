@@ -1,0 +1,52 @@
+---
+
+- debug:
+    msg: "Get Number of nodes - This will only run on a single node"
+
+- name: Get Number of nodes - Needs to be only one node
+  ansible.builtin.command: "oc get nodes --no-headers"
+  register: ocp_nodes
+  failed_when: (ocp_nodes.stdout_lines | length) != 1
+
+- name: OCP Number of ocp_nodes
+  set_fact: 
+    ocp_node_count: "{{ocp_nodes.stdout_lines | length}}"
+
+- debug:
+    msg: "count {{ocp_node_count}}"
+  when: ocp_node_count == "1"
+
+- name: Waiting for ODF LVM Operator
+  debug:
+    msg: "Monitor ODF LVM operator is installed"
+  when: ocp_node_count == "1"
+
+- name: Check if ODF Operator is installed
+  monitor_operator_install:
+    name: odf-operator
+    namespace: openshift-storage
+  when: ocp_node_count == "1"
+
+- name: Create ODF MCG in GitOps
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: odf-mcg
+        namespace: "{{ openshift_argocd_namespace }}"
+      spec:
+        destination:
+          namespace: openshift-storage
+          server: https://kubernetes.default.svc
+        project: "{{ cluster_demo_setup_project }}"
+        source:
+          path: demo/odf-mcg
+          repoURL: "{{ cluster_demo_setup_repo }}"
+          targetRevision: "{{ cluster_demo_setup_revision }}"
+        syncPolicy:
+          automated: {}
+          syncOptions:
+            - CreateNamespace=true
+  when: ocp_node_count == "1"

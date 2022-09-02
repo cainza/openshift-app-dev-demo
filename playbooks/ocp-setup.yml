@@ -23,12 +23,13 @@
     #- argocd-client-install
     #- cluster-demo
     #- sno-local-storage
-    - sno-odf-lvm
+    #- sno-odf-lvm
+    - sno-odf-mcg
     #- sync-gitops-application-servicemesh
     #- sync-gitops-application-knative-serving
     #- sync-gitops-application-tekton
     #- sync-gitops-application-quarkus-superheroes
-    - argocd-get-login
+    #- argocd-get-login
 
     # TODO
     # - Quarkus Superheroes rest-fights route for UI dynamic

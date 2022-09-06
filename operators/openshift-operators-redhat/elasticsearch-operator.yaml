@@ -1,9 +1,3 @@
-apiVersion: operators.coreos.com/v1
-kind: OperatorGroup
-metadata:
-  name: openshift-operators-redhat-nnkmv
-  namespace: openshift-operators-redhat
----
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:

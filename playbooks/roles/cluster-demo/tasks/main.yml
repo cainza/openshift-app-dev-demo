@@ -131,7 +131,7 @@
           syncOptions:
             - CreateNamespace=true
 
-- name: Deploy openshift-serverless in GitOps
+- name: Deploy openshift-storage in GitOps
   kubernetes.core.k8s:
     state: present
     definition:

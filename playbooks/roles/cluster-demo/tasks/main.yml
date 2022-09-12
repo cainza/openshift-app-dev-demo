@@ -130,3 +130,29 @@
           automated: {}
           syncOptions:
             - CreateNamespace=true
+
+- name: Deploy openshift-serverless in GitOps
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: openshift-storage
+        namespace: "{{ openshift_argocd_namespace }}"
+      spec:
+        destination:
+          server: 'https://kubernetes.default.svc'
+          namespace: openshift-storage
+        project: "{{ cluster_demo_setup_project }}"
+        source:
+          directory:
+            jsonnet: {}
+            recurse: true
+          path: operators/openshift-serverless
+          repoURL: "{{ cluster_demo_setup_repo }}"
+          targetRevision: "{{ cluster_demo_setup_revision }}"
+        syncPolicy:
+          automated: {}
+          syncOptions:
+            - CreateNamespace=true

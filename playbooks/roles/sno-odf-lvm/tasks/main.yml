@@ -12,9 +12,16 @@
   set_fact: 
     ocp_node_count: "{{ocp_nodes.stdout_lines | length}}"
 
-- debug:
-    msg: "count {{ocp_node_count}}"
+- name: Get node name
+  ansible.builtin.command: "oc get nodes  --no-headers -o name"
+  register: ocp_node_name
   when: ocp_node_count == "1"
+
+- name: Get Node Disks on {{ocp_node_name.stdout_lines[0]}}
+  ansible.builtin.shell: 
+    cmd: "oc debug {{ocp_node_name.stdout_lines[0]}} -- fdisk -l | grep '^Disk /dev'"
+  register: ocp_disks
+  failed_when: (ocp_disks.stdout_lines | length) < 3
 
 - name: Waiting for ODF LVM Operator
   debug:
@@ -51,20 +58,19 @@
             - CreateNamespace=true
   when: ocp_node_count == "1"
 
-#- name: Waiting for ODF LVM Cluster to be ready
-#  debug:
-#    msg: "Monitoring ODF LVM Cluster"
+- name: Waiting for ODF LVM Cluster to be ready
+  debug:
+    msg: "Monitoring ODF LVM Cluster"
 
-### TODO!!! Check that ODF LVM is set up
-#- monitor_operator_custom_resource:
-#    name: "{{ lvmcluster_name }}"
-#    namespace: openshift-storage
-#    group: "{{ lvmcluster_apigroup }}"
-#    version: "{{ lvmcluster_apiversion }}"
-#    plural: lvmclusters
-#    custom_ready_key: "ready"
-#    custom_ready_value: "true"
-
+- name: Monitoring ODF LVM Ready
+  monitor_operator_custom_resource:
+    name: "{{ lvmcluster_name }}"
+    namespace: openshift-storage
+    group: "{{ lvmcluster_apigroup }}"
+    version: "{{ lvmcluster_apiversion }}"
+    plural: lvmclusters
+    custom_ready_key: "ready"
+    custom_ready_value: True
 
 - name: Create Registry PVC
   kubernetes.core.k8s:

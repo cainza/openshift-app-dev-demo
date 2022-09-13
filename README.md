@@ -50,8 +50,8 @@ Defaults are:
 
 |       |Value         |Description                  |
 |-------|--------------|-----------------------------|
-|CPUs   |`16`          |Sets the CPUs to 16          |
-|Memory |`16384`       |Sets the Memory to 16GB      |
+|CPUs   |`12`          |Sets the CPUs to 12          |
+|Memory |`32768`       |Sets the Memory to 32GB      |
 |Disk   |`100000`      |Sets the Disk to 100GB       |
 
 
@@ -98,6 +98,8 @@ This can also be manually set in Openshift Local/Cloud Ready Containers by runni
 
   Openshift Service mesh was set up so that we can monitor the state of our quarkus microservices. Two of the rest services are exposed externally while the rest are internal to the cluster.
  
+[README Single Node Openshift](README-SNO.md)
+[README Openshift Local](README-CRC.md)
 
 ### Notes
 

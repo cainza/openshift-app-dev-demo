@@ -17,19 +17,24 @@
         OCP_username: "{{OCP_username}}"
     - set_fact:
         OCP_password: "{{OCP_password}}"
+    - name: Check OCP Version
+      ansible.builtin.command: "{% raw %}oc get clusterversion/version --no-headers --template={{.status.desired.version}}{% endraw %}"
+      register: ocp_version
+      failed_when: ocp_version.stdout != "4.11.1"
+
   roles:
     #- openshift-login
     #- openshift-gitops
     #- argocd-client-install
     #- cluster-demo
     #- sno-local-storage
-    #- sno-odf-lvm
-    - sno-odf-mcg
+    - sno-odf-lvm
+    #- sno-odf-mcg
     #- sync-gitops-application-servicemesh
     #- sync-gitops-application-knative-serving
     #- sync-gitops-application-tekton
     #- sync-gitops-application-quarkus-superheroes
-    #- argocd-get-login
+    - argocd-get-login
 
     # TODO
     # - Quarkus Superheroes rest-fights route for UI dynamic

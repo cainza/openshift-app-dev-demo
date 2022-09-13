@@ -98,8 +98,8 @@ This can also be manually set in Openshift Local/Cloud Ready Containers by runni
 
   Openshift Service mesh was set up so that we can monitor the state of our quarkus microservices. Two of the rest services are exposed externally while the rest are internal to the cluster.
  
-[README Single Node Openshift](README-SNO.md)
-[README Openshift Local](README-CRC.md)
+- [README Single Node Openshift](README-SNO.md)
+- [README Openshift Local](README-CRC.md)
 
 ### Notes
 

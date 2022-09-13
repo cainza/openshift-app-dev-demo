@@ -39,8 +39,8 @@ spec:
       containers:
         - image: image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless/ui-super-heroes:latest
           env:
-            - name: API_BASE_URL
-              value: https://rest-fights-quarkus-superheroes-serverless.apps-crc.testing
+            - name: CALCULATE_API_BASE_URL
+              value: "true"
           name: ui-super-heroes
           imagePullPolicy: Always
           livenessProbe:

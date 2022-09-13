@@ -1,0 +1,19 @@
+### CRC CONFIG
+# Enable / Disable Telemetry to Red Hat
+crc_consent_telemetry: "no"
+
+# Enable / Disable Cluster Monitoring 
+# Enable only if you have enough memory, needs ~4G extra
+crc_cluster_monitoring: True
+
+# Set CRC CPU's
+crc_cpus: "16"
+
+# Set CRC Memory
+crc_memory: "32768"
+
+# Set Disk Size, Thin Provisioned
+crc_disk_size: "250"
+
+### CRC SETUP
+crc_admin_user: kubeadmin

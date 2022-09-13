@@ -1,0 +1,4 @@
+### SYNC SERVICE MESH
+istio_control_plane_name: basic
+istio_control_plane_apigroup: maistra.io
+istio_control_plane_apiversion: v2

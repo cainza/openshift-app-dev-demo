@@ -62,5 +62,5 @@
     group: "ocs.openshift.io"
     version: "v1"
     plural: storageclusters
-    custom_ready_key: "Available"
-    custom_ready_value: "True"
+    custom_ready_key: "phase"
+    custom_ready_value: "Ready"

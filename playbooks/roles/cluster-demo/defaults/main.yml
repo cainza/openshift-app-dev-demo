@@ -1,0 +1,6 @@
+### CLUSTER GITOPS SETUP 
+cluster_demo_setup_name: cluster-configs
+cluster_demo_setup_project: default
+cluster_demo_setup_path: cluster
+cluster_demo_setup_repo: https://github.com/cainza/openshift-app-dev-demo.git
+cluster_demo_setup_revision: main

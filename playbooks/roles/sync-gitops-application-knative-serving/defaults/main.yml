@@ -1,0 +1,4 @@
+### SYNC KNATIVE SERVING
+knative_name: knative-serving
+knative_apigroup: operator.knative.dev
+knative_apiversion: v1alpha1

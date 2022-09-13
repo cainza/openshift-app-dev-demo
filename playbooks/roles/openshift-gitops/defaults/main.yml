@@ -1,0 +1,15 @@
+### OPENSHIFT GITOPS
+openshift_gitops_apiversion: operators.coreos.com/v1alpha1
+openshift_gitops_name: openshift-gitops-operator
+openshift_gitops_namespace: openshift-operators
+openshift_gitops_channel: latest
+openshift_gitops_spec_installPlanApproval: Automatic
+openshift_gitops_spec_name: openshift-gitops-operator
+openshift_gitops_spec_source: redhat-operators
+openshift_gitops_spec_sourceNamespace: openshift-marketplace
+
+openshift_argocd_group: argoproj.io
+openshift_argocd_version: v1alpha1
+openshift_argocd_plural: argocds
+openshift_argocd_custom_ready_key: server
+openshift_argocd_custom_ready_value: Running

@@ -1,0 +1,25 @@
+---
+
+- name: Create Quay in GitOps
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: quay
+        namespace: "{{ openshift_argocd_namespace }}"
+      spec:
+        destination:
+          namespace: quay
+          server: https://kubernetes.default.svc
+        project: "{{ cluster_demo_setup_project }}"
+        source:
+          path: demo/quay
+          repoURL: "{{ cluster_demo_setup_repo }}"
+          targetRevision: "{{ cluster_demo_setup_revision }}"
+        syncPolicy:
+          automated: {}
+          syncOptions:
+            - CreateNamespace=true
+#  when: ocp_node_count == "1"

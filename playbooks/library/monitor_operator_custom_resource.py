@@ -100,27 +100,26 @@ def monitor_operator_custom_resource(name, namespace, group, version, plural, ti
 
                     if k8s_response['metadata']['name'] == name and k8s_response['metadata']['namespace'] == namespace and "status" in k8s_response:
 
+                        if custom_ready_key != None and custom_ready_value != None:
+                            print ("Using non standard custom resource check")
+                            print ("Custom Ready Key: %s" % custom_ready_key)
+                            print ("Custom Ready Value %s" % custom_ready_value)
+
+                            if custom_ready_key in k8s_response['status'] and str(k8s_response['status'][custom_ready_key]) == custom_ready_value:
+                                operator_installed = True
+                                break
+                        
                         # Check if we can measure based on conditions
-                        if 'conditions' in k8s_response['status']:
+                        elif 'conditions' in k8s_response['status']:
                             # Loop through conditions
                             for condition in k8s_response['status']['conditions']:
 
                                 # Check if Ready status is True
                                 if ( "type" in condition and "status" in condition ) and  (condition['type'] == 'Ready' and condition['status'] == "True"):
                                     operator_installed = True
-                                    break
-                        else:
+                        
                             
-                            print ("Using non standard custom resource check")
-                            print ("Custom Ready Key: %s" % custom_ready_key)
-                            print ("Custom Ready Value %s" % custom_ready_value)
-
-                            print (k8s_response['status'])
                             
-                            if custom_ready_key in k8s_response['status'] and str(k8s_response['status'][custom_ready_key]) == custom_ready_value:
-                                operator_installed = True
-                                print ("Found")
-                                break
 
                             
                     

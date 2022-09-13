@@ -114,10 +114,15 @@ def monitor_operator_custom_resource(name, namespace, group, version, plural, ti
                             print ("Using non standard custom resource check")
                             print ("Custom Ready Key: %s" % custom_ready_key)
                             print ("Custom Ready Value %s" % custom_ready_value)
-  
-                            if custom_ready_key in k8s_response['status'] and k8s_response['status'][custom_ready_key] == custom_ready_value:
+
+                            print (k8s_response['status'])
+                            
+                            if custom_ready_key in k8s_response['status'] and str(k8s_response['status'][custom_ready_key]) == custom_ready_value:
                                 operator_installed = True
+                                print ("Found")
                                 break
+
+                            
                     
                 if operator_installed:
                     print ("Custom resource deploment finished")

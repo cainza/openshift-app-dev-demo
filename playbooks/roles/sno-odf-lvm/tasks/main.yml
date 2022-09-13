@@ -70,7 +70,7 @@
     version: "{{ lvmcluster_apiversion }}"
     plural: lvmclusters
     custom_ready_key: "ready"
-    custom_ready_value: True
+    custom_ready_value: "True"
 
 - name: Create Registry PVC
   kubernetes.core.k8s:
@@ -87,7 +87,6 @@
         resources:
           requests:
             storage: 50Gi
-        volumeName: openshift-registry
         volumeMode: Filesystem
         storageClassName: odf-lvm-odf-lvm-vg-immediate
         capacity:

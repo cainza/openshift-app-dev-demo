@@ -1,15 +1,8 @@
-﻿
-# Openshift Appdev All in One Demo!
-
-  
+﻿# Openshift Appdev All in One Demo!
 
 The purpose of this repository is to provide you with a simple method to deploy and demo multiple components within the Red Hat Openshift Application development environment. Many of the components is integrated with each other tries to illustrate the full flow of components and how you might want to use them within a production environment.
 
-  
-
 Currently a shell script exists to prepare Openshift Local / Cloud Ready Containers. This will be expanded to work on Openshift Container Platform / Single Node Openshift.
-
-  
 
 ## What can we Demo Today
 
@@ -20,7 +13,6 @@ Currently a shell script exists to prepare Openshift Local / Cloud Ready Contain
 5. Openshift Service Mesh
 6. ODF LVM - This serves as our backing store for ODF Multi Cloud Gateway (Noobaah) etc.
 
-
 ## What will come in future  
 
 1. A/B Deployments ( Other deployment models )
@@ -28,14 +20,14 @@ Currently a shell script exists to prepare Openshift Local / Cloud Ready Contain
 3. Openshift Serverless (Knative Eventing)
 4. Openshift Serverless (Functions)
 5. Openshift Serverless with Integration (Camel-K)
+6. User namespace monitoring
+7. KEDA - Event based autoscaling
 
-  
 # Configuration & Requirements
 
 This demo requires a minimum of 32GB RAM to run.
 
 A Minimum CPU requirement of 4 Cores with Hyperthreading / 8vCPU. 8 cores with hyperthreading/ 16vCPU is recommended.
-
 
 # Deployment
 
@@ -52,9 +44,11 @@ A Minimum CPU requirement of 4 Cores with Hyperthreading / 8vCPU. 8 cores with h
 
   The initial script will deploy the GitOps operator and when ready deploys the cluster configs application. 
 
-  Other GitOps application will be deployed via the ansible playbook.They will vary from installing operators to deploying Quarkus applications to deploying things just as AMQ Streams ( Kafka ).
+  Other GitOps applications will be deployed via the ansible playbooks. These applications include deploying operators, ODF LVM, Pipelines, Service mesh etc.
 
-  The applications that automatically sync is mainly for cluster operators that are dependencies for other Applications to be deployed. 
+  Most of the applications will automatically sync to keep they're state intact. Others will not such as the quarkus-superheroes application. These will be synced by other means such as pipelines.
+
+  ![Openshift GitOps Dashboard](images/1-ocp-gitops.png)
 
 ## Openshift Pipelines/Tekton
 
@@ -63,6 +57,8 @@ A Minimum CPU requirement of 4 Cores with Hyperthreading / 8vCPU. 8 cores with h
   The quarkus super heroes API features multiple microservices low resource requirements, thanks to Quarkus. Due to the microservices having interservices dependencies using REST they form an ideal candidate for Service Mesh coming later.
 
   There is also a stage within the pipeline that triggers the sync of the quarkus demo application knative deployment. This bothnot only shows how GitOps can sync resources but also how these resources could be synced after a successfull pipeline run.
+
+  ![Openshift Pipelines](images/2-openshift-pipelines.png)
 
 ## 4. Openshift Serverless
 
@@ -74,13 +70,10 @@ A Minimum CPU requirement of 4 Cores with Hyperthreading / 8vCPU. 8 cores with h
 
   https://docs.openshift.com/container-platform/4.10/serverless/admin_guide/serverless-ossm-setup.html
 
+  ![Openshift Pipelines](images/2-openshift-serverless.png)
+
 ## 5. Openshift Service Mesh
 
   Openshift Service mesh was set up so that we can monitor the state of our quarkus microservices. Two of the rest services are exposed externally while the rest are internal to the cluster.
 
-### Notes
-
-# TODO
-# 1) User namespace monitoring
-# 2) KEDA
-
+  ![Openshift Pipelines](images/2-openshift-service-mesh.png)

@@ -13,4 +13,3 @@
     - sync-gitops-application-quarkus-superheroes
     - crc-credentials
     - argocd-get-login
-    

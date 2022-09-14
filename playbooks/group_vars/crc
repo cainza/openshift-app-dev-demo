@@ -2,5 +2,4 @@
 openshift_argocd_name: openshift-gitops
 openshift_argocd_namespace: openshift-gitops
 openshift_argocd_secret: openshift-gitops-cluster
-
 openshift_argocd_gitops_route: openshift-gitops-server

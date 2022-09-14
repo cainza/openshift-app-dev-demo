@@ -1,4 +1,3 @@
-﻿
 # Instructions for Single Node Openshift (SNO)
 
 ## Firewalls
@@ -21,3 +20,16 @@ Create a file called   /etc/NetworkManager/dispatcher.d/00-sno-local.sh
 	systemd-resolve --interface virbr0 --set-dns 192.168.122.$(YOUR_OCP_IP) --set-domain ~sno.openshift.local
 	exit 0
     
+## Deploy the demo environment into Single Node Openshift
+
+Ensure ansible is installed and run the following commands
+
+    ansible-playbook -i hosts/hosts playbooks/ocp-setup.yml
+
+You will be prompted for your Openshift information as follows. If you have your kubeconfig set up you can comment out the step within the playbook:
+
+    Please enter your openshift location ( example: https://api.openshift.local:6443): 
+    Please enter your OCP user (With cluster-admin rights): cluster-admin
+    Please enter your OCP user's password (Output will be hidden):
+
+This process will take some time to finish as it deploys the various components within the cluster.

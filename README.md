@@ -21,11 +21,7 @@ Currently a shell script exists to prepare Openshift Local / Cloud Ready Contain
 6. ODF LVM - This serves as our backing store for ODF Multi Cloud Gateway (Noobaah) etc.
 
 
-  
-
-## What will come in future
-
-  
+## What will come in future  
 
 1. A/B Deployments ( Other deployment models )
 2. 3Scale API Management
@@ -38,29 +34,13 @@ Currently a shell script exists to prepare Openshift Local / Cloud Ready Contain
 
 This demo requires a minimum of 32GB RAM to run.
 
-A Minimum CPU requirement of 4 Cores with Hyperthreading enabled (8vCPU). 8 cores with hyperthreading (16vCPU) is recommended.
-
-  
-
-The demo-crc will set the required settings and can be configured within the script.
-
-  
-
-Defaults are:
-
-|       |Value         |Description                  |
-|-------|--------------|-----------------------------|
-|CPUs   |`12`          |Sets the CPUs to 12          |
-|Memory |`32768`       |Sets the Memory to 32GB      |
-|Disk   |`100000`      |Sets the Disk to 100GB       |
+A Minimum CPU requirement of 4 Cores with Hyperthreading / 8vCPU. 8 cores with hyperthreading/ 16vCPU is recommended.
 
 
-This can also be manually set in Openshift Local/Cloud Ready Containers by running:
+# Deployment
 
- - crc config set cpus 12
- - crc config set memory 32768
- - crc config set disk-size 100000
-
+- [README Single Node Openshift](README-SNO.md)
+- [README Openshift Local](README-CRC.md)
 
 ## Ansible Playbooks
 
@@ -97,9 +77,6 @@ This can also be manually set in Openshift Local/Cloud Ready Containers by runni
 ## 5. Openshift Service Mesh
 
   Openshift Service mesh was set up so that we can monitor the state of our quarkus microservices. Two of the rest services are exposed externally while the rest are internal to the cluster.
- 
-- [README Single Node Openshift](README-SNO.md)
-- [README Openshift Local](README-CRC.md)
 
 ### Notes
 

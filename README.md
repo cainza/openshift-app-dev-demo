@@ -70,10 +70,10 @@ A Minimum CPU requirement of 4 Cores with Hyperthreading / 8vCPU. 8 cores with h
 
   https://docs.openshift.com/container-platform/4.10/serverless/admin_guide/serverless-ossm-setup.html
 
-  ![Openshift Pipelines](images/2-openshift-serverless.png)
+  ![Openshift Pipelines](images/3-openshift-serverless.png)
 
 ## 5. Openshift Service Mesh
 
   Openshift Service mesh was set up so that we can monitor the state of our quarkus microservices. Two of the rest services are exposed externally while the rest are internal to the cluster.
 
-  ![Openshift Pipelines](images/2-openshift-service-mesh.png)
+  ![Openshift Pipelines](images/4-openshift-service-mesh.png)

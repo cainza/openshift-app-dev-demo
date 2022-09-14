@@ -48,6 +48,8 @@ A Minimum CPU requirement of 4 Cores with Hyperthreading / 8vCPU. 8 cores with h
 
   Most of the applications will automatically sync to keep they're state intact. Others will not such as the quarkus-superheroes application. These will be synced by other means such as pipelines.
 
+  The credentials for the the admin user in gitops will be extracted and printed by the ansible-playbook as the last step for usage. Alternatively this secret can be extracted manually from the Openshift UI.
+
   ![Openshift GitOps Dashboard](images/1-ocp-gitops.png)
 
 ## Openshift Pipelines/Tekton
@@ -62,9 +64,9 @@ A Minimum CPU requirement of 4 Cores with Hyperthreading / 8vCPU. 8 cores with h
 
 ## 4. Openshift Serverless
 
-  We use quarkus native built applications. We use this for the startup times required for Openshfit Serverless. Since we are using a mesh of microservices the minimum count has been set to 1 container. The reason for this is that it takes a few seconds for everything downstream to start up.
+  We use quarkus native built applications. We use this for the startup times required for Openshfit Serverless. Since we are using a mesh of microservices the minimum count has been set to 0 container. The reason for this is that it takes a few seconds for everything downstream to start up.
 
-  On the event statistics endpoint we will set the minimum to 0 so that we can show it starting up as needed. This same microservices will also run an instance per request to show how it scales depending on requests.
+  On the event statistics endpoint we will set the minimum to 1 so that we can show it starting a new instance up as needed. The purpose is to show it handling a each new request with a new pod instance.
 
   Note: You have to access both the rest-fights and the ui-superheroes external links directly once when using self service mesh signed certificates (The default for this demo). HTTPs is a requirement for using Serverless on Service mesh. If don't access the rest-fights service the and accept the self signed certificate then the UI will not work correctly as it calls that service.
 

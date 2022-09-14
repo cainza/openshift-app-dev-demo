@@ -97,6 +97,6 @@ This is infact a set of microservices that form a mesh:
 
 We can view traffic flow from the Kiali Dashboard. The link can be found in the istio-system namespace. This is part of the Service Mesh deployment.
 
-You will need to select the quarkus-superheroes-serverless namespace freom the graph menu. If you don't see the namespace there, restart the kiali operator in the openshift-operators namespace.
+You will need to select the quarkus-superheroes-serverless and knative-serving namespace from the graph menu. If you don't see the namespace there, restart the kiali operator in the openshift-operators namespace.
 
 ![Kiali](images/6-kiali-dashboard.png)

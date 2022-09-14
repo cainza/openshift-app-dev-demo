@@ -91,3 +91,12 @@ When you access the Quarkus Superheroes UI service you will be presented with an
 This is infact a set of microservices that form a mesh:
 
 ![Quarkus Super Heroes Architecture](https://github.com/quarkusio/quarkus-super-heroes/blob/main/images/application-architecture.png)
+
+
+## 6. Openshift Service Mesh - Kiali Dashboard
+
+We can view traffic flow from the Kiali Dashboard. The link can be found in the istio-system namespace. This is part of the Service Mesh deployment.
+
+You will need to select the quarkus-superheroes-serverless namespace freom the graph menu. If you don't see the namespace there, restart the kiali operator in the openshift-operators namespace.
+
+![Kiali](images/6-kiali-dashboard.png)

@@ -7,6 +7,7 @@
 #    app.openshift.io/vcs-ref: main
 #    app.openshift.io/vcs-url: https://github.com/quarkusio/quarkus-super-heroes
 #    app.quarkus.io/build-timestamp: 2022-09-12 - 14:04:58 +0000
+#    argocd.argoproj.io/sync-wave: "1"
 #  labels:
 #    app.kubernetes.io/name: rest-villains
 #    app.kubernetes.io/part-of: villains-service

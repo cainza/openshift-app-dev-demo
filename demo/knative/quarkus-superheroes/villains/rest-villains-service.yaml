@@ -11,6 +11,7 @@ metadata:
     prometheus.io/path: /q/metrics
     prometheus.io/port: "8084"
     prometheus.io/scheme: http
+    argocd.argoproj.io/sync-wave: "2"
   labels:
     app.kubernetes.io/name: rest-villains
     app.kubernetes.io/part-of: villains-service

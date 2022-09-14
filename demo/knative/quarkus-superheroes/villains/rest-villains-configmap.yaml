@@ -6,6 +6,8 @@ metadata:
     app: rest-villains
     application: villains-service
     system: quarkus-super-heroes
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
   name: rest-villains-config
 data:
   quarkus.hibernate-orm.database.generation: validate

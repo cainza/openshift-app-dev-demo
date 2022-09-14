@@ -74,8 +74,20 @@ A Minimum CPU requirement of 4 Cores with Hyperthreading / 8vCPU. 8 cores with h
 
   ![Openshift Pipelines](images/3-openshift-serverless.png)
 
+  When using self-signed certificates (default) you will need to access the rest-fights and ui-super-heroes URL's to accept the certificates. The reason for this is that ui-super-heroes does calls to the rest-fights service. If the certificate is not trusted the browser then you will not get a valid response from the UI.
+
 ## 5. Openshift Service Mesh
 
   Openshift Service mesh was set up so that we can monitor the state of our quarkus microservices. Two of the rest services are exposed externally while the rest are internal to the cluster.
 
   ![Openshift Pipelines](images/4-openshift-service-mesh.png)
+
+## 6. Quarkus Super Heroes
+
+When you access the Quarkus Superheroes UI service you will be presented with an an application where you compare/fight superheroes and villains.
+
+![Quarkus Super Heroes](images/5-quarkus-super-heroes.png)
+
+This is infact a set of microservices that form a mesh:
+
+![Quarkus Super Heroes Architecture](https://github.com/quarkusio/quarkus-super-heroes/blob/main/images/application-architecture.png)

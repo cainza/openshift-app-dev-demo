@@ -1,0 +1,12 @@
+apiVersion: registry.apicur.io/v1
+kind: ApicurioRegistry
+metadata:
+  name: apicurio
+  namespace: quarkus-superheroes-serverless
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  configuration:
+    kafkasql:
+      bootstrapServers: fights-kafka-kafka-bootstrap:9092
+    persistence: kafkasql

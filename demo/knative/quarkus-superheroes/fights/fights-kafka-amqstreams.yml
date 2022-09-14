@@ -2,7 +2,7 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   name: fights-kafka
-  namespace: quarkus-superheroes-serverless
+  namespace: quarkus-superheroes
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:

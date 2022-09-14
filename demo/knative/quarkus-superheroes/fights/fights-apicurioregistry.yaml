@@ -2,7 +2,7 @@ apiVersion: registry.apicur.io/v1
 kind: ApicurioRegistry
 metadata:
   name: apicurio
-  namespace: quarkus-superheroes-serverless
+  namespace: quarkus-superheroes
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:

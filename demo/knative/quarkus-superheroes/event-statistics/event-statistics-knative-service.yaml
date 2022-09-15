@@ -11,6 +11,7 @@ metadata:
     prometheus.io/port: "8085"
     prometheus.io/scheme: http
     serving.knative.openshift.io/enablePassthrough: "true"
+    argocd.argoproj.io/sync-wave: "2"
   labels:
     app: event-statistics
     app.openshift.io/runtime: quarkus

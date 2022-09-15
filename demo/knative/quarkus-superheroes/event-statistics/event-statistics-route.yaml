@@ -11,7 +11,8 @@ metadata:
     prometheus.io/port: '8085'	
     prometheus.io/scheme: http	
     prometheus.io/scrape: 'true'	
-    serving.knative.openshift.io/enablePassthrough: 'true'	
+    serving.knative.openshift.io/enablePassthrough: 'true'
+    argocd.argoproj.io/sync-wave: "2"
   labels:	
     app: event-statistics	
     app.kubernetes.io/instance: 2-demo-quarkus-superheroes	
@@ -30,7 +31,7 @@ metadata:
   name: event-statistics
   namespace: istio-system	
 spec:	
-  host: event-statistics-quarkus-superheroes.apps-crc.testing	
+  host: event-statistics-quarkus-superheroes.apps.sno.scarab.local	
   port:	
     targetPort: https	
   tls:	

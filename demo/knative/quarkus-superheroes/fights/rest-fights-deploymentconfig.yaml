@@ -96,5 +96,5 @@ spec:
           - rest-fights
         from:
           kind: ImageStreamTag
-          name: rest-fights:native-java17-latest
+          name: rest-fights-native:latest
       type: ImageChange

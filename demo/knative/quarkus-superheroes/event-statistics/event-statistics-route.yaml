@@ -27,9 +27,9 @@ metadata:
     serving.knative.openshift.io/ingressName: event-statistics	
     serving.knative.openshift.io/ingressNamespace: quarkus-superheroes	
     system: quarkus-super-heroes		
-  name: event-statistics-route
+  name: event-statistics
+  namespace: istio-system	
 spec:	
-  host: event-statistics-quarkus-superheroes.apps-crc.testing	
   port:	
     targetPort: https	
   tls:	

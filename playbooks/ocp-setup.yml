@@ -31,7 +31,7 @@
     #- sno-odf-mcg
     #- sync-gitops-application-servicemesh
     #- sync-gitops-application-knative-serving
-    #- sync-gitops-application-tekton
+    - sync-gitops-application-tekton
     - sync-gitops-application-quarkus-superheroes
     - argocd-get-login
 

@@ -18,11 +18,11 @@
         namespace: openshift-gitops
       spec:
         destination:
-          namespace: quarkus-superheroes-serverless
+          namespace: quarkus-superheroes
           server: 'https://kubernetes.default.svc'
         project: "{{ cluster_demo_setup_project }}"
         source:
-          path: demo/tekton/quarkus-superheroes-serverless
+          path: demo/tekton/quarkus-superheroes
           repoURL: "{{ cluster_demo_setup_repo }}"
           targetRevision: "{{ cluster_demo_setup_revision }}"
         syncPolicy:
@@ -55,7 +55,7 @@
         kind: Secret
         metadata:
             name: argocd-env-secret
-            namespace: quarkus-superheroes-serverless
+            namespace: quarkus-superheroes
         type: Opaque
         data:
             ARGOCD_PASSWORD: "{{ argopassword.password | b64encode }}"
@@ -70,6 +70,6 @@
       kind: ConfigMap
       metadata:
         name: argocd-env-configmap
-        namespace: quarkus-superheroes-serverless
+        namespace: quarkus-superheroes
       data:
         ARGOCD_SERVER: "{{argocdroute.resources[0].spec.host}}:443"

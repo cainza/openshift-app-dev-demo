@@ -31,7 +31,7 @@ metadata:
   name: event-statistics
   namespace: istio-system	
 spec:	
-  host: event-statistics-quarkus-superheroes.apps.sno.scarab.local	
+  host: event-statistics-quarkus-superheroes.apps-crc.testing	
   port:	
     targetPort: https	
   tls:	

@@ -17,8 +17,12 @@ metadata:
     app.openshift.io/runtime: quarkus
   name: rest-fights
 spec:
-  port:
-    targetPort: 8082
   to:
     kind: Service
     name: rest-fights
+    weight: 100
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+  wildcardPolicy: None

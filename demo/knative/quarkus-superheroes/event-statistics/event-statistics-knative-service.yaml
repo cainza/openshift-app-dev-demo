@@ -1,0 +1,82 @@
+---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  annotations:
+    app.openshift.io/connects-to: "fights-kafka,apicurio"
+    app.openshift.io/vcs-ref: main
+    app.openshift.io/vcs-url: https://github.com/quarkusio/quarkus-super-heroes
+    prometheus.io/scrape: "true"
+    prometheus.io/path: /q/metrics
+    prometheus.io/port: "8085"
+    prometheus.io/scheme: http
+    serving.knative.openshift.io/enablePassthrough: "true"
+  labels:
+    app: event-statistics
+    app.openshift.io/runtime: quarkus
+    application: event-stats
+    system: quarkus-super-heroes
+    app.kubernetes.io/name: event-statistics
+    app.kubernetes.io/part-of: event-stats
+    app.kubernetes.io/version: native-java17-latest
+  name: event-statistics
+spec:
+  template:
+    metadata:
+      annotations:
+        app.openshift.io/connects-to: "fights-kafka,apicurio"
+        app.openshift.io/vcs-ref: main
+        app.openshift.io/vcs-url: https://github.com/quarkusio/quarkus-super-heroes
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /q/metrics
+        prometheus.io/port: "8085"
+        prometheus.io/scheme: http
+        sidecar.istio.io/inject: "true" 
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+        autoscaling.knative.dev/min-scale: "0"
+      labels:
+        app: event-statistics
+        app.openshift.io/runtime: quarkus
+        application: event-stats
+        system: quarkus-super-heroes
+        app.kubernetes.io/name: event-statistics
+        app.kubernetes.io/part-of: event-stats
+    spec:
+      # Set containerConcurrency to one to show off Serverless autoscaling
+      containerConcurrency: 1
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: event-statistics-config
+            - secretRef:
+                name: event-statistics-config-creds
+          image: image-registry.openshift-image-registry.svc:5000/quarkus-superheroes/event-statistics-native:latest
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /q/health/live
+              port: 8085
+              scheme: HTTP
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: event-statistics
+          ports:
+            - containerPort: 8085
+              name: http1
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /q/health/ready
+              port: 8085
+              scheme: HTTP
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+          resources:
+            limits:
+              memory: 128Mi
+            requests:
+              memory: 32Mi

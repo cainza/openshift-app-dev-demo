@@ -2,13 +2,12 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: 06-ui-super-heroes
-  namespace: quarkus-superheroes-serverless
   labels:
     app.kubernetes.io/instance: quarkus-superheroes-tekton
 spec:
   params:
     - default: >-
-        image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless
+        image-registry.openshift-image-registry.svc:5000/quarkus-superheroes
       name: image_base_url
       type: string
   tasks:

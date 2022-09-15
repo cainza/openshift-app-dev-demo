@@ -2,7 +2,6 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: 01-prepare-maven
-  namespace: quarkus-superheroes-serverless
   labels:
     app.kubernetes.io/instance: quarkus-superheroes-tekton
 spec:

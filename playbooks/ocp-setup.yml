@@ -24,14 +24,14 @@
 
   roles:
     #- openshift-login
-    - openshift-gitops
-    - argocd-client-install
-    - cluster-demo
-    - sno-odf-lvm
-    - sno-odf-mcg
-    - sync-gitops-application-servicemesh
-    - sync-gitops-application-knative-serving
-    - sync-gitops-application-tekton
+    #- openshift-gitops
+    #- argocd-client-install
+    #- cluster-demo
+    #- sno-odf-lvm
+    #- sno-odf-mcg
+    #- sync-gitops-application-servicemesh
+    #- sync-gitops-application-knative-serving
+    #- sync-gitops-application-tekton
     - sync-gitops-application-quarkus-superheroes
     - argocd-get-login
 

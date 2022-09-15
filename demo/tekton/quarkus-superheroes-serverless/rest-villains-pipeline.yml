@@ -2,11 +2,10 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: 04-rest-villains
-  namespace: quarkus-superheroes-serverless
 spec:
   params:
     - default: >-
-        image-registry.openshift-image-registry.svc:5000/quarkus-superheroes-serverless
+        image-registry.openshift-image-registry.svc:5000/quarkus-superheroes
       name: image_base_url
       type: string
   tasks:

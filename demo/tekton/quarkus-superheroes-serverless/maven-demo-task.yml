@@ -2,7 +2,6 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: maven-demo
-  namespace: quarkus-superheroes-serverless
 spec:
   description: This Task can be used to run a Maven build.
   params:

@@ -3,3 +3,10 @@ openshift_argocd_name: openshift-gitops
 openshift_argocd_namespace: openshift-gitops
 openshift_argocd_secret: openshift-gitops-cluster
 openshift_argocd_gitops_route: openshift-gitops-server
+
+### CLUSTER GITOPS SETUP 
+cluster_demo_setup_name: cluster-configs
+cluster_demo_setup_project: default
+cluster_demo_setup_path: cluster
+cluster_demo_setup_repo: https://github.com/cainza/openshift-app-dev-demo.git
+cluster_demo_setup_revision: main

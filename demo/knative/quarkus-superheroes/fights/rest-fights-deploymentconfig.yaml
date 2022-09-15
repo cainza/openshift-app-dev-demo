@@ -37,6 +37,7 @@ spec:
         prometheus.io/path: /q/metrics
         prometheus.io/port: "8082"
         prometheus.io/scheme: http
+        sidecar.istio.io/inject: "true"
       labels:
         app: rest-fights
         application: fights-service

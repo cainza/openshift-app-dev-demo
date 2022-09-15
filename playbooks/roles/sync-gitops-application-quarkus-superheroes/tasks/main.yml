@@ -1,25 +1,25 @@
 ---
-- name: Create Quarkus Superheroes Serverless Demo Applications in GitOps
-  kubernetes.core.k8s:
-    state: present
-    definition:
-      apiVersion: argoproj.io/v1alpha1
-      kind: Application
-      metadata:
-        name: quarkus-superheroes-serverless
-        namespace: openshift-gitops
-      spec:
-        destination:
-          namespace: quarkus-superheroes-serverless
-          server: 'https://kubernetes.default.svc'
-        project: "{{ cluster_demo_setup_project }}"
-        source:
-          path: demo/knative/quarkus-superheroes-serverless
-          repoURL: "{{ cluster_demo_setup_repo }}"
-          targetRevision: "{{ cluster_demo_setup_revision }}"
-        syncPolicy:
-          syncOptions:
-            - CreateNamespace=true
+#- name: Create Quarkus Superheroes Serverless Demo Applications in GitOps
+#  kubernetes.core.k8s:
+#    state: present
+#    definition:
+#      apiVersion: argoproj.io/v1alpha1
+#      kind: Application
+#      metadata:
+#        name: quarkus-superheroes-serverless
+#        namespace: openshift-gitops
+#      spec:
+#        destination:
+#          namespace: quarkus-superheroes-serverless
+#          server: 'https://kubernetes.default.svc'
+#        project: "{{ cluster_demo_setup_project }}"
+#        source:
+#          path: demo/knative/quarkus-superheroes-serverless
+#          repoURL: "{{ cluster_demo_setup_repo }}"
+#          targetRevision: "{{ cluster_demo_setup_revision }}"
+#        syncPolicy:
+#          syncOptions:
+#            - CreateNamespace=true
 
 - name: Create Quarkus Superheroes Mixed Demo Applications in GitOps
   kubernetes.core.k8s:

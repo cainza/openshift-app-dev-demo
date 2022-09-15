@@ -6,5 +6,4 @@ metadata:
 spec:
   members:
   - knative-serving # Must always be there to work - DO NOT DELETE
-  - quarkus-superheroes-serverless
   - quarkus-superheroes

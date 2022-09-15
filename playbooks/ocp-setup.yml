@@ -23,17 +23,14 @@
       failed_when: ocp_version.stdout != "4.11.1"
 
   roles:
-    #- openshift-login
-    #- openshift-gitops
-    #- argocd-client-install
-    #- cluster-demo
-    #- sno-odf-lvm
-    #- sno-odf-mcg
-    #- sync-gitops-application-servicemesh
-    #- sync-gitops-application-knative-serving
+    - openshift-login
+    - openshift-gitops
+    - argocd-client-install
+    - cluster-demo
+    - sno-odf-lvm
+    - sno-odf-mcg
+    - sync-gitops-application-servicemesh
+    - sync-gitops-application-knative-serving
     - sync-gitops-application-tekton
     - sync-gitops-application-quarkus-superheroes
     - argocd-get-login
-
-    # TODO
-    # - Quarkus Superheroes rest-fights route for UI dynamic

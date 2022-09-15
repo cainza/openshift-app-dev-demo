@@ -30,6 +30,7 @@ metadata:
   name: event-statistics
   namespace: istio-system	
 spec:	
+  host: event-statistics-quarkus-superheroes.apps-crc.testing	
   port:	
     targetPort: https	
   tls:	

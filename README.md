@@ -31,6 +31,10 @@ A Minimum CPU requirement of 4 Cores with Hyperthreading / 8vCPU. 8 cores with h
 
 # Deployment
 
+Prepare your environment by running the following playbook.
+
+    ansible-playbook -i hosts/hosts playbooks/host-setup.yml
+
 - [README Single Node Openshift](README-SNO.md)
 - [README Openshift Local](README-CRC.md)
 

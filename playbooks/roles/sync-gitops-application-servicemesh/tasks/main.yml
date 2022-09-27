@@ -40,14 +40,14 @@
     name: kiali-ossm
     namespace: openshift-operators
 
-- name: Waiting for Elasticsearch Operator
-  debug:
-    msg: "Elasticsearch operator is installed"
+#- name: Waiting for Elasticsearch Operator
+#  debug:
+#    msg: "Elasticsearch operator is installed"
 
-- name: Check if Elasticsearch Operator is installed
-  monitor_operator_install:
-    name: elasticsearch-operator
-    namespace: openshift-operators-redhat
+#- name: Check if Elasticsearch Operator is installed
+#  monitor_operator_install:
+#    name: elasticsearch-operator
+#    namespace: openshift-operators-redhat
 
 - name: Waiting for Jaeger Operator
   debug:

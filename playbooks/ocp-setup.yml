@@ -20,7 +20,7 @@
     - name: Check OCP Version
       ansible.builtin.command: "{% raw %}oc get clusterversion/version --no-headers --template={{.status.desired.version}}{% endraw %}"
       register: ocp_version
-      failed_when: ocp_version.stdout != "4.11.4"
+      #failed_when: ocp_version.stdout != "4.11.4"
 
   roles:
     #- openshift-login
@@ -29,8 +29,8 @@
     - cluster-demo
     - sno-odf-lvm
     - sno-odf-mcg
-    #- sync-gitops-application-servicemesh
-    #- sync-gitops-application-knative-serving
-    #- sync-gitops-application-tekton
-    #- sync-gitops-application-quarkus-superheroes
+    - sync-gitops-application-servicemesh
+    - sync-gitops-application-knative-serving
+    - sync-gitops-application-tekton
+    - sync-gitops-application-quarkus-superheroes
     - argocd-get-login

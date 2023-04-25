@@ -17,9 +17,9 @@
         OCP_username: "{{OCP_username}}"
     - set_fact:
         OCP_password: "{{OCP_password}}"
-    - name: Check OCP Version
-      ansible.builtin.command: "{% raw %}oc get clusterversion/version --no-headers --template={{.status.desired.version}}{% endraw %}"
-      register: ocp_version
+    #- name: Check OCP Version
+      #ansible.builtin.command: "{% raw %}oc get clusterversion/version --no-headers --template={{.status.desired.version}}{% endraw %}"
+      #register: ocp_version
       #failed_when: ocp_version.stdout != "4.11.4"
 
   roles:
